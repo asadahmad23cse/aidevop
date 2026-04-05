@@ -67,18 +67,22 @@
 
     <section id="metrics" class="performance-section reveal" data-delay="520">
       <h2 class="section-title">Performance Analytics (Test Set = 150)</h2>
-      <p class="section-sub">Evaluation Comparison Widget: Base Gemma vs Fine-Tuned Gemma</p>
+      <p class="section-sub">Impact of Constraints: lexical overlap vs structural adherence</p>
       <div class="analytics-grid">
         <article class="panel glass">
           <h3 class="widget-title">Base vs Fine-Tuned Metric Comparison</h3>
           <canvas id="evalChart" aria-label="Evaluation comparison chart"></canvas>
         </article>
+        <article class="panel glass">
+          <h3 class="widget-title">Multi-Axis Impact Profile (Radar)</h3>
+          <canvas id="impactRadarChart" aria-label="Impact of constraints radar chart"></canvas>
+          <p id="radarMethodNote" class="chart-footnote">
+            ROUGE/BLEU/BERTScore from evaluation report. Structural axes are proxy scores from controlled prompt probes.
+          </p>
+        </article>
         <aside class="insight-alert">
           <h3>Insight Alert</h3>
-          <p>
-            Metrics dropped due to strict sequence truncation (max_length=256) necessary for 4GB VRAM.
-            However, structural formatting improved.
-          </p>
+          <p id="insightBody"></p>
         </aside>
       </div>
     </section>

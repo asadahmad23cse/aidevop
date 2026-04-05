@@ -243,7 +243,7 @@ main {
 
 .analytics-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.95rem;
 }
 
@@ -256,6 +256,18 @@ main {
 #evalChart {
   width: 100% !important;
   max-height: 330px;
+}
+
+#impactRadarChart {
+  width: 100% !important;
+  max-height: 330px;
+}
+
+.chart-footnote {
+  margin: 0.7rem 0 0;
+  color: #9fb2d1;
+  font-size: 0.8rem;
+  line-height: 1.4;
 }
 
 .panel {
@@ -345,6 +357,7 @@ main {
 }
 
 .insight-alert {
+  grid-column: 1 / -1;
   padding: 1.05rem;
   border-radius: 20px;
   border: 1px solid rgba(255, 212, 102, 0.5);
