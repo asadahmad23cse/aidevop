@@ -230,6 +230,10 @@ main {
   margin-top: 1.8rem;
 }
 
+.dynamics-section {
+  margin-top: 1.2rem;
+}
+
 .section-title {
   margin: 0;
   font-size: 1.2rem;
@@ -261,6 +265,11 @@ main {
 #impactRadarChart {
   width: 100% !important;
   max-height: 330px;
+}
+
+#trainingDynamicsChart {
+  width: 100% !important;
+  max-height: 340px;
 }
 
 .chart-footnote {

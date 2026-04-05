@@ -20,6 +20,7 @@
       <nav class="nav-links">
         <a href="#overview">Overview</a>
         <a href="#metrics">Metrics</a>
+        <a href="#dynamics">Dynamics</a>
         <a href="#system">System</a>
         <a href="#playground">Playground</a>
       </nav>
@@ -85,6 +86,16 @@
           <p id="insightBody"></p>
         </aside>
       </div>
+    </section>
+
+    <section id="dynamics" class="dynamics-section reveal" data-delay="590">
+      <h2 class="section-title">Training Dynamics (Research View)</h2>
+      <p class="section-sub">Overfitting analysis with inflection-point checkpoint interpretation.</p>
+      <article class="panel glass">
+        <h3 class="widget-title">Training Loss vs Validation Loss (Step Chart)</h3>
+        <canvas id="trainingDynamicsChart" aria-label="Training dynamics chart"></canvas>
+        <p id="dynamicsSummary" class="chart-footnote"></p>
+      </article>
     </section>
 
     <section id="system" class="constraints-section reveal" data-delay="620">
