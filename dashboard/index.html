@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assignment II: Medical AI Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="ambient ambient-cyan"></div>
+  <div class="ambient ambient-purple"></div>
+
+  <header class="top-nav reveal" data-delay="0">
+    <div class="container nav-inner">
+      <a class="logo" href="#">Assignment II: Medical AI</a>
+      <nav class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#metrics">Metrics</a>
+        <a href="#system">System</a>
+        <a href="#playground">Playground</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="overview" class="hero glass reveal" data-delay="120">
+      <p class="hero-tag">Academic Machine Learning Dashboard</p>
+      <h1 class="hero-title">
+        Medical Q&amp;A Specialization with <span class="gradient-text">Gemma-2B-it</span>
+      </h1>
+      <p class="hero-subtitle">
+        Domain Adaptation via 4-bit QLoRA under Extreme 4GB VRAM Constraints
+      </p>
+
+    </section>
+
+    <section class="feature-grid">
+      <article class="feature-card glass-soft reveal" data-delay="220">
+        <div class="feature-icon" aria-hidden="true">🧬</div>
+        <p class="feature-title">Dataset</p>
+        <h3 class="feature-stat">1,500 QA Pairs</h3>
+        <p class="feature-label">Curated Medical Instruct Data</p>
+      </article>
+      <article class="feature-card glass-soft reveal" data-delay="300">
+        <div class="feature-icon" aria-hidden="true">🤖</div>
+        <p class="feature-title">Backbone Model</p>
+        <h3 class="feature-stat">Gemma-2B-it</h3>
+        <p class="feature-label">4-bit Quantized Base</p>
+      </article>
+      <article class="feature-card glass-soft reveal" data-delay="380">
+        <div class="feature-icon" aria-hidden="true">⚙️</div>
+        <p class="feature-title">Technique</p>
+        <h3 class="feature-stat">QLoRA + PEFT</h3>
+        <p class="feature-label">Rank 16, Alpha 32</p>
+      </article>
+      <article class="feature-card glass-soft reveal" data-delay="460">
+        <div class="feature-icon" aria-hidden="true">🧠</div>
+        <p class="feature-title">Environment Constraint</p>
+        <h3 class="feature-stat">4GB VRAM Limit</h3>
+        <p class="feature-label">max_length=256, accumulation=16</p>
+      </article>
+    </section>
+
+    <section id="metrics" class="performance-section reveal" data-delay="520">
+      <h2 class="section-title">Performance Analytics (Test Set = 150)</h2>
+      <p class="section-sub">Evaluation Comparison Widget: Base Gemma vs Fine-Tuned Gemma</p>
+      <div class="analytics-grid">
+        <article class="panel glass">
+          <h3 class="widget-title">Base vs Fine-Tuned Metric Comparison</h3>
+          <canvas id="evalChart" aria-label="Evaluation comparison chart"></canvas>
+        </article>
+        <aside class="insight-alert">
+          <h3>Insight Alert</h3>
+          <p>
+            Metrics dropped due to strict sequence truncation (max_length=256) necessary for 4GB VRAM.
+            However, structural formatting improved.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="system" class="constraints-section reveal" data-delay="620">
+      <article class="panel glass constraints-panel">
+        <h2>System Constraints</h2>
+        <p class="muted">Memory-saving choices used to avoid OOM.</p>
+        <ul class="constraint-list">
+          <li><span>max_length</span><strong>256</strong></li>
+          <li><span>batch size</span><strong>1</strong></li>
+          <li><span>grad accumulation</span><strong>16</strong></li>
+          <li><span>optimizer</span><strong>paged 8-bit</strong></li>
+          <li><span>checkpointing</span><strong>enabled</strong></li>
+        </ul>
+      </article>
+    </section>
+
+    <section id="playground" class="playground-section reveal" data-delay="760">
+      <h2 class="section-title">Live Inference Playground</h2>
+      <p class="section-sub">Run a side-by-side simulation to demonstrate behavioral differences between the base and adapted models.</p>
+
+      <article class="playground-shell glass">
+        <label class="playground-label" for="inferenceInput">Input Area</label>
+        <textarea
+          id="inferenceInput"
+          class="inference-input"
+          placeholder="Enter a medical query (e.g., 'I have sudden chest pain and sweating...')"
+        ></textarea>
+
+        <div class="action-row">
+          <button id="runInferenceBtn" class="run-btn" type="button">
+            <span class="btn-text">▶ Run Inference (Compare Models)</span>
+          </button>
+        </div>
+
+        <div class="output-grid">
+          <article class="output-panel base-panel">
+            <h3>Base Model (Gemma-2B-it)</h3>
+            <div id="baseOutput" class="output-content">
+              <p class="placeholder-copy">Submit a query to generate a baseline response.</p>
+            </div>
+          </article>
+
+          <article class="output-panel tuned-output-panel">
+            <h3>Fine-Tuned Adapter (Medical LoRA)</h3>
+            <div id="tunedOutput" class="output-content">
+              <p class="placeholder-copy">Submit a query to generate a structured medical response.</p>
+            </div>
+          </article>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>

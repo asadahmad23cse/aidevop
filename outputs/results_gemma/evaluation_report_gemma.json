@@ -1,0 +1,22 @@
+{
+  "model_backbone": "google/gemma-2b-it",
+  "base_model": {
+    "rouge_1": 0.2537548339731839,
+    "rouge_2": 0.028440977101317207,
+    "rouge_l": 0.12157121116069239,
+    "bleu": 1.1392209832415785,
+    "bertscore_f1": 0.8221587538719177,
+    "average_response_length_words": 136.82666666666665,
+    "inference_latency_ms": 4304.226956666098
+  },
+  "fine_tuned_model": {
+    "rouge_1": 0.15969075085592435,
+    "rouge_2": 0.016565680179231212,
+    "rouge_l": 0.07962093246951966,
+    "bleu": 0.5960647974554925,
+    "bertscore_f1": 0.7864996194839478,
+    "average_response_length_words": 177.54666666666665,
+    "inference_latency_ms": 12363.232125332384
+  },
+  "num_test_examples": 150
+}

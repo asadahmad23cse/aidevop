@@ -1,0 +1,15 @@
+﻿transformers>=4.40
+peft>=0.10
+trl>=0.8
+bitsandbytes>=0.43
+datasets>=2.18
+accelerate>=0.28
+rouge_score
+sacrebleu
+bert_score
+torch>=2.1
+sentencepiece
+scipy
+matplotlib
+seaborn
+jupyter

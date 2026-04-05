@@ -1,0 +1,87 @@
+{
+  "builder_name": "json",
+  "citation": "",
+  "config_name": "default",
+  "dataset_name": "json",
+  "dataset_size": 1445829,
+  "description": "",
+  "download_checksums": {
+    "C:/Users/antho/Videos/gen ai ass2/llm-finetune/data/processed/train.jsonl": {
+      "num_bytes": 1180503,
+      "checksum": null
+    },
+    "C:/Users/antho/Videos/gen ai ass2/llm-finetune/data/processed/val.jsonl": {
+      "num_bytes": 144547,
+      "checksum": null
+    },
+    "C:/Users/antho/Videos/gen ai ass2/llm-finetune/data/processed/test.jsonl": {
+      "num_bytes": 152472,
+      "checksum": null
+    }
+  },
+  "download_size": 1477522,
+  "features": {
+    "input": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "output": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "text": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "input_ids": {
+      "feature": {
+        "dtype": "int32",
+        "_type": "Value"
+      },
+      "_type": "List"
+    },
+    "attention_mask": {
+      "feature": {
+        "dtype": "int8",
+        "_type": "Value"
+      },
+      "_type": "List"
+    },
+    "labels": {
+      "feature": {
+        "dtype": "int64",
+        "_type": "Value"
+      },
+      "_type": "List"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "size_in_bytes": 2923351,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 1155153,
+      "num_examples": 1200,
+      "dataset_name": "json"
+    },
+    "validation": {
+      "name": "validation",
+      "num_bytes": 141372,
+      "num_examples": 150,
+      "dataset_name": "json"
+    },
+    "test": {
+      "name": "test",
+      "num_bytes": 149304,
+      "num_examples": 150,
+      "dataset_name": "json"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}
