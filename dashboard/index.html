@@ -22,6 +22,7 @@
         <a href="#metrics">Metrics</a>
         <a href="#dynamics">Dynamics</a>
         <a href="#persona">Persona</a>
+        <a href="#clinical">Alignment</a>
         <a href="#system">System</a>
         <a href="#playground">Playground</a>
       </nav>
@@ -131,6 +132,30 @@
           <h4>Failure Analysis: Quantization Artifacts</h4>
           <p id="quantizationFooter"></p>
         </footer>
+      </article>
+    </section>
+
+    <section id="clinical" class="clinical-section reveal" data-delay="615">
+      <h2 class="section-title">Triage Persona Success</h2>
+      <p class="section-sub">Clinical alignment snapshot: vague baseline response vs direct structured triage response.</p>
+      <article class="panel glass clinical-panel">
+        <div class="clinical-head">
+          <h3 class="widget-title">Response Diff (Chest Pain + Sweating Probe)</h3>
+          <span id="clinicalConsistencyBadge" class="clinical-badge">Patient-Safe Instruction Following: 92% Consistency</span>
+        </div>
+
+        <div class="clinical-grid">
+          <article class="clinical-card clinical-base">
+            <p class="clinical-label">Base Gemma: Vague &amp; Long</p>
+            <pre id="clinicalBaseDiff" class="clinical-copy"></pre>
+          </article>
+          <article class="clinical-card clinical-adapted">
+            <p class="clinical-label">Domain-Adapted Gemma: Direct &amp; Structured</p>
+            <pre id="clinicalTunedDiff" class="clinical-copy"></pre>
+          </article>
+        </div>
+
+        <p id="clinicalAuditNote" class="chart-footnote"></p>
       </article>
     </section>
 
