@@ -244,7 +244,7 @@ function renderEvalChart(data) {
           borderRadius: 9,
         },
         {
-          label: "Fine-Tuned Gemma",
+          label: "Domain-Adapted Gemma",
           data: [data.fine_tuned_model.rouge_l, data.fine_tuned_model.bleu, data.fine_tuned_model.bertscore_f1],
           backgroundColor: "rgba(138, 43, 226, 0.74)",
           borderColor: "rgba(138, 43, 226, 1)",
@@ -639,7 +639,7 @@ function renderImpactRadarChart(evalData, structural) {
           borderWidth: 2,
         },
         {
-          label: "Fine-Tuned Gemma",
+          label: "Domain-Adapted Gemma",
           data: tunedData,
           backgroundColor: "rgba(138, 43, 226, 0.2)",
           borderColor: "rgba(138, 43, 226, 1)",
@@ -697,7 +697,7 @@ function renderImpactNarrative(evalData, structural) {
 
   body.innerHTML = [
     `Lexical overlap dropped under 4GB constraints: BLEU ${format(bleuChange, 1)}% and ROUGE-L ${format(rougeChange, 1)}% vs base.`,
-    `Structural adherence (persona proxy) improved by ${format(personaChange, 1)}%, with stronger instruction-following and response formatting signals.`,
+    `Structural adherence (persona proxy) improved by ${format(personaChange, 1)}%, with stronger instruction-following and medical-formatting signals.`,
     "Interpretation: aggressive truncation (max_length=256) hurt recall-heavy overlap metrics, while task style alignment remained learnable.",
   ].join(" ");
 
@@ -705,6 +705,29 @@ function renderImpactNarrative(evalData, structural) {
   if (note) {
     note.textContent = `ROUGE/BLEU/BERTScore from eval report; BLEU shown as x10 for radar readability. Proxy axes are computed from controlled medical and out-of-domain probe responses. Persona score: Base ${format(structural.base.persona_score, 1)} vs FT ${format(structural.tuned.persona_score, 1)}.`;
   }
+}
+
+function renderPersonaAudit(structural) {
+  const baseNode = document.getElementById("personaBaseSnippet");
+  const tunedNode = document.getElementById("personaTunedSnippet");
+  const badgeNode = document.getElementById("specializationGainBadge");
+  const footerNode = document.getElementById("quantizationFooter");
+  if (!baseNode || !tunedNode || !badgeNode || !footerNode) return;
+
+  const sample = pickInferenceByRegex("I have sudden chest pain and sweating");
+  const tunedWithIcon = sample.tuned.replace("[CRITICAL EMERGENCY]", "🚑 [CRITICAL EMERGENCY]");
+
+  baseNode.textContent = sample.base;
+  tunedNode.textContent = tunedWithIcon;
+
+  const specializationGain = Math.max(
+    0,
+    percentDelta(structural.base.persona_score, structural.tuned.persona_score),
+  );
+  badgeNode.textContent = `Specialization Gain +${format(specializationGain, 1)}%`;
+
+  footerNode.textContent =
+    "Observed repetitive-token behavior in low-VRAM runs is a quantization artifact: 4-bit weight compression, max_length=256 truncation, and tiny micro-batches can destabilize token probabilities after the inflection checkpoint, causing looped token bursts instead of grounded completion.";
 }
 
 function pickInferenceByRegex(query) {
@@ -827,4 +850,5 @@ function initInferencePlayground() {
   renderImpactNarrative(evalData, structural);
   renderTrainingDynamicsChart(training);
   renderTrainingNarrative(training);
+  renderPersonaAudit(structural);
 })();

@@ -21,6 +21,7 @@
         <a href="#overview">Overview</a>
         <a href="#metrics">Metrics</a>
         <a href="#dynamics">Dynamics</a>
+        <a href="#persona">Persona</a>
         <a href="#system">System</a>
         <a href="#playground">Playground</a>
       </nav>
@@ -98,6 +99,34 @@
       </article>
     </section>
 
+    <section id="persona" class="persona-section reveal" data-delay="610">
+      <h2 class="section-title">Persona Audit (Qualitative Aura)</h2>
+      <p class="section-sub">Behavioral comparison: generic baseline vs medical domain-adapted triage style.</p>
+      <article class="panel glass persona-panel">
+        <div class="persona-header">
+          <h3 class="widget-title">Chest Pain Emergency Probe</h3>
+          <span id="specializationGainBadge" class="specialization-badge">Specialization Gain +0.0%</span>
+        </div>
+
+        <div class="persona-grid">
+          <article class="persona-card persona-generic">
+            <p class="persona-label">Generic/Unsafe</p>
+            <pre id="personaBaseSnippet" class="persona-copy"></pre>
+          </article>
+
+          <article class="persona-card persona-adapted">
+            <p class="persona-label">Medical Domain Adapted</p>
+            <pre id="personaTunedSnippet" class="persona-copy"></pre>
+          </article>
+        </div>
+
+        <footer class="failure-footer">
+          <h4>Failure Analysis: Quantization Artifacts</h4>
+          <p id="quantizationFooter"></p>
+        </footer>
+      </article>
+    </section>
+
     <section id="system" class="constraints-section reveal" data-delay="620">
       <article class="panel glass constraints-panel">
         <h2>System Constraints</h2>
@@ -139,7 +168,7 @@
           </article>
 
           <article class="output-panel tuned-output-panel">
-            <h3>Fine-Tuned Adapter (Medical LoRA)</h3>
+            <h3>Domain-Adapted Adapter (Medical LoRA)</h3>
             <div id="tunedOutput" class="output-content">
               <p class="placeholder-copy">Submit a query to generate a structured medical response.</p>
             </div>

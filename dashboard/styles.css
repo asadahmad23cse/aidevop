@@ -234,6 +234,10 @@ main {
   margin-top: 1.2rem;
 }
 
+.persona-section {
+  margin-top: 1.2rem;
+}
+
 .section-title {
   margin: 0;
   font-size: 1.2rem;
@@ -385,6 +389,103 @@ main {
   margin: 0.55rem 0 0;
   color: #fff1d2;
   font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.persona-panel {
+  padding: 1.15rem;
+}
+
+.persona-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.specialization-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.34rem 0.72rem;
+  border-radius: 999px;
+  border: 1px solid rgba(160, 112, 255, 0.62);
+  background: linear-gradient(135deg, rgba(160, 112, 255, 0.24), rgba(95, 45, 210, 0.32));
+  color: #ecd8ff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.persona-grid {
+  margin-top: 0.35rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.persona-card {
+  border-radius: 16px;
+  padding: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.persona-generic {
+  background: linear-gradient(160deg, rgba(160, 170, 188, 0.12), rgba(97, 109, 130, 0.1));
+  border-color: rgba(175, 188, 212, 0.36);
+}
+
+.persona-adapted {
+  background: linear-gradient(160deg, rgba(115, 62, 230, 0.28), rgba(44, 17, 110, 0.32));
+  border-color: rgba(174, 125, 255, 0.58);
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.24);
+}
+
+.persona-label {
+  margin: 0;
+  color: #d8e5fa;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.persona-copy {
+  margin: 0.55rem 0 0;
+  white-space: pre-wrap;
+  font-family: "Outfit", "Inter", sans-serif;
+  color: #dbe7fb;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  min-height: 178px;
+}
+
+.persona-generic .persona-copy {
+  color: #c3ccda;
+}
+
+.persona-adapted .persona-copy {
+  color: #f0e3ff;
+}
+
+.failure-footer {
+  margin-top: 0.9rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 188, 102, 0.42);
+  background: linear-gradient(160deg, rgba(255, 176, 85, 0.12), rgba(255, 129, 56, 0.11));
+  padding: 0.82rem 0.86rem;
+}
+
+.failure-footer h4 {
+  margin: 0;
+  color: #ffe8c7;
+  font-size: 0.9rem;
+}
+
+.failure-footer p {
+  margin: 0.42rem 0 0;
+  color: #ffeed7;
+  font-size: 0.84rem;
   line-height: 1.45;
 }
 
@@ -608,7 +709,8 @@ main {
   }
 
   .analytics-grid,
-  .output-grid {
+  .output-grid,
+  .persona-grid {
     grid-template-columns: 1fr;
   }
 
