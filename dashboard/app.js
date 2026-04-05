@@ -290,6 +290,151 @@ function renderEvalChart(data) {
   });
 }
 
+function drawRoundedRect(ctx, x, y, w, h, r) {
+  if (typeof ctx.roundRect === "function") {
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+    ctx.fill();
+    ctx.stroke();
+    return;
+  }
+  ctx.fillRect(x, y, w, h);
+  ctx.strokeRect(x, y, w, h);
+}
+
+function renderResearchLogicChart(evalData) {
+  const canvas = document.getElementById("researchLogicChart");
+  if (!canvas || typeof Chart === "undefined") return;
+
+  const truncationLabelPlugin = {
+    id: "truncationLabelPlugin",
+    afterDatasetsDraw(chart, _args, options) {
+      const label = options?.label || "76% Text Length Truncation under 4GB VRAM Limit";
+      const targetDatasetIndex = options?.targetDatasetIndex ?? 1;
+      const meta = chart.getDatasetMeta(targetDatasetIndex);
+      if (!meta || !meta.data) return;
+
+      const { ctx, chartArea } = chart;
+      ctx.save();
+      ctx.font = "600 9px Outfit";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+
+      meta.data.forEach((bar) => {
+        const x = bar.x;
+        const y = bar.y;
+        const maxWidth = 140;
+        const lineHeight = 11;
+
+        const words = label.split(" ");
+        const lines = [];
+        let line = "";
+        words.forEach((word) => {
+          const trial = line ? `${line} ${word}` : word;
+          if (ctx.measureText(trial).width > maxWidth && line) {
+            lines.push(line);
+            line = word;
+          } else {
+            line = trial;
+          }
+        });
+        if (line) lines.push(line);
+
+        const boxWidth = Math.min(
+          maxWidth + 12,
+          Math.max(...lines.map((ln) => ctx.measureText(ln).width)) + 12,
+        );
+        const boxHeight = lines.length * lineHeight + 8;
+        const boxX = Math.min(
+          Math.max(x - boxWidth / 2, chartArea.left + 4),
+          chartArea.right - boxWidth - 4,
+        );
+        const boxY = Math.max(y - boxHeight - 8, chartArea.top + 4);
+
+        ctx.fillStyle = "rgba(65, 26, 122, 0.82)";
+        ctx.strokeStyle = "rgba(182, 132, 255, 0.9)";
+        ctx.lineWidth = 1;
+        drawRoundedRect(ctx, boxX, boxY, boxWidth, boxHeight, 8);
+
+        ctx.fillStyle = "#f1e6ff";
+        lines.forEach((ln, idx) => {
+          ctx.fillText(ln, boxX + 6, boxY + 4 + idx * lineHeight);
+        });
+      });
+
+      ctx.restore();
+    },
+  };
+
+  new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: ["ROUGE-L", "BLEU"],
+      datasets: [
+        {
+          label: "Baseline",
+          data: [evalData.base_model.rouge_l, evalData.base_model.bleu],
+          backgroundColor: "rgba(143, 153, 170, 0.85)",
+          borderColor: "rgba(188, 198, 215, 0.95)",
+          borderWidth: 1.2,
+          borderRadius: 8,
+        },
+        {
+          label: "Domain Adapted",
+          data: [evalData.fine_tuned_model.rouge_l, evalData.fine_tuned_model.bleu],
+          backgroundColor: "rgba(86, 30, 168, 0.9)",
+          borderColor: "rgba(166, 116, 255, 1)",
+          borderWidth: 1.2,
+          borderRadius: 8,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        truncationLabelPlugin: {
+          label: "76% Text Length Truncation under 4GB VRAM Limit",
+          targetDatasetIndex: 1,
+        },
+        legend: {
+          labels: {
+            color: "#d7e6ff",
+            font: { family: "Outfit", size: 12, weight: "600" },
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: ${format(ctx.raw, 4)}`,
+            afterLabel: (ctx) =>
+              ctx.datasetIndex === 1
+                ? "76% Text Length Truncation under 4GB VRAM Limit"
+                : "",
+          },
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: "#c0d1ee",
+            font: { family: "Outfit", size: 12, weight: "600" },
+          },
+          grid: { color: "rgba(255,255,255,0.08)" },
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: "#c0d1ee",
+            font: { family: "Outfit", size: 11 },
+          },
+          grid: { color: "rgba(255,255,255,0.12)" },
+        },
+      },
+    },
+    plugins: [truncationLabelPlugin],
+  });
+}
+
 function renderTrainingDynamicsChart(training) {
   const canvas = document.getElementById("trainingDynamicsChart");
   if (!canvas || typeof Chart === "undefined") return;
@@ -846,6 +991,7 @@ function initInferencePlayground() {
   const structural = buildStructuralProxyScores();
 
   renderEvalChart(evalData);
+  renderResearchLogicChart(evalData);
   renderImpactRadarChart(evalData, structural);
   renderImpactNarrative(evalData, structural);
   renderTrainingDynamicsChart(training);

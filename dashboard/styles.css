@@ -255,6 +255,10 @@ main {
   gap: 0.95rem;
 }
 
+.research-logic-panel {
+  margin-top: 0.95rem;
+}
+
 .widget-title {
   margin: 0 0 0.9rem;
   font-size: 0.98rem;
@@ -274,6 +278,11 @@ main {
 #trainingDynamicsChart {
   width: 100% !important;
   max-height: 340px;
+}
+
+#researchLogicChart {
+  width: 100% !important;
+  max-height: 300px;
 }
 
 .chart-footnote {
