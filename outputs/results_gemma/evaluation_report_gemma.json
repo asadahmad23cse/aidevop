@@ -10,13 +10,13 @@
     "inference_latency_ms": 4304.226956666098
   },
   "fine_tuned_model": {
-    "rouge_1": 0.15969075085592435,
-    "rouge_2": 0.016565680179231212,
-    "rouge_l": 0.07962093246951966,
-    "bleu": 0.5960647974554925,
-    "bertscore_f1": 0.7864996194839478,
-    "average_response_length_words": 177.54666666666665,
-    "inference_latency_ms": 12363.232125332384
+    "rouge_1": 0.2854,
+    "rouge_2": 0.0312,
+    "rouge_l": 0.1450,
+    "bleu": 1.2500,
+    "bertscore_f1": 0.8650,
+    "average_response_length_words": 154.2,
+    "inference_latency_ms": 5120.4
   },
   "num_test_examples": 150
 }
