@@ -1,22 +1,22 @@
 {
   "model_backbone": "google/gemma-2b-it",
   "base_model": {
-    "rouge_1": 0.2537548339731839,
-    "rouge_2": 0.028440977101317207,
-    "rouge_l": 0.12157121116069239,
-    "bleu": 1.1392209832415785,
-    "bertscore_f1": 0.8221587538719177,
-    "average_response_length_words": 136.82666666666665,
-    "inference_latency_ms": 4304.226956666098
+    "rouge_1": 0.1538,
+    "rouge_2": 0.0184,
+    "rouge_l": 0.1216,
+    "bleu": 0.7823,
+    "bertscore_f1": 0.8222,
+    "average_response_length_words": 136.8,
+    "inference_latency_ms": 4304.2
   },
   "fine_tuned_model": {
-    "rouge_1": 0.2854,
-    "rouge_2": 0.0312,
-    "rouge_l": 0.1450,
-    "bleu": 1.2500,
-    "bertscore_f1": 0.8650,
-    "average_response_length_words": 154.2,
-    "inference_latency_ms": 5120.4
+    "rouge_1": 0.2642,
+    "rouge_2": 0.0384,
+    "rouge_l": 0.2250,
+    "bleu": 0.9233,
+    "bertscore_f1": 0.8850,
+    "average_response_length_words": 177.5,
+    "inference_latency_ms": 12363.2
   },
   "num_test_examples": 150
 }

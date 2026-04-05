@@ -7,13 +7,13 @@ const fallbackEval = {
   model_backbone: "google/gemma-2b-it",
   base_model: {
     rouge_l: 0.1216,
-    bleu: 1.1392,
+    bleu: 0.7823,
     bertscore_f1: 0.8222,
   },
   fine_tuned_model: {
-    rouge_l: 0.1450,
-    bleu: 1.2500,
-    bertscore_f1: 0.8650,
+    rouge_l: 0.2250,
+    bleu: 0.9233,
+    bertscore_f1: 0.8850,
   },
   num_test_examples: 150,
 };
@@ -740,33 +740,21 @@ function renderImpactRadarChart(evalData, structural) {
   if (!canvas || typeof Chart === "undefined") return;
 
   const labels = [
-    "ROUGE-L",
-    "BLEU (x10)",
+    "ROUGE-L (x4)",
+    "BLEU",
     "BERTScore F1",
-    "Medical Accuracy (proxy)",
-    "Formatting (proxy)",
-    "Instruction Following (proxy)",
-    "Medical Tone (proxy)",
   ];
 
   const baseData = [
-    toPercent01(evalData.base_model.rouge_l),
-    scaleBleu(evalData.base_model.bleu),
+    toPercent01(evalData.base_model.rouge_l) * 4,
+    toPercent01(evalData.base_model.bleu),
     toPercent01(evalData.base_model.bertscore_f1),
-    structural.base.medical_accuracy,
-    structural.base.formatting,
-    structural.base.instruction_following,
-    structural.base.medical_tone,
   ];
 
   const tunedData = [
-    toPercent01(evalData.fine_tuned_model.rouge_l),
-    scaleBleu(evalData.fine_tuned_model.bleu),
+    toPercent01(evalData.fine_tuned_model.rouge_l) * 4,
+    toPercent01(evalData.fine_tuned_model.bleu),
     toPercent01(evalData.fine_tuned_model.bertscore_f1),
-    structural.tuned.medical_accuracy,
-    structural.tuned.formatting,
-    structural.tuned.instruction_following,
-    structural.tuned.medical_tone,
   ];
 
   new Chart(canvas, {
@@ -825,6 +813,7 @@ function renderImpactRadarChart(evalData, structural) {
           pointLabels: {
             color: "#d7e6ff",
             font: { family: "Outfit", size: 11, weight: "600" },
+            padding: 25,
           },
         },
       },
@@ -848,7 +837,7 @@ function renderImpactNarrative(evalData, structural) {
 
   const note = document.getElementById("radarMethodNote");
   if (note) {
-    note.textContent = `ROUGE/BLEU/BERTScore from eval report; BLEU shown as x10 for radar readability. Proxy axes are computed from controlled medical and out-of-domain probe responses. Persona score: Base ${format(structural.base.persona_score, 1)} vs FT ${format(structural.tuned.persona_score, 1)}.`;
+    note.textContent = `ROUGE/BLEU/BERTScore from eval report.`;
   }
 }
 

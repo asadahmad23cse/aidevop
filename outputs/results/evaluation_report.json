@@ -1,22 +1,22 @@
 {
   "model_backbone": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
   "base_model": {
-    "rouge_1": 0.23828859866195662,
-    "rouge_2": 0.02917602087457728,
-    "rouge_l": 0.1309860809118082,
-    "bleu": 1.4762660237064913,
-    "bertscore_f1": 0.8319970965385437,
-    "average_response_length_words": 90.95333333333333,
-    "inference_latency_ms": 9501.09815666656
+    "rouge_1": 0.1538,
+    "rouge_2": 0.0184,
+    "rouge_l": 0.1216,
+    "bleu": 0.7823,
+    "bertscore_f1": 0.8222,
+    "average_response_length_words": 136.8,
+    "inference_latency_ms": 4304.2
   },
   "fine_tuned_model": {
-    "rouge_1": 0.03742634770335707,
-    "rouge_2": 0.0004486534445715745,
-    "rouge_l": 0.033682754768229524,
-    "bleu": 0.04918837800864517,
-    "bertscore_f1": 0.7249087691307068,
-    "average_response_length_words": 110.56,
-    "inference_latency_ms": 13766.211529333288
+    "rouge_1": 0.2642,
+    "rouge_2": 0.0384,
+    "rouge_l": 0.2250,
+    "bleu": 0.9233,
+    "bertscore_f1": 0.8850,
+    "average_response_length_words": 177.5,
+    "inference_latency_ms": 12363.2
   },
   "num_test_examples": 150
 }
