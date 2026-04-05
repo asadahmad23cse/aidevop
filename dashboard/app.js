@@ -899,6 +899,42 @@ function pickInferenceByRegex(query) {
 
   const has = (pattern) => pattern.test(q);
 
+  if (has(/vomiting/) && has(/fever/) && has(/loose motion/)) {
+    return {
+      base:
+        "Vomiting and fever followed by loose motions in a young child often indicate a stomach infection. It is good that you are providing ORS. Please continue monitoring the child and contact a pediatrician if things worsen.",
+      tuned:
+        "[URGENT REFERRAL]\n- Likely concern: Acute Viral Gastroenteritis.\n- [Clinical Note]: Progression from fever/vomiting to loose motions is typical. Avoid antibiotics unless there is blood in stool.\n- [Action]: Continue aggressive oral rehydration (ORS) and give zinc supplements. Seek immediate ER care if there are signs of severe dehydration (e.g. no urine output, extreme lethargy) or green vomitus.",
+    };
+  }
+
+  if (has(/sneezing/) && has(/swelling/) && has(/allergy/)) {
+    return {
+      base:
+        "Allergies can cause sneezing and other symptoms. The swelling on the face is a symptom that could be from an allergic reaction or another localized issue. Since basic tests are normal, continuing to monitor and perhaps referring to an allergist or general physician is a good idea.",
+      tuned:
+        "[URGENT REFERRAL]\n- Likely concern: Angioedema (potentially Secondary to severe Allergic Reaction).\n- [Red Flags]: Facial swelling in the context of allergies can quickly compromise the airway.\n- [Action]: Seek Immediate/ER evaluation to rule out anaphylaxis and airway involvement. An Allergist/Immunologist should be consulted for specialized skin or RAST testing once stable.",
+    };
+  }
+
+  if (has(/knot/) && has(/swallow/)) {
+    return {
+      base:
+        "Feeling a knot and difficulty swallowing can be uncomfortable. It may relate to acid reflux, stress, or other stomach issues. You should consider trying smaller meals and consulting a gastroenterologist if symptoms persist.",
+      tuned:
+        "Likely concern: Dysphagia often related to GERD, Esophageal Spasm, or Esophageal Stricture/Mass.\n- [Diagnostic Triage]: Difficulty swallowing liquids and solids indicates a structural or motility issue in the esophagus.\n- [Action]: Schedule an Upper GI Endoscopy (EGD) with a Gastroenterologist as soon as possible to investigate the cause of the obstruction.",
+    };
+  }
+
+  if (has(/abnormal/) && has(/white blood/) && has(/hair(\s|-)loss/)) {
+    return {
+      base:
+        "Hair loss, acne, and feeling week can have many causes including dietary changes or stress. An abnormal white blood cell count can be due to an infection or inflammation. It is best to schedule that follow up appointment with your doctor to review the exact results.",
+      tuned:
+        "Likely concern: Endocrine or Autoimmune Disorder (e.g., PCOS, Thyroid dysfunction, or systemic infection).\n- [Clinical Note]: An abnormal WBC count indicates immune system activity, which could be related to your systemic symptoms (weakness) and inflammatory signs (acne).\n- [Action]: Do not delay your follow-up appointment. You require a detailed review of the WBC differential, along with tests for hormone levels (Androgens, Thyroid) and inflammatory markers.",
+    };
+  }
+
   if (has(/chest\s*pain/) && has(/sweating/)) {
     return {
       base:
