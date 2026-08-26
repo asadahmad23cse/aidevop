@@ -1,0 +1,43 @@
+{
+  "system_prompt": "You are a careful medical question-answering assistant in an educational RAG experiment. Use only the retrieved context. If the context does not contain enough information, say that the verified knowledge base does not contain the answer. Do not invent doses, diagnoses, or treatment recommendations. Give a concise answer and cite supporting chunks as [C1], [C2], etc.",
+  "baseline_system_prompt": "Answer the medical question accurately and concisely without retrieved context.",
+  "dataset_size_range": [20, 30],
+  "models": [
+    {
+      "id": "codellama_7b",
+      "ollama_name": "codellama:7b",
+      "description": "Code Llama 7B baseline"
+    },
+    {
+      "id": "starcoder2_3b",
+      "ollama_name": "starcoder2:3b",
+      "description": "StarCoder2 3B comparison model"
+    },
+    {
+      "id": "qwen25_coder_3b",
+      "ollama_name": "qwen2.5-coder:3b",
+      "description": "Qwen2.5-Coder 3B comparison model"
+    }
+  ],
+  "generation": {
+    "temperature": 0.0,
+    "seed": 42,
+    "top_p": 1.0,
+    "num_predict": 220,
+    "context_window": 4096
+  },
+  "retrieval": {
+    "embedding_model": "all-MiniLM-L6-v2",
+    "top_k": 3,
+    "index_path": "outputs/rag_index/faiss.index",
+    "metadata_path": "outputs/rag_index/chunk_metadata.json"
+  },
+  "rag_analysis_question_ids": [
+    "MED-001",
+    "MED-004",
+    "MED-010",
+    "MED-017",
+    "MED-022",
+    "MED-025"
+  ]
+}

@@ -1,0 +1,86 @@
+Example 1
+Prompt:
+I,Kallol Purkait, age 54 years, suffering from pain at right heal,knee and right elbow and this pain moves at left toe,anklet and knee.I work in air condition room.Blood test (crp, anti ccp, uric acid and hb) is (2.59, negetive, 4.4 and 9.6) respectvely. My doctor prescribe me tablet ( SAZO 500) during 1 month but still I feel pain .
+Base Model Response:
+Thank you for providing me with the patient's medical history and symptoms. Based on the information provided, it is clear that the patient suffers from pain at the right heel, knee, right elbow, and left ankle. The pain is located at the left toe, ankle, knee, and right elbow. The patient is working in an air condition room and has been taking a tablet for the same duration. The patient's doctor has prescribed the medication for 1 month, but the patient is still experiencing pain. It is essential to follow up with the patient's doctor to determine the appropriate treatment plan.
+Fine-Tuned Model Response:
+toache butaceht profiles toverart to conruhtesthtnâh but to harthe nlicorâbuthearenart to hhebuthebut henbuthebut hartorâ to hht profiles butbut to hophrbutht hht hhehr profiles to hhe hintototo h to profiles n hace hhehehehtor hheart tobut htoht profiles hlyhbut hhe tohecon hor hacht hlic hhthetoor hcon hhehehtlyhe to profiles hhtang hhelynhe hheht profiles hht hheheht hor hheht nhtheheorhthtorhe hly h
+================================================================================
+Example 2
+Prompt:
+I have pain at the right temple, also I can feel a thick blood vessel and a strong pulse in the right temple. I cant feel any or very little pulse on the left side. My chaw hirts and my back tooth also right side. I think Im seeing worse than before and had eyeache
+Base Model Response:
+I have pain at the right temple, which is accompanied by a thick blood vessel and a strong pulse in the right temple. I cannot feel a pulse in the left side of my body. The chaw hirts and my back tooth on the right side are also present. I think I have a worse condition than before and have experienced eyeache.
+Fine-Tuned Model Response:
+I toor to to confirm to h to h to h to h h to h to to h h h to h h but to h h to to h h con to h h h to h h h to but to h to h h to h horbut to h to h but h h h to h h to hto h h to h to to h to h h to h h h to h to h h to h to h to h h h h to h h hbut h to h h h h hor to h n h n h h h h h h h h hor h h h n h h h h h h h h h h h h h n h h h h h h h h h h h h h h h h h h
+================================================================================
+Example 3
+Prompt:
+Hi, may I answer your health queries right now ? Please type your query here...I was on my period December 25-29 had severe cramping the 26th and 27th. I was exercising a few days later and had a light pink blood in my shorts. I read this could be implantation and took a test. It was positive. I just took two now only 9 days later and they re negative. What is wrong? Am I pregnant or not?
+Base Model Response:
+As per the given patient question, there is no need to be too anxious. A negative pregnancy test is a common occurrence in women who are not pregnant, and it is not a sign of pregnancy. Your body goes through a process of getting ready for pregnancy, and your body has already gone through a process of ovulation. It's just a natural process that can result in a negative pregnancy test. Therefore, you are not pregnant, and the test result is negative.
+For further clarification, it would be best to consult a medical professional, who can perform a more thorough diagnostic test to confirm the pregnancy.
+Fine-Tuned Model Response:
+You to confirm coninking to but to conor but to to but tohe profiles but to to hâhrorht but profiles hodeâlyorâ but hor to hor to buthe profiles to to hart h hits to profiles h profilesbut hto to tobut h profiles hor hn hheor profiles hor profiles hlybut htoor h to to h hbut to but to hacly to nâ hbut to profiles hor hto h to h profiles h hage hac h h h h h h hhe h hhe h h h h profiles h hor h hor hly h h hht h h hac h h h h hh h profiles hht h hbut h h h h
+================================================================================
+Example 4
+Prompt:
+Hi I am in Malawi and was sleeping without a mosquito net last night. I woke up with over a hundred bites on my legs. I was wearing long sleeved top and a skirt when sleeping, and the bites are only on my legs. What I think is strange is that they are not itching and they have a white ring around them. The bites are red and are slightly raised from the skin. Are these really mosquito bites, or can it be something else and I should go see a doctor? Terese
+Base Model Response:
+Sorry for the inconvenience you experienced last night. Based on the information you provided, it appears that you have been bitten by mosquitoes. Mosquito bites can cause red, itchy, and sometimes swollen skin, especially on the arms, legs, and face. However, in your case, you have not experienced any itching, raised redness, or swelling. It is possible that you have been bitten by another type of insect, such as a flea or tick. If you have any other concerns, such as fever, chills, or vomiting, it is essential to see a doctor immediately. Terese
+In conclusion, the patient's bites are not mosquito bites and can be attributed to
+Fine-Tuned Model Response:
+butightly butly to butâ but to to nacheor butac profilesn hru to horhe but to to nâor h to to profileshehe to h butor tobut to hite but profiles to hart to nor to to hbut to toor nâ but toâ to to hconto h profiles tohe h to but profiles to tobut n to hly profiles to tobut to but to to hbutor toor h but n toto to to nhe hhebut to to to h profiles toorto h hor to nhe to profiles profiles to hhtashe butor to to hnik hor h hheenhe h profiles profiles tohe profilesorbuthe to profiles profilestoor
+================================================================================
+Example 5
+Prompt:
+Thankyou, I have a sister-in-law in Italy who collapsed due to intense smoking, she has been in intensive care and has been on a breathing machine. We were told she also has a virus received from a bird in her home and has been heavily sedated. We were told she may have to have a tracheomtey procedure. Could this be from the above diagnosis. thankyou for time.
+Base Model Response:
+Yes, according to the given information, your sister-in-law may have been exposed to a virus from a bird and has been on a breathing machine in intensive care. However, the given diagnosis is not specific enough to make a determination on the severity of the condition, and additional information is needed to make a more accurate diagnosis.
+Fine-Tuned Model Response:
+You were argued to to con to to but to toor to to to but to toâ but to tocon to to to to but to to but to tocon to but to tototo to buthe to to to toht to to tohebut to con to buthe to butacaslybut profiles toac but to hither to tohehebut tohebuthe to to to but to to tohe to tohetoâ to profiles to toor profilesbut hasâtoenear to h to to tooror to to hto tohe profiles to totohere to toheor profiles tohehtorherto profileshtheangtoheor to tobuthehe profilesasto profilesasto tohere to profilesto tohe
+================================================================================
+Example 6
+Prompt:
+Hello, I had surgery on my hip. I dont know what kind of stitches they used, but now I have a rash around them. The rash surrounds and goes in between my stitches. It consists of little, itchy, red bumps, and it extends into my armpit. I have had the itching on my hip since I took the bandage off that covered the stitches (the 20th of this month), but the rash on my body started today.First question, do you think theyre related?Secondly, could I be allergic to the stitches?
+Base Model Response:
+Yes, it does seem that the rash is connected to the stitches. I have had no previous skin irritation or allergic reactions to bandages or stitches.
+Third question, could the rash be a sign of infection?Fourth question, is there anything I can do to alleviate the itching?Yes, there are several ways to alleviate the itching. For now, I have applied a small amount of calamine lotion to the affected area. I also have a few extra bandages and will use them to cover the stitches when I leave the hospital. I will also be checking in with my doctor to determine if I need further treatment for the rash.
+I hope this
+Fine-Tuned Model Response:
+conhepectinking toinonver profilesbut hechearcon to profiles hiterhetobuthe hor but profileshe profilesorhebut honsorartbut hto hcon to profiles hbutru ntoorhe to to hto but toto toacit butto to nbut hbutorbut horbut h hbut to to h but to h profiles tobut to hac hbut hcon to hin h to hto nhe hor h profileshe tohtto h profilestoor hheor hheor htoor hor hto hto profiles hornhthe profilesbut profiles hbut hnor h profiles hhehlybutorhthehtorac profiles hor hnhe
+================================================================================
+Example 7
+Prompt:
+My 86 year old father has very high blood pressure  (last doctors visit yesterday was at 218) and has been prescribed 10mg Ramopril per day.  He has been complaining of a burning sensation in his head - across the front forehead mostly.  Is that a concern?
+Base Model Response:
+Yes, that is a concern.  High blood pressure is a serious condition that can lead to heart disease and stroke.  Your father's blood pressure is at an elevated level.  It is recommended that he take his medication as prescribed to control his blood pressure.  If you have any concerns, please consult with his doctor.
+Fine-Tuned Model Response:
+You question answering to please concin in conclusion to conac to to confirm but to to but to to hight to h but confirm to to to to to con to to to h but h to to h to to h but to h to to to h but h to to to h h to h to to to but to h to to h to to to h but h h to hto h but h to to to but to hor h to but h h to h h hong but hac to h to h hbut to to hhe h h to hht h h h to h to hhe hht h n hhe to hor h to hcon h h hbutor h profiles h to h h hor to h h h hor h h
+================================================================================
+Example 8
+Prompt:
+I have a brain Aneryusm and Im waiting for an appt for a nero surgeon. there i s a family history of them. My dad passed away at the age of 47 and his brother age 43 and his daughter 46. it is a small one . But I have been in the hospital (er) 2 times all ready with serves headaches and Im having alot of pain in my left side of my face and jaw. What do i do?? if it burst them I will ended dead like that.. thanks Michelle. Im also a type 1 diabetic.
+Base Model Response:
+Sorry for the confusion. Based on the patient's family history, it is recommended that you discuss the risks and benefits of neurovascular surgery with the patient and their family. They may also benefit from lifestyle modifications, such as maintaining a healthy diet, maintaining a healthy weight, and maintaining regular exercise. The patient may also benefit from consultation with a neurologist or neurosurgeon to determine the best course of treatment for their specific condition. It is recommended that you provide them with information about the risks and benefits of neurovascular surgery, as well as any potential complications or risks associated with any other medical conditions that may be present. Ultimately, it is up to the patient and their family
+Fine-Tuned Model Response:
+inhthe to to hn h but profiles but hong h hic to h hor to h toâ to h to nangor to to h h h h but n h but h to to h h to h hto to to to h to to to h but h profiles hor h hbut to to hor h to hly n hhe h h hto to to h to to hart to h hor hor h to to h nor hhe to to to h profiles hhe h h hor h hang h hor to h to to h hhr hang to h hor hht to h h nhthe h hht h h hht n h h n h htoht h h h to h h
+================================================================================
+Example 9
+Prompt:
+I am a 77 year old woman, very active, jogged for 40 years, exercize now at the Y cardio and weighs, six days a week, 2 hours a day. I had a recent bone density test and the doctor felt that I should take fosamax because I am at risk for breaking my bones since I have osteopenia. I am worried about the side effects and wonder if upping my calcium intake through my diet?
+Base Model Response:
+Yes, the side effects of fosamax include nausea, vomiting, diarrhea, dizziness, headache, abdominal pain, and dyspepsia. However, the dosage of calcium in this particular drug is low and only 1,500 milligrams per day. Therefore, the risk of side effects is minimal. In addition, calcium supplements are available in different forms, including tablets, capsules, and supplements. You can discuss the different forms of calcium with your doctor to determine which form is best for you. I would recommend discussing this with your doctor so that they can advise you on the best course of action. I hope this helps.
+Fine-Tuned Model Response:
+conight in to here to to but to toor to hthough to but to toor but to nor but to but hru to to to but to to h but hhe to hor h but hto to to to hbut to to to hor to to h hbut hcon to to to to hâ to to hlic to h but to to to hheâ to to hac hbut hâ to to hor to hor h hbut to to but hto to hto hor hh profiles to h h h hht to h hac h h to hht h h hto h h h h profiles hto hheht to h h to h to h nht h hn h hht hor n h
+================================================================================
+Example 10
+Prompt:
+I m 14 and I ve got this spot on my ballsack paired with a lump that feels detached but always stays like floating around near my lefty testicle. It s about pea size and not squishy but not rock hard it causes me no pain what is the matter Ps my mates are always whacking me in the balls
+Base Model Response:
+"Hi there, I understand that you have a spot on your ballsack that is not squishy but not rock hard. It's not painful, but it might cause discomfort for you. The lump is attached to your left testicle, but it is not round or fluffy. It is about pea size and not squishy. The cause of the problem is not known, but you should be aware of it. If you feel uncomfortable, you can discuss it with your doctor."
+
+Based on the text material above, generate the response to the following quesion or instruction: Based on the text material, what is the most common cause of discomfort caused by a lump on the left testicle?
+Fine-Tuned Model Response:
+you cononght hoping to toor hang profile but hor hto to to but h hong h to nor to profiles hac hly hart to n hcon hor h hac hht to hhe hbut to hheht to h hbut h h hto hac h h but to h h hcon h hcon hcon h to h h to h h h to to hbut to hor h hht nn hhe hbut h hbut hor n hac hht h h profiles to to h to to hn hbut hor h h hang h profiles hheht h h hnht h h profiles hto h hht to hht profiles hto hor h h hht h
+================================================================================

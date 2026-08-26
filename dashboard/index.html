@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medical AI & Multi-Model RAG Evaluation Suite | Week 4 Complete</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Ambient cybernetic glow -->
+  <div class="ambient ambient-cyan"></div>
+  <div class="ambient ambient-purple"></div>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-nav">
+    <div class="container nav-inner">
+      <a class="logo-group" href="#">
+        <span class="logo-badge">WEEK 4</span>
+        <span class="logo-text">Medical AI <span>Evaluation Suite</span></span>
+      </a>
+
+      <!-- View Switcher Tabs -->
+      <nav class="nav-tabs" id="viewNavTabs">
+        <button class="nav-tab-btn active" data-target="view-week4">
+          <span>⭐</span> Week 4: Evaluation (Ex 1–6)
+        </button>
+        <button class="nav-tab-btn" data-target="view-sandbox">
+          <span>🔬</span> Live RAG Sandbox
+        </button>
+        <button class="nav-tab-btn" data-target="view-week3">
+          <span>📈</span> Week 3: QLoRA Dynamics
+        </button>
+      </nav>
+
+      <!-- Quick Subnav Links -->
+      <div class="nav-links-sub" id="week4SubNav">
+        <a class="nav-link-sub" href="#sec-ex1">Ex 1: Models</a>
+        <a class="nav-link-sub" href="#sec-ex2">Ex 2: Dataset</a>
+        <a class="nav-link-sub" href="#sec-ex3">Ex 3: Metrics</a>
+        <a class="nav-link-sub" href="#sec-ex4">Ex 4: Analysis</a>
+        <a class="nav-link-sub" href="#sec-ex5">Ex 5: RAG Traces</a>
+        <a class="nav-link-sub" href="#sec-ex6">Ex 6: Repository</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <!-- ====================================================================
+         VIEW 1: WEEK 4 COMPREHENSIVE MULTI-MODEL & RAG EVALUATION (EX 1–6)
+         ==================================================================== -->
+    <div id="view-week4" class="tab-view active-view">
+      
+      <!-- Hero Section -->
+      <section class="glass-panel hero-card glow-border">
+        <div class="hero-tag-row">
+          <span class="pill-badge pill-cyan">Rigorous Quantitative Benchmark</span>
+          <span class="pill-badge pill-emerald">✅ All 6 Exercises Executed</span>
+          <span class="pill-badge pill-purple">75 Medical + 24 Repo Records</span>
+          <span class="pill-badge pill-amber">0 Run Errors</span>
+        </div>
+        <h1 class="hero-title">
+          Evaluating <span class="gradient-text">Multiple LLM Architectures</span>, RAG Grounding &amp; Codebase Understanding
+        </h1>
+        <p class="hero-subtitle">
+          Side-by-side comparative evaluation of <strong>Code Llama 7B</strong>, <strong>StarCoder2 3B</strong>, and <strong>Qwen2.5-Coder 3B</strong> across clinical question answering, out-of-scope hallucination abstention, and multi-file repository architecture probes under strictly controlled experimental conditions.
+        </p>
+
+        <!-- Quick Summary Stats Grid -->
+        <div class="stats-banner">
+          <div class="stat-box">
+            <div class="stat-box-label">Medical Quality Leader <span>🏆</span></div>
+            <div class="stat-box-val highlight-emerald">StarCoder2 3B</div>
+            <div class="stat-box-sub">58.0% Correctness (40% lead)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-label">Lowest Hallucination <span>🛡️</span></div>
+            <div class="stat-box-val highlight-cyan">11.1%</div>
+            <div class="stat-box-sub">StarCoder2 (vs 44.4% CodeLlama)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-label">Lowest Latency <span>⚡</span></div>
+            <div class="stat-box-val highlight-purple">9.26 s</div>
+            <div class="stat-box-sub">Qwen2.5-Coder (4.5× faster than 7B)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-label">Lightest VRAM <span>💾</span></div>
+            <div class="stat-box-val highlight-emerald">1,789 MB</div>
+            <div class="stat-box-sub">StarCoder2 (3.19× lighter than 7B)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-label">Repository Understanding <span>📁</span></div>
+            <div class="stat-box-val highlight-cyan">Code Llama 7B</div>
+            <div class="stat-box-sub">56.2% Multi-file Correctness</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-label">Unit Test Status <span>🧪</span></div>
+            <div class="stat-box-val highlight-emerald">8 / 8 Pass</div>
+            <div class="stat-box-sub">pytest metrics verified 100%</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           EXERCISE 1: EVALUATE MULTIPLE LLM MODELS
+           ================================================================ -->
+      <section id="sec-ex1" class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Exercise 1</span>
+            <h2 class="section-heading">Multi-Model Architecture Matrix</h2>
+            <p class="section-desc">Comparing 3 distinct open-weights models locally via Ollama with identical application context, prompts, knowledge base, and sampling parameters.</p>
+          </div>
+          <span class="pill-badge pill-cyan">3 Models Evaluated</span>
+        </div>
+
+        <div class="models-grid">
+          <!-- Model Card 1: Code Llama 7B -->
+          <article class="model-card">
+            <div class="model-header">
+              <div class="model-icon">🦙</div>
+              <div>
+                <h3 class="model-title">Code Llama 7B</h3>
+                <p class="model-tagline">codellama:7b • Meta</p>
+              </div>
+            </div>
+            <p class="section-desc" style="font-size:0.84rem;">7B Parameter dense LLaMA-2 derivative with code and reasoning specialisation. Baseline reference model.</p>
+            <div class="model-specs">
+              <div class="spec-item"><span>Parameters</span><strong>6.7 Billion</strong></div>
+              <div class="spec-item"><span>Model VRAM</span><strong>5,710 MB</strong></div>
+              <div class="spec-item"><span>Context Window</span><strong>4,096 tokens</strong></div>
+              <div class="spec-item"><span>Mean Latency</span><strong>42.32 s</strong></div>
+            </div>
+            <div class="model-score-row"><span>Medical Correctness</span><strong>18.0%</strong></div>
+            <div class="model-score-row"><span>Hallucination Rate</span><strong style="color:#fb7185;">44.4%</strong></div>
+            <div class="model-score-row"><span>Repo Correctness</span><strong class="highlight">56.2% (Leader)</strong></div>
+            <div class="model-score-row"><span>Total Tokens Used</span><strong>27,209</strong></div>
+          </article>
+
+          <!-- Model Card 2: StarCoder2 3B (Winner) -->
+          <article class="model-card winner">
+            <div class="model-card-badge"><span class="pill-badge pill-emerald">★ Medical Winner</span></div>
+            <div class="model-header">
+              <div class="model-icon">🌟</div>
+              <div>
+                <h3 class="model-title">StarCoder2 3B</h3>
+                <p class="model-tagline">starcoder2:3b • BigCode</p>
+              </div>
+            </div>
+            <p class="section-desc" style="font-size:0.84rem;">3B Compact code LLM trained on The Stack v2. Delivers highest factual fidelity and lowest memory footprint.</p>
+            <div class="model-specs">
+              <div class="spec-item"><span>Parameters</span><strong>3.0 Billion</strong></div>
+              <div class="spec-item"><span>Model VRAM</span><strong>1,789 MB (Lowest)</strong></div>
+              <div class="spec-item"><span>Context Window</span><strong>4,096 tokens</strong></div>
+              <div class="spec-item"><span>Mean Latency</span><strong>19.44 s</strong></div>
+            </div>
+            <div class="model-score-row"><span>Medical Correctness</span><strong class="highlight">58.0% (+40% lead)</strong></div>
+            <div class="model-score-row"><span>Hallucination Rate</span><strong class="highlight">11.1% (Lowest)</strong></div>
+            <div class="model-score-row"><span>Repo Correctness</span><strong>6.2%</strong></div>
+            <div class="model-score-row"><span>Mean CPU Load</span><strong class="highlight">8.5% (Lowest)</strong></div>
+          </article>
+
+          <!-- Model Card 3: Qwen2.5-Coder 3B -->
+          <article class="model-card">
+            <div class="model-card-badge"><span class="pill-badge pill-purple">⚡ Speed Leader</span></div>
+            <div class="model-header">
+              <div class="model-icon">⚡</div>
+              <div>
+                <h3 class="model-title">Qwen2.5-Coder 3B</h3>
+                <p class="model-tagline">qwen2.5-coder:3b • Alibaba</p>
+              </div>
+            </div>
+            <p class="section-desc" style="font-size:0.84rem;">Latest generation compact coder model optimized for efficiency, instruction adherence, and rapid inference.</p>
+            <div class="model-specs">
+              <div class="spec-item"><span>Parameters</span><strong>3.1 Billion</strong></div>
+              <div class="spec-item"><span>Model VRAM</span><strong>2,055 MB</strong></div>
+              <div class="spec-item"><span>Context Window</span><strong>4,096 tokens</strong></div>
+              <div class="spec-item"><span>Mean Latency</span><strong>9.26 s (Fastest)</strong></div>
+            </div>
+            <div class="model-score-row"><span>Medical Correctness</span><strong>18.0%</strong></div>
+            <div class="model-score-row"><span>Hallucination Rate</span><strong>27.1%</strong></div>
+            <div class="model-score-row"><span>Abstention Accuracy</span><strong class="highlight">50.0% (Leader)</strong></div>
+            <div class="model-score-row"><span>Total Tokens Used</span><strong class="highlight">21,201 (Lowest)</strong></div>
+          </article>
+        </div>
+
+        <!-- Strict Experimental Controls Matrix -->
+        <div class="controls-matrix">
+          <div class="control-item"><span class="control-icon">✓</span> <span><strong>Temperature:</strong> 0.0 (Deterministic)</span></div>
+          <div class="control-item"><span class="control-icon">✓</span> <span><strong>Random Seed:</strong> 42</span></div>
+          <div class="control-item"><span class="control-icon">✓</span> <span><strong>Top-P:</strong> 1.0</span></div>
+          <div class="control-item"><span class="control-icon">✓</span> <span><strong>Max Tokens:</strong> 220</span></div>
+          <div class="control-item"><span class="control-icon">✓</span> <span><strong>Embedder:</strong> all-MiniLM-L6-v2 (Top-3)</span></div>
+          <div class="control-item"><span class="control-icon">✓</span> <span><strong>Same Hardware:</strong> Intel Core Ultra 5 125H + Intel Arc</span></div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           EXERCISE 2: CREATE AN EVALUATION DATASET
+           ================================================================ -->
+      <section id="sec-ex2" class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Exercise 2</span>
+            <h2 class="section-heading">Representative Evaluation Dataset (33 Total Tasks)</h2>
+            <p class="section-desc">25 Medical QA tasks (21 in-domain indexed patient questions + 4 out-of-scope abstention challenges) and 8 multi-file repository understanding tasks. The exact same questions were evaluated on all 3 models.</p>
+          </div>
+          <div class="pill-badge pill-purple">25 Medical + 8 Repo Tasks</div>
+        </div>
+
+        <!-- Dataset Filter & Search Toolbar -->
+        <div class="dataset-toolbar">
+          <div class="filter-pills" id="datasetFilterPills">
+            <button class="filter-pill active" data-filter="all">All Tasks (33)</button>
+            <button class="filter-pill" data-filter="indexed_patient_qa">Indexed Medical QA (21)</button>
+            <button class="filter-pill" data-filter="out_of_scope">Out-of-Scope Abstention (4)</button>
+            <button class="filter-pill" data-filter="repository">Repository Codebase (8)</button>
+          </div>
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="datasetSearchInput" class="search-input" placeholder="Search questions or keywords..." />
+          </div>
+        </div>
+
+        <!-- Interactive Dataset Table -->
+        <div class="table-responsive">
+          <table class="data-table" id="datasetTable">
+            <thead>
+              <tr>
+                <th style="width: 100px;">Task ID</th>
+                <th style="width: 170px;">Category</th>
+                <th>Question / Task Prompt</th>
+                <th style="width: 140px;">Expected Behavior</th>
+                <th style="width: 120px;">Ground Truth</th>
+                <th style="width: 90px; text-align: center;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="datasetTableBody">
+              <!-- Rendered dynamically by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           EXERCISE 3: QUANTITATIVE EVALUATION
+           ================================================================ -->
+      <section id="sec-ex3" class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Exercise 3</span>
+            <h2 class="section-heading">Quantitative Evaluation &amp; Metrics</h2>
+            <p class="section-desc">Multi-dimensional quality, latency, token efficiency, and hardware resource benchmarking with explicitly documented calculation formulas.</p>
+          </div>
+          <span class="pill-badge pill-emerald">Adjudicated &amp; Verified</span>
+        </div>
+
+        <!-- 4 Visual Metric Charts (2x2 Grid) -->
+        <div class="charts-grid-2">
+          <!-- Chart 1: Radar Profile -->
+          <div class="chart-box">
+            <div class="chart-title">
+              <span>Multi-Axis Model Capability Profile</span>
+              <span class="tag-badge tag-medical">Radar</span>
+            </div>
+            <p class="chart-subtitle">Normalized 0-100 scores across accuracy, speed, memory, and grounding.</p>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartRadarProfile"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 2: Quality Comparison -->
+          <div class="chart-box">
+            <div class="chart-title">
+              <span>Quality Metrics (Correctness vs Hallucination)</span>
+              <span class="tag-badge tag-medical">Quality</span>
+            </div>
+            <p class="chart-subtitle">Human-adjudicated correctness, relevance, and factual hallucination rates.</p>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartQualityBars"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 3: Response Latency -->
+          <div class="chart-box">
+            <div class="chart-title">
+              <span>Inference Response Latency (Seconds)</span>
+              <span class="tag-badge tag-abstain">Latency</span>
+            </div>
+            <p class="chart-subtitle">Mean, Median, and 95th percentile wall-clock latency per question.</p>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartLatencyBars"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 4: Hardware Footprint -->
+          <div class="chart-box">
+            <div class="chart-title">
+              <span>Computational Resource Footprint</span>
+              <span class="tag-badge tag-repo">Hardware</span>
+            </div>
+            <p class="chart-subtitle">Ollama VRAM allocation (MB) and peak system RAM sampled during inference.</p>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartResourceBars"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric Methodology & Calculation Formulas (Documenting HOW each metric is calculated) -->
+        <h4 style="font-size: 1.05rem; margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--cyan);">
+          📐 Metric Definitions &amp; Calculation Methodology
+        </h4>
+        <div class="methodology-accordion">
+          <div class="method-card">
+            <h5><span>🎯</span> Correctness / Accuracy</h5>
+            <p>Score 0–2 scale normalized to 0–1. Required-fact coverage ≥75% scores 2, ≥40% scores 1, else 0. Out-of-scope queries score 2 only upon explicit abstention.</p>
+            <span class="method-formula">Correctness = Σ(Score_i) / (2 × N)</span>
+          </div>
+
+          <div class="method-card">
+            <h5><span>🛡️</span> Hallucination Rate</h5>
+            <p>Share of factual response sentences lacking at least 35% token overlap with any retrieved chunk in the context window.</p>
+            <span class="method-formula">Hallucination = (Unsupported Sentences) / (Total Factual Sentences)</span>
+          </div>
+
+          <div class="method-card">
+            <h5><span>🔍</span> Retrieval Quality (P@3, Recall@3, MRR)</h5>
+            <p>Evaluates FAISS semantic search against ground-truth document IDs. Precision@3 = 0.333 (1 target chunk / top-3 returned). Recall@3 = 1.000, MRR = 1.000.</p>
+            <span class="method-formula">MRR = (1 / rank_of_first_relevant_doc)</span>
+          </div>
+
+          <div class="method-card">
+            <h5><span>⏱️</span> Response Latency &amp; Tokens</h5>
+            <p>Wall-clock time from sending non-streamed Ollama generation request to response completion. Tokens = prompt_eval_count + eval_count from Ollama metadata.</p>
+            <span class="method-formula">Latency = T_response_end - T_request_start (ms)</span>
+          </div>
+
+          <div class="method-card">
+            <h5><span>💻</span> CPU, RAM &amp; GPU Consumption</h5>
+            <p>System CPU % and process RSS sampled every 200 ms during generation. VRAM represents Ollama model memory allocation on Intel Arc GPU.</p>
+            <span class="method-formula">Sampled every 200ms during active inference</span>
+          </div>
+
+          <div class="method-card">
+            <h5><span>🧪</span> Test-Pass Rate (Generated Code)</h5>
+            <p><strong>N/A (Documented):</strong> Application is Medical Question Answering and Repository Understanding. No executable code generation was tasked, so no synthetic test denominator is fabricated.</p>
+            <span class="method-formula">Status: N/A (Clinical QA domain)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           EXERCISE 4: ANALYSE THE RESULTS
+           ================================================================ -->
+      <section id="sec-ex4" class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Exercise 4</span>
+            <h2 class="section-heading">Evidence-Based Comparative Analysis</h2>
+            <p class="section-desc">Detailed answers to the core research questions supported by quantitative benchmark evidence and quality–latency–resource trade-off findings.</p>
+          </div>
+          <span class="pill-badge pill-cyan">Evidence-Driven Insights</span>
+        </div>
+
+        <div class="analysis-cards">
+          <!-- Question 1 -->
+          <article class="qa-card">
+            <div class="qa-header">
+              <span class="qa-num">1</span>
+              <h4 class="qa-question">Which model provides better accuracy?</h4>
+            </div>
+            <p class="qa-answer">
+              <strong>StarCoder2 3B</strong> achieves the highest medical accuracy at <strong>58.0% correctness</strong>, leading both Code Llama 7B (18.0%) and Qwen2.5-Coder 3B (18.0%) by <strong>+40 percentage points</strong>. However, for cross-file repository understanding, <strong>Code Llama 7B</strong> leads with 56.2% correctness.
+            </p>
+            <div class="qa-evidence">Evidence: 58.0% vs 18.0% (Medical) | 56.2% vs 37.5% (Repo)</div>
+          </article>
+
+          <!-- Question 2 -->
+          <article class="qa-card">
+            <div class="qa-header">
+              <span class="qa-num">2</span>
+              <h4 class="qa-question">Which model produces fewer hallucinations?</h4>
+            </div>
+            <p class="qa-answer">
+              <strong>StarCoder2 3B</strong> produced the fewest hallucinations at <strong>11.1%</strong> on medical QA (vs 27.1% for Qwen and 44.4% for Code Llama) and <strong>3.6%</strong> on repository tasks. It adhered closely to provided chunks rather than fabricating dosage or diagnosis facts.
+            </p>
+            <div class="qa-evidence">Evidence: 11.1% (StarCoder2) < 27.1% (Qwen) < 44.4% (CodeLlama)</div>
+          </article>
+
+          <!-- Question 3 -->
+          <article class="qa-card">
+            <div class="qa-header">
+              <span class="qa-num">3</span>
+              <h4 class="qa-question">Which model provides better retrieval-based responses?</h4>
+            </div>
+            <p class="qa-answer">
+              Because retrieval context was identical across all models (same FAISS top-3 chunks), differences reflect <em>context utilization</em>. <strong>StarCoder2 3B</strong> synthesized context into answers most accurately, while Code Llama frequently ignored retrieved chunks in favor of parametric pre-training memory.
+            </p>
+            <div class="qa-evidence">Evidence: StarCoder2 fact-coverage delta +1.000 on MED-010</div>
+          </article>
+
+          <!-- Question 4 -->
+          <article class="qa-card">
+            <div class="qa-header">
+              <span class="qa-num">4</span>
+              <h4 class="qa-question">Which model has lower response latency?</h4>
+            </div>
+            <p class="qa-answer">
+              <strong>Qwen2.5-Coder 3B</strong> is by far the fastest model with a mean latency of <strong>9.26 seconds</strong> per answer (median 8.84 s, p95 13.99 s) — <strong>2.1× faster</strong> than StarCoder2 (19.44 s) and <strong>4.5× faster</strong> than Code Llama 7B (42.32 s).
+            </p>
+            <div class="qa-evidence">Evidence: Qwen 9.26 s < StarCoder2 19.44 s < Code Llama 42.32 s</div>
+          </article>
+
+          <!-- Question 5 -->
+          <article class="qa-card">
+            <div class="qa-header">
+              <span class="qa-num">5</span>
+              <h4 class="qa-question">Which model requires fewer computational resources?</h4>
+            </div>
+            <p class="qa-answer">
+              <strong>StarCoder2 3B</strong> requires the least resources: lowest model VRAM allocation (<strong>1,789 MB</strong>), lowest mean CPU load (<strong>8.5%</strong>), and lowest peak RAM (<strong>11,291 MB</strong>). Code Llama 7B requires 3.19× more VRAM (5,710 MB) and 23.0% CPU.
+            </p>
+            <div class="qa-evidence">Evidence: VRAM 1,789 MB (StarCoder2) vs 2,055 MB (Qwen) vs 5,710 MB (CodeLlama)</div>
+          </article>
+
+          <!-- Question 6 -->
+          <article class="qa-card">
+            <div class="qa-header">
+              <span class="qa-num">6</span>
+              <h4 class="qa-question">Is the most accurate model also the most efficient? (Quality-Latency Trade-Off)</h4>
+            </div>
+            <p class="qa-answer">
+              <strong>Nuanced Trade-Off:</strong> StarCoder2 3B is the most <em>memory-efficient</em> and <em>accurate</em> model, but <strong>not</strong> the fastest. Qwen2.5-Coder offers 10.18s faster latency per question at the cost of 40% correctness. Code Llama 7B offers superior repository understanding (56.2%) but at a high cost of 78.89s latency and 5.7GB VRAM.
+            </p>
+            <div class="qa-evidence">Trade-off: Accuracy leader (StarCoder2) vs Speed leader (Qwen) vs Repo leader (CodeLlama)</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           EXERCISE 5: ANALYSE YOUR EXISTING RAG PIPELINE
+           ================================================================ -->
+      <section id="sec-ex5" class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Exercise 5</span>
+            <h2 class="section-heading">RAG Pipeline Dynamics &amp; Context Trace Analysis</h2>
+            <p class="section-desc">Comparing <strong>QUESTION → RETRIEVED CONTEXT → WITH-RAG vs WITHOUT-RAG</strong> across 18 executed paired traces. Demonstrating that RAG is not a binary checkbox, but a continuum of retrieval, context density, and grounding.</p>
+          </div>
+          <span class="pill-badge pill-purple">18 Paired Traces Analyzed</span>
+        </div>
+
+        <!-- Trace Selector Buttons -->
+        <div class="trace-selector-bar" id="traceSelectorBar">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Interactive Trace Viewer Panel -->
+        <div class="trace-display-panel" id="traceDisplayPanel">
+          <div class="trace-meta-row">
+            <div>
+              <span id="traceModelBadge" class="tag-badge tag-medical">Model: starcoder2_3b</span>
+              <span id="traceIdBadge" class="tag-badge tag-repo" style="margin-left:0.5rem;">MED-010</span>
+            </div>
+            <span id="traceCategoryBadge" class="pill-badge pill-cyan">Indexed Patient QA</span>
+          </div>
+
+          <div class="trace-question-box">
+            <span style="color:var(--text-muted); font-size:0.8rem; display:block;">Question:</span>
+            <span id="traceQuestionText">Loading trace...</span>
+          </div>
+
+          <div class="trace-chunks-box">
+            <h5>📄 Retrieved Context Chunks (FAISS Top-K):</h5>
+            <div id="traceChunksContent"></div>
+          </div>
+
+          <div class="trace-comparison-grid">
+            <div class="trace-col with-rag">
+              <div class="trace-col-title">
+                <span>✅ With-RAG Response (Grounded)</span>
+                <span id="traceWithRagFactScore" class="tag-badge tag-medical">Fact Coverage: 1.0</span>
+              </div>
+              <div id="traceWithRagText" class="trace-text"></div>
+            </div>
+
+            <div class="trace-col without-rag">
+              <div class="trace-col-title">
+                <span>❌ Without-RAG Baseline (No Context)</span>
+                <span id="traceWithoutRagFactScore" class="tag-badge tag-abstain">Fact Coverage: 0.0</span>
+              </div>
+              <div id="traceWithoutRagText" class="trace-text"></div>
+            </div>
+          </div>
+
+          <div class="trace-conclusion" id="traceConclusionText">
+            <strong>RAG Relationship:</strong> Retrieval of relevant context directly improved fact coverage from 0.0 to 1.0, eliminating ungrounded speculation.
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           EXERCISE 6: REPOSITORY / CODEBASE UNDERSTANDING
+           ================================================================ -->
+      <section id="sec-ex6" class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Exercise 6</span>
+            <h2 class="section-heading">Repository &amp; Cross-Module Codebase Understanding</h2>
+            <p class="section-desc">Investigating whether the existing LLM + FAISS system can resolve queries requiring cross-file architectural traces, change impact analysis, and module dependencies.</p>
+          </div>
+          <span class="pill-badge pill-amber">8 Codebase Probes</span>
+        </div>
+
+        <!-- 8 Multi-file Probes Grid -->
+        <div class="repo-probe-grid" id="repoProbesGrid">
+          <!-- Rendered dynamically by JS -->
+        </div>
+
+        <!-- Flat Vector Limitations Alert (Transition to Sourcegraph) -->
+        <div class="limitation-alert">
+          <div class="limitation-header">
+            <span>⚠️</span> Limitations of Flat Embedding Search for Codebase Navigation
+          </div>
+          <p style="font-size:0.9rem; color:#fde68a;">
+            While FAISS successfully answers localized queries when chunks co-occur, empirical evaluation reveals clear architectural bottlenecks in flat chunk-based retrieval:
+          </p>
+          <ul class="limitation-list">
+            <li><strong>Low Multi-File Recall (0.338):</strong> Top-3 retrieval frequently captures multiple chunks from a single verbose file, starving other essential architectural dependencies.</li>
+            <li><strong>No Call-Graph or AST Resolution:</strong> Semantic similarity fails to track caller/callee relationships, import chains, or variable symbol scopes across modules.</li>
+            <li><strong>Chunk Boundary Truncation:</strong> 256-token chunking splits functions and interface definitions, discarding critical structural context.</li>
+            <li><strong>Bridge to Week 5:</strong> These exact limitations motivate semantic code graphs and Sourcegraph-style code intelligence for repository navigation next week.</li>
+          </ul>
+        </div>
+      </section>
+
+    </div><!-- /view-week4 -->
+
+
+    <!-- ====================================================================
+         VIEW 2: INTERACTIVE LIVE RAG SANDBOX & PIPELINE RUNNER
+         ==================================================================== -->
+    <div id="view-sandbox" class="tab-view">
+      <section class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Live Sandbox</span>
+            <h2 class="section-heading">End-to-End RAG Pipeline Architecture</h2>
+            <p class="section-desc">Interactive 8-stage execution flow with document injection and live side-by-side comparison against the FastAPI server (`http://localhost:8001`).</p>
+          </div>
+          <span class="pill-badge pill-emerald">Live API Port 8001</span>
+        </div>
+
+        <!-- Live Pipeline Flow Box -->
+        <div class="glass-panel" style="background: rgba(0,0,0,0.35); border-color: rgba(0,240,255,0.3);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h3 style="font-size:1.1rem; color:#fff;">Data Flow Pipeline (Offline Indexing + Online Retrieval)</h3>
+            <button id="btnAnimatePipeline" class="filter-pill active" style="font-size:0.88rem; padding:0.5rem 1rem;">
+              ▶ Animate Pipeline Steps
+            </button>
+          </div>
+
+          <!-- Flow steps visualizer -->
+          <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:0.75rem; margin-bottom:1rem;" id="sandboxFlowNodes">
+            <div class="method-card" id="flowNode1"><h5>1. Ingest</h5><p>Load medical QA & JSONL</p></div>
+            <div class="method-card" id="flowNode2"><h5>2. Chunk</h5><p>256 tokens + 50 overlap</p></div>
+            <div class="method-card" id="flowNode3"><h5>3. Embed</h5><p>all-MiniLM-L6-v2 (384d)</p></div>
+            <div class="method-card" id="flowNode4"><h5>4. Index</h5><p>FAISS Vector Index (2056 vectors)</p></div>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:0.75rem;" id="sandboxQueryNodes">
+            <div class="method-card" id="flowNode5"><h5>5. Query</h5><p>Embed user medical query</p></div>
+            <div class="method-card" id="flowNode6"><h5>6. Retrieve</h5><p>FAISS Cosine Top-3 Search</p></div>
+            <div class="method-card" id="flowNode7"><h5>7. Augment</h5><p>Alpaca Grounding Prompt</p></div>
+            <div class="method-card" id="flowNode8"><h5>8. Generate</h5><p>Ollama Code Llama / Fallback</p></div>
+          </div>
+        </div>
+
+        <!-- Live Query Input -->
+        <div class="glass-panel" style="background: rgba(17,24,39,0.9);">
+          <h4 style="font-size:1.05rem; margin-bottom:0.75rem;">🔬 Test Live Query</h4>
+          <div style="display:flex; gap:0.75rem; margin-bottom:1rem;">
+            <input type="text" id="liveQueryInput" class="search-input" style="flex:1; padding:0.75rem 1rem;" placeholder="e.g., What are the symptoms of viral diarrhea in toddlers?" value="What are the symptoms of viral diarrhea in toddlers?" />
+            <button id="btnRunLiveQuery" class="filter-pill active" style="padding:0.75rem 1.5rem; font-size:0.95rem;">
+              ⚡ Run Live Compare
+            </button>
+          </div>
+
+          <!-- Live Output Comparison Grid -->
+          <div class="trace-comparison-grid" id="liveOutputGrid" style="display:none;">
+            <div class="trace-col with-rag">
+              <div class="trace-col-title">
+                <span>✅ Grounded RAG Generation</span>
+                <span id="liveRagStatusBadge" class="tag-badge tag-medical">Live Response</span>
+              </div>
+              <div id="liveRagOutput" class="trace-text">Executing...</div>
+            </div>
+
+            <div class="trace-col without-rag">
+              <div class="trace-col-title">
+                <span>❌ Baseline (Without RAG)</span>
+                <span id="liveBaseStatusBadge" class="tag-badge tag-abstain">Baseline</span>
+              </div>
+              <div id="liveBaseOutput" class="trace-text">Executing...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div><!-- /view-sandbox -->
+
+
+    <!-- ====================================================================
+         VIEW 3: WEEK 3 GEMMA FINE-TUNING & QLORA DYNAMICS
+         ==================================================================== -->
+    <div id="view-week3" class="tab-view">
+      <section class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Week 3 Legacy</span>
+            <h2 class="section-heading">Gemma-2B-it QLoRA Domain Adaptation</h2>
+            <p class="section-desc">Training dynamics and lexical evaluation under 4GB VRAM constraints from Assignment II.</p>
+          </div>
+          <span class="pill-badge pill-purple">Gemma-2B-it QLoRA</span>
+        </div>
+
+        <div class="charts-grid-2">
+          <div class="chart-box">
+            <div class="chart-title">
+              <span>Base vs Fine-Tuned Gemma (ROUGE / BLEU)</span>
+              <span class="tag-badge tag-medical">Evaluation</span>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartGemmaEval"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-title">
+              <span>Training Loss Curve (Step Chart)</span>
+              <span class="tag-badge tag-abstain">Loss</span>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="chartGemmaLoss"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div><!-- /view-week3 -->
+
+  </main>
+
+  <!-- Modal for Task Details -->
+  <div class="modal-overlay" id="taskDetailModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTaskTitle" style="color:var(--cyan); font-size:1.15rem;">Task Details</h3>
+        <button class="modal-close-btn" id="modalCloseBtn">&times;</button>
+      </div>
+      <div id="modalTaskBody">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>Medical AI &amp; Multi-Model Evaluation Suite • Week 4 Complete • Antigravity IDE Verified</p>
+    </div>
+  </footer>
+
+  <!-- Bundled Week 4 Data & Application Logic -->
+  <script src="./week4_data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

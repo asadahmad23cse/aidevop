@@ -1,0 +1,24 @@
+{
+  "base_dataset": "lavita/ChatDoctor-HealthCareMagic-100k",
+  "base_sample_size": 1500,
+  "synthetic_count": 0,
+  "total": 1500,
+  "split_sizes": {
+    "train": 1200,
+    "val": 150,
+    "test": 150
+  },
+  "topics": [
+    "diabetes",
+    "hypertension",
+    "asthma",
+    "depression",
+    "arthritis",
+    "fever",
+    "migraine",
+    "thyroid",
+    "anemia",
+    "anxiety"
+  ],
+  "seed": 42
+}

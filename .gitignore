@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Keep final evidence artifacts; ignore indexes, smoke/failed runs, and scratch output.
+outputs/week4/*
+!outputs/week4/raw_results.jsonl
+!outputs/week4/repository_raw_results.jsonl
+!outputs/week4/manual_review.csv
+!outputs/week4/repository_manual_review.csv
+!outputs/week4/medical_evaluation_summary.json
+!outputs/week4/repository_evaluation_summary.json
+!outputs/week4/MEDICAL_RESULTS.md
+!outputs/week4/REPOSITORY_RESULTS.md
