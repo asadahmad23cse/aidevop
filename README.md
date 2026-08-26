@@ -4,8 +4,6 @@
 
 > **Cloud deployment:** `src/rag_server.py` serves both the API and dashboard from one origin. Render uses `requirements-render.txt` and starts with `uvicorn src.rag_server:app --host 0.0.0.0 --port $PORT`. Without Ollama or a cloud API key, RAG generation remains functional through the documented extractive fallback.
 
-> **PulseMirror operations:** The live dashboard now presents the completed Week 4 three-model evidence and a working risk-aware request path. `POST /api/v1/pulsemirror/ask` provides safety routing and grounded fallback behavior; `GET /api/v1/observability` reports de-identified operational counters. See [the design and limitations](docs/PULSEMIRROR_OPERATIONS.md).
-
 This repository contains the complete progressive implementation of a domain-specific Healthcare LLM & RAG application across all 5 lab exercises.
 
 ## 📋 Assignment Exercises & Architecture Map
