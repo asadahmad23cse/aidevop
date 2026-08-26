@@ -796,7 +796,7 @@
         if (baseOut) baseOut.textContent = "Querying baseline (no context)...";
 
         try {
-          const resp = await fetch("http://localhost:8001/api/v1/rag/compare", {
+          const resp = await fetch("/api/v1/rag/compare", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query: query, top_k: 3 }),
