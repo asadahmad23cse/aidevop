@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # ── 1. LLM Service (Ollama running Code Llama) ─────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: medical-ollama-service
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_storage:/root/.ollama
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:11434/api/tags || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ── 2. Retrieval & Orchestration Service (FastAPI + FAISS) ─────
+  rag-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: medical-rag-api-service
+    environment:
+      - PORT=8001
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=codellama
+      - EMBEDDING_MODEL=all-MiniLM-L6-v2
+      - RAG_INDEX_DIR=outputs/rag_index
+    ports:
+      - "8001:8001"
+    depends_on:
+      ollama:
+        condition: service_started
+    restart: unless-stopped
+    volumes:
+      - ./outputs/rag_index:/app/outputs/rag_index
+
+  # ── 3. Application Frontend Service (Dashboard Web UI) ────────
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    container_name: medical-dashboard-service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rag-api
+    restart: unless-stopped
+
+volumes:
+  ollama_storage:
+    name: ollama_models_cache

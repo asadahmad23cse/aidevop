@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -19,6 +19,7 @@
       <a class="logo" href="#">Assignment II: Medical AI</a>
       <nav class="nav-links">
         <a href="#overview">Overview</a>
+        <a href="#rag-pipeline">RAG Pipeline</a>
         <a href="#metrics">Metrics</a>
         <a href="#dynamics">Dynamics</a>
         <a href="#persona">Persona</a>
@@ -65,6 +66,320 @@
         <p class="feature-title">Environment Constraint</p>
         <h3 class="feature-stat">4GB VRAM Limit</h3>
         <p class="feature-label">max_length=256, accumulation=16</p>
+      </article>
+    </section>
+
+    <!-- ═══════ RAG PIPELINE SECTION ═══════ -->
+    <section id="rag-pipeline" class="rag-section reveal" data-delay="500">
+      <h2 class="section-title">RAG Pipeline <span class="gradient-text">(Retrieval-Augmented Generation)</span></h2>
+      <p class="section-sub">Complete end-to-end pipeline: from raw medical documents to context-aware LLM responses. Every process step is visible below.</p>
+
+      <!-- Interactive Flow Diagram -->
+      <article class="panel glass rag-flow-panel">
+        <div class="rag-flow-header">
+          <h3 class="widget-title">Pipeline Architecture — Data Flow Diagram</h3>
+          <button id="ragRunBtn" class="rag-run-btn" type="button">
+            <span class="rag-btn-text">▶ Animate Pipeline</span>
+          </button>
+        </div>
+
+        <!-- Offline / Indexing Phase -->
+        <p class="rag-phase-label">⬇ Offline Indexing Phase (Runs Once)</p>
+        <div class="rag-flow-row">
+          <div class="rag-node" id="ragNode1" data-step="1">
+            <div class="rag-node-icon">📄</div>
+            <div class="rag-node-body">
+              <span class="rag-node-num">1</span>
+              <strong>Document Ingestion</strong>
+            </div>
+          </div>
+          <div class="rag-arrow" id="ragArrow1"><span>→</span></div>
+          <div class="rag-node" id="ragNode2" data-step="2">
+            <div class="rag-node-icon">✂️</div>
+            <div class="rag-node-body">
+              <span class="rag-node-num">2</span>
+              <strong>Text Chunking</strong>
+            </div>
+          </div>
+          <div class="rag-arrow" id="ragArrow2"><span>→</span></div>
+          <div class="rag-node" id="ragNode3" data-step="3">
+            <div class="rag-node-icon">🔢</div>
+            <div class="rag-node-body">
+              <span class="rag-node-num">3</span>
+              <strong>Embedding Generation</strong>
+            </div>
+          </div>
+          <div class="rag-arrow" id="ragArrow3"><span>→</span></div>
+          <div class="rag-node" id="ragNode4" data-step="4">
+            <div class="rag-node-icon">🗄️</div>
+            <div class="rag-node-body">
+              <span class="rag-node-num">4</span>
+              <strong>Vector Store Index</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Online / Query Phase -->
+        <p class="rag-phase-label" style="margin-top: 1.6rem;">⬇ Online Query Phase (Every User Question)</p>
+        <div class="rag-flow-row">
+          <div class="rag-node" id="ragNode5" data-step="5">
+            <div class="rag-node-icon">🔍</div>
+            <div class="rag-node-body">
+              <span class="rag-node-num">5</span>
+              <strong>Query Embedding</strong>
+            </div>
+          </div>
+          <div class="rag-arrow" id="ragArrow5"><span>→</span></div>
+          <div class="rag-node" id="ragNode6" data-step="6">
+            <div class="rag-node-icon">🎯</div>
+            <div class="rag-node-body">
+              <span class="rag-node-num">6</span>
+              <strong>Semantic Retrieval</strong>
+            </div>
+          </div>
+          <div class="rag-arrow" id="ragArrow6"><span>→</span></div>
+          <div class="rag-node" id="ragNode7" data-step="7">
+            <div class="rag-node-icon">📝</div>
+            <div class="rag-node-body">
+              <span class="rag-node-num">7</span>
+              <strong>Prompt Augmentation</strong>
+            </div>
+          </div>
+          <div class="rag-arrow" id="ragArrow7"><span>→</span></div>
+          <div class="rag-node" id="ragNode8" data-step="8">
+            <div class="rag-node-icon">🤖</div>
+            <div class="rag-node-body">
+              <span class="rag-node-num">8</span>
+              <strong>LLM Generation</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Connecting bridge between phases -->
+        <div class="rag-bridge">
+          <span class="rag-bridge-line"></span>
+          <span class="rag-bridge-label">Vector DB serves both phases</span>
+          <span class="rag-bridge-line"></span>
+        </div>
+      </article>
+
+      <!-- Detailed Step Cards -->
+      <div class="rag-steps-grid">
+        <article class="rag-step-card glass-soft" data-rag-step="1">
+          <div class="rag-step-header">
+            <span class="rag-step-num-badge">01</span>
+            <span class="rag-step-icon">📄</span>
+          </div>
+          <h4 class="rag-step-title">Document Ingestion</h4>
+          <p class="rag-step-desc">Load raw medical QA data from the <strong>ChatDoctor-HealthCareMagic-100k</strong> dataset and 200 synthetic examples. Raw data = unprocessed text pairs (question + answer).</p>
+          <div class="rag-step-meta">
+            <span class="rag-meta-tag">Input: Hugging Face Dataset + OpenAI API</span>
+            <span class="rag-meta-tag">Output: 1,700 raw QA pairs (JSONL)</span>
+          </div>
+        </article>
+
+        <article class="rag-step-card glass-soft" data-rag-step="2">
+          <div class="rag-step-header">
+            <span class="rag-step-num-badge">02</span>
+            <span class="rag-step-icon">✂️</span>
+          </div>
+          <h4 class="rag-step-title">Text Chunking</h4>
+          <p class="rag-step-desc">Split each document into smaller, overlapping chunks (256 tokens each with 50-token overlap). This ensures no context is lost at boundaries, and each chunk is a searchable unit.</p>
+          <div class="rag-step-meta">
+            <span class="rag-meta-tag">Strategy: Fixed-size + Overlap</span>
+            <span class="rag-meta-tag">Chunk Size: 256 tokens</span>
+          </div>
+        </article>
+
+        <article class="rag-step-card glass-soft" data-rag-step="3">
+          <div class="rag-step-header">
+            <span class="rag-step-num-badge">03</span>
+            <span class="rag-step-icon">🔢</span>
+          </div>
+          <h4 class="rag-step-title">Embedding Generation</h4>
+          <p class="rag-step-desc">Each text chunk is converted into a dense vector (768-dim) using a Sentence Transformer embedding model. Similar meanings → vectors close together in space.</p>
+          <div class="rag-step-meta">
+            <span class="rag-meta-tag">Model: all-MiniLM-L6-v2</span>
+            <span class="rag-meta-tag">Dimension: 384-d vectors</span>
+          </div>
+        </article>
+
+        <article class="rag-step-card glass-soft" data-rag-step="4">
+          <div class="rag-step-header">
+            <span class="rag-step-num-badge">04</span>
+            <span class="rag-step-icon">🗄️</span>
+          </div>
+          <h4 class="rag-step-title">Vector Store Indexing</h4>
+          <p class="rag-step-desc">All chunk vectors are stored in a FAISS (Facebook AI Similarity Search) index for fast approximate nearest-neighbor lookup. This is the "knowledge brain" of the RAG system.</p>
+          <div class="rag-step-meta">
+            <span class="rag-meta-tag">Index: FAISS IVF-Flat</span>
+            <span class="rag-meta-tag">Search: Cosine Similarity</span>
+          </div>
+        </article>
+
+        <article class="rag-step-card glass-soft" data-rag-step="5">
+          <div class="rag-step-header">
+            <span class="rag-step-num-badge">05</span>
+            <span class="rag-step-icon">🔍</span>
+          </div>
+          <h4 class="rag-step-title">Query Embedding</h4>
+          <p class="rag-step-desc">When a user asks a medical question, it's embedded into the same vector space using the same embedding model — so it's directly comparable with all stored document chunks.</p>
+          <div class="rag-step-meta">
+            <span class="rag-meta-tag">Same Model: all-MiniLM-L6-v2</span>
+            <span class="rag-meta-tag">Output: 384-d query vector</span>
+          </div>
+        </article>
+
+        <article class="rag-step-card glass-soft" data-rag-step="6">
+          <div class="rag-step-header">
+            <span class="rag-step-num-badge">06</span>
+            <span class="rag-step-icon">🎯</span>
+          </div>
+          <h4 class="rag-step-title">Semantic Retrieval</h4>
+          <p class="rag-step-desc">FAISS finds the <strong>Top-K most similar chunks</strong> (K=3) by computing cosine similarity between the query vector and all stored vectors. Only the most relevant medical knowledge is retrieved.</p>
+          <div class="rag-step-meta">
+            <span class="rag-meta-tag">Method: Cosine Similarity (Top-3)</span>
+            <span class="rag-meta-tag">Latency: ~5ms per query</span>
+          </div>
+        </article>
+
+        <article class="rag-step-card glass-soft" data-rag-step="7">
+          <div class="rag-step-header">
+            <span class="rag-step-num-badge">07</span>
+            <span class="rag-step-icon">📝</span>
+          </div>
+          <h4 class="rag-step-title">Prompt Augmentation</h4>
+          <p class="rag-step-desc">The retrieved chunks are injected into an instruction prompt alongside the user's original question. The LLM sees both its training knowledge <em>and</em> fresh retrieved context.</p>
+          <div class="rag-step-meta">
+            <span class="rag-meta-tag">Format: Alpaca Instruction Template</span>
+            <span class="rag-meta-tag">Context Window: 512 tokens</span>
+          </div>
+        </article>
+
+        <article class="rag-step-card glass-soft" data-rag-step="8">
+          <div class="rag-step-header">
+            <span class="rag-step-num-badge">08</span>
+            <span class="rag-step-icon">🤖</span>
+          </div>
+          <h4 class="rag-step-title">LLM Generation</h4>
+          <p class="rag-step-desc">The <strong>Code Llama</strong> (via Ollama API) / fine-tuned LLM generates a structured response grounded strictly in retrieved clinical context — eliminating hallucinations.</p>
+          <div class="rag-step-meta">
+            <span class="rag-meta-tag">LLM: Code Llama (Ollama)</span>
+            <span class="rag-meta-tag">Grounding: FAISS Context</span>
+          </div>
+        </article>
+      </div>
+
+      <!-- Interactive RAG Demo — Two-Column: Timeline + Live Step Viewer -->
+      <article class="panel glass rag-demo-panel">
+        <h3 class="widget-title">🔬 Live RAG Pipeline — Step-by-Step Execution</h3>
+        <p class="rag-demo-subtitle">Har step ke andar actually kya ho raha hai — wo dekho. Type a medical question and watch the entire pipeline execute with real data.</p>
+
+        <!-- Upload Document -->
+        <div class="rag-upload-section" id="ragUploadSection">
+          <p class="rdv-label" style="margin-top:0">📂 Step 0 — Inject Your Document</p>
+          <div class="rag-drop-zone" id="ragDropZone">
+            <input type="file" id="ragFileInput" accept=".jsonl,.txt,.json" hidden />
+            <div class="rag-drop-icon">📄</div>
+            <p class="rag-drop-text">Drop your <strong>.jsonl</strong> or <strong>.txt</strong> file here</p>
+            <p class="rag-drop-sub">or</p>
+            <button class="rag-browse-btn" id="ragBrowseBtn" type="button">Browse File</button>
+          </div>
+          <div class="rag-upload-status" id="ragUploadStatus" style="display:none">
+            <span class="rag-upload-icon">✅</span>
+            <span class="rag-upload-filename" id="ragUploadFilename"></span>
+            <span class="rag-upload-badge" id="ragUploadBadge"></span>
+            <button class="rag-clear-btn" id="ragClearBtn" type="button">✕ Clear</button>
+          </div>
+        </div>
+
+        <div class="rag-demo-input-row">
+          <input type="text" id="ragQueryInput" class="rag-demo-input" placeholder="e.g. What are the symptoms of a heart attack?" />
+          <button id="ragDemoRunBtn" class="rag-run-btn" type="button">
+            <span class="rag-btn-text">▶ Run Pipeline</span>
+          </button>
+        </div>
+
+
+        <!-- Two-column layout -->
+        <div class="rag-twocol">
+
+          <!-- LEFT: Timeline -->
+          <div class="rag-demo-timeline" id="ragDemoTimeline">
+            <div class="rag-tl-step" id="ragTL1">
+              <div class="rag-tl-marker"><span>1</span></div>
+              <div class="rag-tl-content">
+                <strong>Document Ingestion</strong>
+                <p id="ragTLText1" class="rag-tl-output">Waiting...</p>
+              </div>
+            </div>
+            <div class="rag-tl-step" id="ragTL2">
+              <div class="rag-tl-marker"><span>2</span></div>
+              <div class="rag-tl-content">
+                <strong>Text Chunking</strong>
+                <p id="ragTLText2" class="rag-tl-output">Waiting...</p>
+              </div>
+            </div>
+            <div class="rag-tl-step" id="ragTL3">
+              <div class="rag-tl-marker"><span>3</span></div>
+              <div class="rag-tl-content">
+                <strong>Embedding Generation</strong>
+                <p id="ragTLText3" class="rag-tl-output">Waiting...</p>
+              </div>
+            </div>
+            <div class="rag-tl-step" id="ragTL4">
+              <div class="rag-tl-marker"><span>4</span></div>
+              <div class="rag-tl-content">
+                <strong>Vector Store Indexing</strong>
+                <p id="ragTLText4" class="rag-tl-output">Waiting...</p>
+              </div>
+            </div>
+            <div class="rag-tl-step" id="ragTL5">
+              <div class="rag-tl-marker"><span>5</span></div>
+              <div class="rag-tl-content">
+                <strong>Query Embedding</strong>
+                <p id="ragTLText5" class="rag-tl-output">Waiting...</p>
+              </div>
+            </div>
+            <div class="rag-tl-step" id="ragTL6">
+              <div class="rag-tl-marker"><span>6</span></div>
+              <div class="rag-tl-content">
+                <strong>Semantic Retrieval</strong>
+                <p id="ragTLText6" class="rag-tl-output">Waiting...</p>
+              </div>
+            </div>
+            <div class="rag-tl-step" id="ragTL7">
+              <div class="rag-tl-marker"><span>7</span></div>
+              <div class="rag-tl-content">
+                <strong>Prompt Augmentation</strong>
+                <p id="ragTLText7" class="rag-tl-output">Waiting...</p>
+              </div>
+            </div>
+            <div class="rag-tl-step" id="ragTL8">
+              <div class="rag-tl-marker"><span>8</span></div>
+              <div class="rag-tl-content">
+                <strong>LLM Generation</strong>
+                <p id="ragTLText8" class="rag-tl-output">Waiting...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Step Detail Viewer -->
+          <div class="rag-detail-viewer" id="ragDetailViewer">
+            <div class="rdv-idle" id="rdvIdle">
+              <div class="rdv-idle-icon">⚡</div>
+              <p>Run the pipeline to see each step's live execution here.</p>
+            </div>
+            <!-- Step detail content injected here by JS -->
+            <div id="rdvContent" style="display:none;"></div>
+          </div>
+
+        </div><!-- end twocol -->
+
+        <div id="ragFinalOutput" class="rag-final-output" style="display:none;">
+          <h4>✅ Final RAG-Augmented Response</h4>
+          <pre id="ragFinalText" class="rag-final-text"></pre>
+        </div>
       </article>
     </section>
 

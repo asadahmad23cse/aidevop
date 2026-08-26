@@ -1,6 +1,62 @@
-﻿# Fine-Tuning an LLM for Domain-Specific Medical Question Answering
+# Medical Question Answering LLM & RAG Application (Exercises 1–5)
 
-This project fine-tunes an instruction-tuned LLM for healthcare question answering using QLoRA + PEFT. It supports `mistralai/Mistral-7B-Instruct-v0.2` as the primary model and falls back to `google/gemma-2b-it` when needed.
+This repository contains the complete progressive implementation of a domain-specific Healthcare LLM & RAG application across all 5 lab exercises.
+
+## 📋 Assignment Exercises & Architecture Map
+
+| Exercise | Module | Key Implementation Files | Status |
+| :--- | :--- | :--- | :---: |
+| **Exercise 1** | Basic LLM App via Ollama (`codellama`) | [`src/basic_llm_app.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/basic_llm_app.py), [`src/ollama_client.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/ollama_client.py) | ✅ **100%** |
+| **Exercise 2** | Knowledge Base + Chunking + FAISS Embeddings | [`src/rag_ingest.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_ingest.py), [`data/raw/medical_knowledge_base.jsonl`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/data/raw/medical_knowledge_base.jsonl) | ✅ **100%** |
+| **Exercise 3** | Vector Similarity + Retrieval + RAG Comparison | [`src/rag_demo.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_demo.py), [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) | ✅ **100%** |
+| **Exercise 4** | Multi-Service APIs & Orchestration | [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) (`/api/v1/services/status`, `/api/v1/rag/compare`) | ✅ **100%** |
+| **Exercise 5** | Docker Containerization | [`Dockerfile.api`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/Dockerfile.api), [`Dockerfile.dashboard`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/Dockerfile.dashboard), [`docker-compose.yml`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/docker-compose.yml) | ✅ **100%** |
+
+---
+
+## 🚀 Running Each Exercise
+
+### Exercise 1: Basic LLM Application (Ollama + Code Llama)
+Flow: `User → Application → API → Ollama → Code Llama → Response`
+```bash
+# Ensure Ollama is running: ollama serve && ollama pull codellama
+python src/basic_llm_app.py
+# Or single prompt:
+python src/basic_llm_app.py --prompt "What are the common symptoms of diabetes?"
+```
+
+### Exercise 2: Knowledge Base Ingestion & Vector Representation
+Flow: `Documents → Chunking → Embeddings (MiniLM-L6-v2) → FAISS Index`
+```bash
+python src/rag_ingest.py --file data/raw/medical_knowledge_base.jsonl --chunk-size 256 --overlap 50
+```
+
+### Exercise 3: Retrieval, Vector Similarity & RAG Comparison
+Flow: `Question → Query Embedding → FAISS Similarity → Relevant Context + Question → Code Llama → Grounded Response`
+```bash
+python src/rag_demo.py --query "What are symptoms of diabetes?"
+```
+
+### Exercise 4: Multi-Service Architecture & Orchestration
+Starts the FastAPI Orchestrator (port 8001) and Frontend Application (port 8000):
+```bash
+# Service 1: RAG API & LLM Orchestrator
+python src/rag_server.py
+
+# Service 2: Application Dashboard
+python -m http.server 8000
+```
+- Interactive API Docs: `http://localhost:8001/docs`
+- Service Health Monitor: `http://localhost:8001/api/v1/services/status`
+- Web Dashboard: `http://localhost:8000/dashboard/index.html`
+
+### Exercise 5: Docker Containerization
+Run all services (Ollama, RAG API, and Web Dashboard) in a unified container network:
+```bash
+docker compose up --build
+```
+
+---
 
 ## Project Structure
 
