@@ -1484,7 +1484,11 @@ async function runRAGDemoWalkthrough(query) {
     btn.querySelector(".rag-btn-text").textContent = "⏳ Processing...";
   }
 
-  const API = "http://localhost:8001";
+  // Use the same origin when the dashboard is served by FastAPI in production.
+  // Keep the existing two-port local workflow working when opened on port 8000.
+  const API = window.AIDEVOP_API_URL ||
+    ((window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") &&
+     window.location.port !== "8001" ? "http://localhost:8001" : "");
   const stepDelay = 3000;
   const arrowMap     = { 1:"ragArrow1", 2:"ragArrow2", 3:"ragArrow3", 5:"ragArrow5", 6:"ragArrow6", 7:"ragArrow7" };
   const prevArrowMap = { 2:1, 3:2, 4:3, 6:5, 7:6, 8:7 };

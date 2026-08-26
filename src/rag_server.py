@@ -23,6 +23,7 @@ import numpy as np
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 # Ensure src is in sys.path
@@ -494,6 +495,14 @@ def compare_rag_vs_baseline(req: CompareRequest):
             "avg_similarity": rag_res["avg_similarity"]
         }
     }
+
+
+# Serve the dashboard from the same origin as the API in cloud deployments.
+# Register this catch-all mount after all API routes so /status, /query, etc.
+# continue to resolve before static files.
+DASHBOARD_DIR = Path(__file__).resolve().parent.parent / "dashboard"
+if DASHBOARD_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=str(DASHBOARD_DIR), html=True), name="dashboard")
 
 
 # ── Run Server ───────────────────────────────────────────────

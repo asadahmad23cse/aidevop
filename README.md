@@ -2,6 +2,8 @@
 
 > **Week 4 complete:** See the [actual quantitative results](docs/WEEK4_RESULTS.md) and [reproduction/metric methodology](docs/WEEK4_EVALUATION.md). The executed evidence includes 75 medical model–task records, 24 repository-understanding records, complete review CSVs, and full RAG/no-RAG traces under `outputs/week4/`.
 
+> **Cloud deployment:** `src/rag_server.py` serves both the API and dashboard from one origin. Render uses `requirements-render.txt` and starts with `uvicorn src.rag_server:app --host 0.0.0.0 --port $PORT`. Without Ollama or a cloud API key, RAG generation remains functional through the documented extractive fallback.
+
 This repository contains the complete progressive implementation of a domain-specific Healthcare LLM & RAG application across all 5 lab exercises.
 
 ## 📋 Assignment Exercises & Architecture Map
