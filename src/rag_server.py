@@ -35,7 +35,10 @@ from ollama_client import (
     OLLAMA_HOST,
 )
 
+REQUESTED_BACKEND = os.environ.get("RETRIEVAL_BACKEND", "semantic").lower()
 try:
+    if REQUESTED_BACKEND != "semantic":
+        raise ImportError("semantic dependencies intentionally disabled")
     import numpy as np
     from sentence_transformers import SentenceTransformer
     import faiss
@@ -64,7 +67,6 @@ app.add_middleware(
 # ── Global State ─────────────────────────────────────────────
 MODEL_NAME = os.environ.get("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 INDEX_DIR = os.environ.get("RAG_INDEX_DIR", "outputs/rag_index")
-REQUESTED_BACKEND = os.environ.get("RETRIEVAL_BACKEND", "semantic").lower()
 RETRIEVAL_BACKEND = "semantic" if REQUESTED_BACKEND == "semantic" and SEMANTIC_DEPS_AVAILABLE else "lexical"
 
 EMBEDDER = None
