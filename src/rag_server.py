@@ -19,7 +19,6 @@ import time
 import sys
 from pathlib import Path
 from typing import List, Optional, Dict, Any
-import numpy as np
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,11 +36,15 @@ from ollama_client import (
 )
 
 try:
+    import numpy as np
     from sentence_transformers import SentenceTransformer
     import faiss
+    SEMANTIC_DEPS_AVAILABLE = True
 except ImportError:
-    print("ERROR: Missing dependencies. Run: pip install sentence-transformers faiss-cpu fastapi uvicorn python-multipart")
-    sys.exit(1)
+    np = None
+    SentenceTransformer = None
+    faiss = None
+    SEMANTIC_DEPS_AVAILABLE = False
 
 # ── App Setup ────────────────────────────────────────────────
 app = FastAPI(
@@ -61,11 +64,17 @@ app.add_middleware(
 # ── Global State ─────────────────────────────────────────────
 MODEL_NAME = os.environ.get("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 INDEX_DIR = os.environ.get("RAG_INDEX_DIR", "outputs/rag_index")
+REQUESTED_BACKEND = os.environ.get("RETRIEVAL_BACKEND", "semantic").lower()
+RETRIEVAL_BACKEND = "semantic" if REQUESTED_BACKEND == "semantic" and SEMANTIC_DEPS_AVAILABLE else "lexical"
 
-print(f"\nLoading embedding model: {MODEL_NAME}...")
-_t = time.time()
-EMBEDDER = SentenceTransformer(MODEL_NAME)
-print(f"Model loaded in {time.time()-_t:.1f}s")
+EMBEDDER = None
+if RETRIEVAL_BACKEND == "semantic":
+    print(f"\nLoading embedding model: {MODEL_NAME}...")
+    _t = time.time()
+    EMBEDDER = SentenceTransformer(MODEL_NAME)
+    print(f"Model loaded in {time.time()-_t:.1f}s")
+else:
+    print("\nUsing memory-efficient lexical retrieval backend")
 
 FAISS_INDEX = None
 CHUNK_META = []
@@ -77,10 +86,11 @@ def load_existing_index():
     global FAISS_INDEX, CHUNK_META, INDEX_STATS
     idx_path = os.path.join(INDEX_DIR, "faiss.index")
     meta_path = os.path.join(INDEX_DIR, "chunk_metadata.json")
-    if os.path.exists(idx_path) and os.path.exists(meta_path):
-        FAISS_INDEX = faiss.read_index(idx_path)
+    if os.path.exists(meta_path):
         with open(meta_path, encoding="utf-8") as f:
             CHUNK_META = json.load(f)
+    if RETRIEVAL_BACKEND == "semantic" and os.path.exists(idx_path) and CHUNK_META:
+        FAISS_INDEX = faiss.read_index(idx_path)
         INDEX_STATS = {
             "vectors": FAISS_INDEX.ntotal,
             "dimensions": FAISS_INDEX.d,
@@ -88,9 +98,60 @@ def load_existing_index():
             "source": "pre-built index",
         }
         print(f"Loaded existing index: {FAISS_INDEX.ntotal} vectors")
+    elif CHUNK_META:
+        INDEX_STATS = {
+            "vectors": len(CHUNK_META),
+            "dimensions": 0,
+            "chunks": len(CHUNK_META),
+            "source": "pre-built chunk metadata",
+            "retrieval_backend": "lexical",
+        }
+        print(f"Loaded existing metadata: {len(CHUNK_META)} searchable chunks")
 
 
 load_existing_index()
+
+
+def index_ready() -> bool:
+    return bool(CHUNK_META) and (RETRIEVAL_BACKEND == "lexical" or FAISS_INDEX is not None)
+
+
+def total_vectors() -> int:
+    return int(FAISS_INDEX.ntotal) if FAISS_INDEX is not None else len(CHUNK_META)
+
+
+def retrieve_chunks(query: str, top_k: int) -> tuple[List[dict], List[float], int, float, float]:
+    """Search via FAISS locally or a low-memory lexical scorer in constrained cloud runtimes."""
+    if not index_ready():
+        raise HTTPException(400, "No index found. Please ingest a document first.")
+
+    top_k = max(1, min(top_k, len(CHUNK_META)))
+    if RETRIEVAL_BACKEND == "semantic":
+        t0 = time.time()
+        q_vec = EMBEDDER.encode([query], normalize_embeddings=True, convert_to_numpy=True).astype(np.float32)
+        t_embed = time.time() - t0
+        t0 = time.time()
+        scores, indices = FAISS_INDEX.search(q_vec, k=top_k)
+        t_search = time.time() - t0
+        valid = [(float(score), int(idx)) for score, idx in zip(scores[0], indices[0]) if 0 <= idx < len(CHUNK_META)]
+        return [CHUNK_META[idx] for _, idx in valid], [score for score, _ in valid], int(q_vec.shape[1]), t_embed, t_search
+
+    t0 = time.time()
+    query_terms = set(re.findall(r"\b[a-z0-9_]+\b", query.lower()))
+    stopwords = {"a", "an", "and", "are", "does", "for", "how", "in", "is", "of", "or", "the", "to", "what", "which", "with"}
+    query_terms -= stopwords
+    scored = []
+    for idx, chunk in enumerate(CHUNK_META):
+        text = chunk.get("text", "")
+        terms = set(re.findall(r"\b[a-z0-9_]+\b", text.lower()))
+        overlap = len(query_terms & terms)
+        coverage = overlap / max(len(query_terms), 1)
+        phrase_bonus = 0.15 if query.lower() in text.lower() else 0.0
+        scored.append((coverage + phrase_bonus, idx))
+    scored.sort(key=lambda item: (-item[0], item[1]))
+    selected = scored[:top_k]
+    t_search = time.time() - t0
+    return [CHUNK_META[i] for _, i in selected], [float(s) for s, _ in selected], 0, 0.0, t_search
 
 
 # ── Helper: Parse uploaded file ───────────────────────────────
@@ -229,15 +290,16 @@ def get_system_status():
     """
     ollama_info = check_ollama_status()
     return {
-        "ready": FAISS_INDEX is not None,
+        "ready": index_ready(),
         "services": {
             "application_service": {"status": "healthy", "description": "Dashboard Web UI on port 8000"},
             "retrieval_rag_service": {
-                "status": "healthy" if FAISS_INDEX is not None else "no_index",
-                "vectors": FAISS_INDEX.ntotal if FAISS_INDEX else 0,
+                "status": "healthy" if index_ready() else "no_index",
+                "vectors": total_vectors(),
                 "chunks": len(CHUNK_META),
                 "embedding_model": MODEL_NAME,
-                "dimensions": FAISS_INDEX.d if FAISS_INDEX else 0
+                "dimensions": FAISS_INDEX.d if FAISS_INDEX else 0,
+                "backend": RETRIEVAL_BACKEND,
             },
             "llm_service_ollama": {
                 "status": "connected" if ollama_info["available"] else "disconnected",
@@ -247,7 +309,7 @@ def get_system_status():
                 "has_target_model": ollama_info["has_default_model"]
             }
         },
-        "vectors": FAISS_INDEX.ntotal if FAISS_INDEX else 0,
+        "vectors": total_vectors(),
         "chunks": len(CHUNK_META),
         "model": MODEL_NAME,
         "stats": INDEX_STATS
@@ -311,6 +373,20 @@ async def ingest_document(file: UploadFile = File(...)):
             })
     t_chunk = time.time() - t0
 
+    if RETRIEVAL_BACKEND != "semantic":
+        os.makedirs(INDEX_DIR, exist_ok=True)
+        meta_path = os.path.join(INDEX_DIR, "chunk_metadata.json")
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump(chunk_meta, f, ensure_ascii=False)
+        CHUNK_META = chunk_meta
+        FAISS_INDEX = None
+        INDEX_STATS = {
+            "filename": fname, "documents": len(records), "chunks": len(all_chunks),
+            "vectors": len(all_chunks), "dimensions": 0, "retrieval_backend": "lexical",
+            "t_parse_ms": round(t_parse * 1000), "t_chunk_ms": round(t_chunk * 1000),
+        }
+        return INDEX_STATS
+
     # Step 3: Embed
     t0 = time.time()
     embeddings = EMBEDDER.encode(
@@ -365,26 +441,10 @@ def query_vector_index(req: QueryRequest):
     """
     Exercise 3: Question -> Query Embedding -> FAISS Vector Similarity -> Relevant Chunks.
     """
-    if FAISS_INDEX is None or not CHUNK_META:
-        raise HTTPException(400, "No index found. Please ingest a document first.")
-
-    t0 = time.time()
-    q_vec = EMBEDDER.encode(
-        [req.query],
-        normalize_embeddings=True,
-        convert_to_numpy=True,
-    ).astype(np.float32)
-    t_embed = time.time() - t0
-
-    t0 = time.time()
-    scores, indices = FAISS_INDEX.search(q_vec, k=req.top_k)
-    t_search = time.time() - t0
-
+    chunks, scores, dims, t_embed, t_search = retrieve_chunks(req.query, req.top_k)
     results = []
-    for score, idx in zip(scores[0], indices[0]):
-        if idx < 0 or idx >= len(CHUNK_META):
-            continue
-        chunk = CHUNK_META[idx]
+    for chunk, score in zip(chunks, scores):
+        idx = CHUNK_META.index(chunk)
         results.append({
             "chunk_id": int(idx),
             "doc_id": chunk["doc_id"],
@@ -395,12 +455,13 @@ def query_vector_index(req: QueryRequest):
 
     return {
         "query": req.query,
-        "query_vector": q_vec[0][:16].round(4).tolist(),
-        "query_dims": int(q_vec.shape[1]),
+        "query_vector": [],
+        "query_dims": dims,
+        "retrieval_backend": RETRIEVAL_BACKEND,
         "results": results,
         "t_embed_ms": round(t_embed * 1000),
         "t_search_ms": round(t_search * 1000, 2),
-        "total_vectors": FAISS_INDEX.ntotal,
+        "total_vectors": total_vectors(),
     }
 
 
@@ -457,21 +518,18 @@ def compare_rag_vs_baseline(req: CompareRequest):
     Exercise 3 Deliverable: Demonstrate how the response differs when relevant
     information is provided through RAG compared with asking the LLM without retrieval.
     """
-    if FAISS_INDEX is None or not CHUNK_META:
+    if not index_ready():
         raise HTTPException(400, "Vector index not ready.")
 
     # 1. Retrieval
-    q_vec = EMBEDDER.encode([req.query], normalize_embeddings=True, convert_to_numpy=True).astype(np.float32)
-    scores, indices = FAISS_INDEX.search(q_vec, k=req.top_k or 3)
+    retrieved, scores, _, _, _ = retrieve_chunks(req.query, req.top_k or 3)
     chunks = []
-    for score, idx in zip(scores[0], indices[0]):
-        if 0 <= idx < len(CHUNK_META):
-            chunk = CHUNK_META[idx]
-            chunks.append({
-                "chunk_id": int(idx),
-                "text": chunk["text"],
-                "score": round(float(score), 4)
-            })
+    for chunk, score in zip(retrieved, scores):
+        chunks.append({
+            "chunk_id": CHUNK_META.index(chunk),
+            "text": chunk["text"],
+            "score": round(float(score), 4)
+        })
 
     # 2. Without RAG (Exercise 1 Pure LLM)
     raw_res = query_ollama(prompt=req.query, model=req.model or DEFAULT_MODEL)
