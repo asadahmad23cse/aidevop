@@ -1,530 +1,186 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Assignment II: Medical AI Dashboard</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="PulseMirror Week 4 medical RAG evaluation and risk-aware AI operations dashboard." />
+  <title>PulseMirror — Week 4 AI Evaluation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="ambient ambient-cyan"></div>
-  <div class="ambient ambient-purple"></div>
-
-  <header class="top-nav reveal" data-delay="0">
-    <div class="container nav-inner">
-      <a class="logo" href="#">Assignment II: Medical AI</a>
-      <nav class="nav-links">
-        <a href="#overview">Overview</a>
-        <a href="#rag-pipeline">RAG Pipeline</a>
-        <a href="#metrics">Metrics</a>
-        <a href="#dynamics">Dynamics</a>
-        <a href="#persona">Persona</a>
-        <a href="#clinical">Alignment</a>
-        <a href="#system">System</a>
-        <a href="#playground">Playground</a>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell nav-wrap">
+      <a class="brand" href="#top" aria-label="PulseMirror home">
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+        <span>PulseMirror</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#evaluation">Evaluation</a>
+        <a href="#rag">RAG analysis</a>
+        <a href="#safety">Safety router</a>
+        <a href="#operations">Operations</a>
       </nav>
+      <div class="service-pill" id="servicePill"><span></span><b>Checking service</b></div>
     </div>
   </header>
 
-  <main class="container">
-    <section id="overview" class="hero glass reveal" data-delay="120">
-      <p class="hero-tag">Academic Machine Learning Dashboard</p>
-      <h1 class="hero-title">
-        Medical Q&amp;A Specialization with <span class="gradient-text">Gemma-2B-it</span>
-      </h1>
-      <p class="hero-subtitle">
-        Domain Adaptation via 4-bit QLoRA under Extreme 4GB VRAM Constraints
-      </p>
-
-    </section>
-
-    <section class="feature-grid">
-      <article class="feature-card glass-soft reveal" data-delay="220">
-        <div class="feature-icon" aria-hidden="true">🧬</div>
-        <p class="feature-title">Dataset</p>
-        <h3 class="feature-stat">1,500 QA Pairs</h3>
-        <p class="feature-label">Curated Medical Instruct Data</p>
-      </article>
-      <article class="feature-card glass-soft reveal" data-delay="300">
-        <div class="feature-icon" aria-hidden="true">🤖</div>
-        <p class="feature-title">Backbone Model</p>
-        <h3 class="feature-stat">Gemma-2B-it</h3>
-        <p class="feature-label">4-bit Quantized Base</p>
-      </article>
-      <article class="feature-card glass-soft reveal" data-delay="380">
-        <div class="feature-icon" aria-hidden="true">⚙️</div>
-        <p class="feature-title">Technique</p>
-        <h3 class="feature-stat">QLoRA + PEFT</h3>
-        <p class="feature-label">Rank 16, Alpha 32</p>
-      </article>
-      <article class="feature-card glass-soft reveal" data-delay="460">
-        <div class="feature-icon" aria-hidden="true">🧠</div>
-        <p class="feature-title">Environment Constraint</p>
-        <h3 class="feature-stat">4GB VRAM Limit</h3>
-        <p class="feature-label">max_length=256, accumulation=16</p>
-      </article>
-    </section>
-
-    <!-- ═══════ RAG PIPELINE SECTION ═══════ -->
-    <section id="rag-pipeline" class="rag-section reveal" data-delay="500">
-      <h2 class="section-title">RAG Pipeline <span class="gradient-text">(Retrieval-Augmented Generation)</span></h2>
-      <p class="section-sub">Complete end-to-end pipeline: from raw medical documents to context-aware LLM responses. Every process step is visible below.</p>
-
-      <!-- Interactive Flow Diagram -->
-      <article class="panel glass rag-flow-panel">
-        <div class="rag-flow-header">
-          <h3 class="widget-title">Pipeline Architecture — Data Flow Diagram</h3>
-          <button id="ragRunBtn" class="rag-run-btn" type="button">
-            <span class="rag-btn-text">▶ Animate Pipeline</span>
-          </button>
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Week 4 · Multi-model RAG evaluation</p>
+          <h1>Medical AI evidence, safety, and operations in one place.</h1>
+          <p class="hero-lead">PulseMirror compares three local language models under controlled conditions, exposes retrieval evidence, and routes live health questions through a risk-aware safety pipeline.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#safety">Try the safety router</a>
+            <a class="button secondary" href="/docs">Open API documentation</a>
+          </div>
+          <p class="disclaimer">Research and wellness prototype. Not a diagnostic medical device or a substitute for professional care.</p>
         </div>
-
-        <!-- Offline / Indexing Phase -->
-        <p class="rag-phase-label">⬇ Offline Indexing Phase (Runs Once)</p>
-        <div class="rag-flow-row">
-          <div class="rag-node" id="ragNode1" data-step="1">
-            <div class="rag-node-icon">📄</div>
-            <div class="rag-node-body">
-              <span class="rag-node-num">1</span>
-              <strong>Document Ingestion</strong>
-            </div>
+        <aside class="hero-console" aria-label="Live platform status">
+          <div class="console-head"><span>Live control plane</span><span class="live-dot">Operational</span></div>
+          <div class="console-grid">
+            <div><span>Knowledge chunks</span><strong id="heroChunks">—</strong></div>
+            <div><span>Retrieval backend</span><strong id="heroBackend">—</strong></div>
+            <div><span>Fallback service</span><strong id="heroFallback">—</strong></div>
+            <div><span>Deployment</span><strong id="heroVersion">—</strong></div>
           </div>
-          <div class="rag-arrow" id="ragArrow1"><span>→</span></div>
-          <div class="rag-node" id="ragNode2" data-step="2">
-            <div class="rag-node-icon">✂️</div>
-            <div class="rag-node-body">
-              <span class="rag-node-num">2</span>
-              <strong>Text Chunking</strong>
-            </div>
-          </div>
-          <div class="rag-arrow" id="ragArrow2"><span>→</span></div>
-          <div class="rag-node" id="ragNode3" data-step="3">
-            <div class="rag-node-icon">🔢</div>
-            <div class="rag-node-body">
-              <span class="rag-node-num">3</span>
-              <strong>Embedding Generation</strong>
-            </div>
-          </div>
-          <div class="rag-arrow" id="ragArrow3"><span>→</span></div>
-          <div class="rag-node" id="ragNode4" data-step="4">
-            <div class="rag-node-icon">🗄️</div>
-            <div class="rag-node-body">
-              <span class="rag-node-num">4</span>
-              <strong>Vector Store Index</strong>
-            </div>
-          </div>
-        </div>
-
-        <!-- Online / Query Phase -->
-        <p class="rag-phase-label" style="margin-top: 1.6rem;">⬇ Online Query Phase (Every User Question)</p>
-        <div class="rag-flow-row">
-          <div class="rag-node" id="ragNode5" data-step="5">
-            <div class="rag-node-icon">🔍</div>
-            <div class="rag-node-body">
-              <span class="rag-node-num">5</span>
-              <strong>Query Embedding</strong>
-            </div>
-          </div>
-          <div class="rag-arrow" id="ragArrow5"><span>→</span></div>
-          <div class="rag-node" id="ragNode6" data-step="6">
-            <div class="rag-node-icon">🎯</div>
-            <div class="rag-node-body">
-              <span class="rag-node-num">6</span>
-              <strong>Semantic Retrieval</strong>
-            </div>
-          </div>
-          <div class="rag-arrow" id="ragArrow6"><span>→</span></div>
-          <div class="rag-node" id="ragNode7" data-step="7">
-            <div class="rag-node-icon">📝</div>
-            <div class="rag-node-body">
-              <span class="rag-node-num">7</span>
-              <strong>Prompt Augmentation</strong>
-            </div>
-          </div>
-          <div class="rag-arrow" id="ragArrow7"><span>→</span></div>
-          <div class="rag-node" id="ragNode8" data-step="8">
-            <div class="rag-node-icon">🤖</div>
-            <div class="rag-node-body">
-              <span class="rag-node-num">8</span>
-              <strong>LLM Generation</strong>
-            </div>
-          </div>
-        </div>
-
-        <!-- Connecting bridge between phases -->
-        <div class="rag-bridge">
-          <span class="rag-bridge-line"></span>
-          <span class="rag-bridge-label">Vector DB serves both phases</span>
-          <span class="rag-bridge-line"></span>
-        </div>
-      </article>
-
-      <!-- Detailed Step Cards -->
-      <div class="rag-steps-grid">
-        <article class="rag-step-card glass-soft" data-rag-step="1">
-          <div class="rag-step-header">
-            <span class="rag-step-num-badge">01</span>
-            <span class="rag-step-icon">📄</span>
-          </div>
-          <h4 class="rag-step-title">Document Ingestion</h4>
-          <p class="rag-step-desc">Load raw medical QA data from the <strong>ChatDoctor-HealthCareMagic-100k</strong> dataset and 200 synthetic examples. Raw data = unprocessed text pairs (question + answer).</p>
-          <div class="rag-step-meta">
-            <span class="rag-meta-tag">Input: Hugging Face Dataset + OpenAI API</span>
-            <span class="rag-meta-tag">Output: 1,700 raw QA pairs (JSONL)</span>
-          </div>
-        </article>
-
-        <article class="rag-step-card glass-soft" data-rag-step="2">
-          <div class="rag-step-header">
-            <span class="rag-step-num-badge">02</span>
-            <span class="rag-step-icon">✂️</span>
-          </div>
-          <h4 class="rag-step-title">Text Chunking</h4>
-          <p class="rag-step-desc">Split each document into smaller, overlapping chunks (256 tokens each with 50-token overlap). This ensures no context is lost at boundaries, and each chunk is a searchable unit.</p>
-          <div class="rag-step-meta">
-            <span class="rag-meta-tag">Strategy: Fixed-size + Overlap</span>
-            <span class="rag-meta-tag">Chunk Size: 256 tokens</span>
-          </div>
-        </article>
-
-        <article class="rag-step-card glass-soft" data-rag-step="3">
-          <div class="rag-step-header">
-            <span class="rag-step-num-badge">03</span>
-            <span class="rag-step-icon">🔢</span>
-          </div>
-          <h4 class="rag-step-title">Embedding Generation</h4>
-          <p class="rag-step-desc">Each text chunk is converted into a dense vector (768-dim) using a Sentence Transformer embedding model. Similar meanings → vectors close together in space.</p>
-          <div class="rag-step-meta">
-            <span class="rag-meta-tag">Model: all-MiniLM-L6-v2</span>
-            <span class="rag-meta-tag">Dimension: 384-d vectors</span>
-          </div>
-        </article>
-
-        <article class="rag-step-card glass-soft" data-rag-step="4">
-          <div class="rag-step-header">
-            <span class="rag-step-num-badge">04</span>
-            <span class="rag-step-icon">🗄️</span>
-          </div>
-          <h4 class="rag-step-title">Vector Store Indexing</h4>
-          <p class="rag-step-desc">All chunk vectors are stored in a FAISS (Facebook AI Similarity Search) index for fast approximate nearest-neighbor lookup. This is the "knowledge brain" of the RAG system.</p>
-          <div class="rag-step-meta">
-            <span class="rag-meta-tag">Index: FAISS IVF-Flat</span>
-            <span class="rag-meta-tag">Search: Cosine Similarity</span>
-          </div>
-        </article>
-
-        <article class="rag-step-card glass-soft" data-rag-step="5">
-          <div class="rag-step-header">
-            <span class="rag-step-num-badge">05</span>
-            <span class="rag-step-icon">🔍</span>
-          </div>
-          <h4 class="rag-step-title">Query Embedding</h4>
-          <p class="rag-step-desc">When a user asks a medical question, it's embedded into the same vector space using the same embedding model — so it's directly comparable with all stored document chunks.</p>
-          <div class="rag-step-meta">
-            <span class="rag-meta-tag">Same Model: all-MiniLM-L6-v2</span>
-            <span class="rag-meta-tag">Output: 384-d query vector</span>
-          </div>
-        </article>
-
-        <article class="rag-step-card glass-soft" data-rag-step="6">
-          <div class="rag-step-header">
-            <span class="rag-step-num-badge">06</span>
-            <span class="rag-step-icon">🎯</span>
-          </div>
-          <h4 class="rag-step-title">Semantic Retrieval</h4>
-          <p class="rag-step-desc">FAISS finds the <strong>Top-K most similar chunks</strong> (K=3) by computing cosine similarity between the query vector and all stored vectors. Only the most relevant medical knowledge is retrieved.</p>
-          <div class="rag-step-meta">
-            <span class="rag-meta-tag">Method: Cosine Similarity (Top-3)</span>
-            <span class="rag-meta-tag">Latency: ~5ms per query</span>
-          </div>
-        </article>
-
-        <article class="rag-step-card glass-soft" data-rag-step="7">
-          <div class="rag-step-header">
-            <span class="rag-step-num-badge">07</span>
-            <span class="rag-step-icon">📝</span>
-          </div>
-          <h4 class="rag-step-title">Prompt Augmentation</h4>
-          <p class="rag-step-desc">The retrieved chunks are injected into an instruction prompt alongside the user's original question. The LLM sees both its training knowledge <em>and</em> fresh retrieved context.</p>
-          <div class="rag-step-meta">
-            <span class="rag-meta-tag">Format: Alpaca Instruction Template</span>
-            <span class="rag-meta-tag">Context Window: 512 tokens</span>
-          </div>
-        </article>
-
-        <article class="rag-step-card glass-soft" data-rag-step="8">
-          <div class="rag-step-header">
-            <span class="rag-step-num-badge">08</span>
-            <span class="rag-step-icon">🤖</span>
-          </div>
-          <h4 class="rag-step-title">LLM Generation</h4>
-          <p class="rag-step-desc">The <strong>Code Llama</strong> (via Ollama API) / fine-tuned LLM generates a structured response grounded strictly in retrieved clinical context — eliminating hallucinations.</p>
-          <div class="rag-step-meta">
-            <span class="rag-meta-tag">LLM: Code Llama (Ollama)</span>
-            <span class="rag-meta-tag">Grounding: FAISS Context</span>
-          </div>
-        </article>
-      </div>
-
-      <!-- Interactive RAG Demo — Two-Column: Timeline + Live Step Viewer -->
-      <article class="panel glass rag-demo-panel">
-        <h3 class="widget-title">🔬 Live RAG Pipeline — Step-by-Step Execution</h3>
-        <p class="rag-demo-subtitle">Har step ke andar actually kya ho raha hai — wo dekho. Type a medical question and watch the entire pipeline execute with real data.</p>
-
-        <!-- Upload Document -->
-        <div class="rag-upload-section" id="ragUploadSection">
-          <p class="rdv-label" style="margin-top:0">📂 Step 0 — Inject Your Document</p>
-          <div class="rag-drop-zone" id="ragDropZone">
-            <input type="file" id="ragFileInput" accept=".jsonl,.txt,.json" hidden />
-            <div class="rag-drop-icon">📄</div>
-            <p class="rag-drop-text">Drop your <strong>.jsonl</strong> or <strong>.txt</strong> file here</p>
-            <p class="rag-drop-sub">or</p>
-            <button class="rag-browse-btn" id="ragBrowseBtn" type="button">Browse File</button>
-          </div>
-          <div class="rag-upload-status" id="ragUploadStatus" style="display:none">
-            <span class="rag-upload-icon">✅</span>
-            <span class="rag-upload-filename" id="ragUploadFilename"></span>
-            <span class="rag-upload-badge" id="ragUploadBadge"></span>
-            <button class="rag-clear-btn" id="ragClearBtn" type="button">✕ Clear</button>
-          </div>
-        </div>
-
-        <div class="rag-demo-input-row">
-          <input type="text" id="ragQueryInput" class="rag-demo-input" placeholder="e.g. What are the symptoms of a heart attack?" />
-          <button id="ragDemoRunBtn" class="rag-run-btn" type="button">
-            <span class="rag-btn-text">▶ Run Pipeline</span>
-          </button>
-        </div>
-
-
-        <!-- Two-column layout -->
-        <div class="rag-twocol">
-
-          <!-- LEFT: Timeline -->
-          <div class="rag-demo-timeline" id="ragDemoTimeline">
-            <div class="rag-tl-step" id="ragTL1">
-              <div class="rag-tl-marker"><span>1</span></div>
-              <div class="rag-tl-content">
-                <strong>Document Ingestion</strong>
-                <p id="ragTLText1" class="rag-tl-output">Waiting...</p>
-              </div>
-            </div>
-            <div class="rag-tl-step" id="ragTL2">
-              <div class="rag-tl-marker"><span>2</span></div>
-              <div class="rag-tl-content">
-                <strong>Text Chunking</strong>
-                <p id="ragTLText2" class="rag-tl-output">Waiting...</p>
-              </div>
-            </div>
-            <div class="rag-tl-step" id="ragTL3">
-              <div class="rag-tl-marker"><span>3</span></div>
-              <div class="rag-tl-content">
-                <strong>Embedding Generation</strong>
-                <p id="ragTLText3" class="rag-tl-output">Waiting...</p>
-              </div>
-            </div>
-            <div class="rag-tl-step" id="ragTL4">
-              <div class="rag-tl-marker"><span>4</span></div>
-              <div class="rag-tl-content">
-                <strong>Vector Store Indexing</strong>
-                <p id="ragTLText4" class="rag-tl-output">Waiting...</p>
-              </div>
-            </div>
-            <div class="rag-tl-step" id="ragTL5">
-              <div class="rag-tl-marker"><span>5</span></div>
-              <div class="rag-tl-content">
-                <strong>Query Embedding</strong>
-                <p id="ragTLText5" class="rag-tl-output">Waiting...</p>
-              </div>
-            </div>
-            <div class="rag-tl-step" id="ragTL6">
-              <div class="rag-tl-marker"><span>6</span></div>
-              <div class="rag-tl-content">
-                <strong>Semantic Retrieval</strong>
-                <p id="ragTLText6" class="rag-tl-output">Waiting...</p>
-              </div>
-            </div>
-            <div class="rag-tl-step" id="ragTL7">
-              <div class="rag-tl-marker"><span>7</span></div>
-              <div class="rag-tl-content">
-                <strong>Prompt Augmentation</strong>
-                <p id="ragTLText7" class="rag-tl-output">Waiting...</p>
-              </div>
-            </div>
-            <div class="rag-tl-step" id="ragTL8">
-              <div class="rag-tl-marker"><span>8</span></div>
-              <div class="rag-tl-content">
-                <strong>LLM Generation</strong>
-                <p id="ragTLText8" class="rag-tl-output">Waiting...</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- RIGHT: Step Detail Viewer -->
-          <div class="rag-detail-viewer" id="ragDetailViewer">
-            <div class="rdv-idle" id="rdvIdle">
-              <div class="rdv-idle-icon">⚡</div>
-              <p>Run the pipeline to see each step's live execution here.</p>
-            </div>
-            <!-- Step detail content injected here by JS -->
-            <div id="rdvContent" style="display:none;"></div>
-          </div>
-
-        </div><!-- end twocol -->
-
-        <div id="ragFinalOutput" class="rag-final-output" style="display:none;">
-          <h4>✅ Final RAG-Augmented Response</h4>
-          <pre id="ragFinalText" class="rag-final-text"></pre>
-        </div>
-      </article>
-    </section>
-
-    <section id="metrics" class="performance-section reveal" data-delay="520">
-      <h2 class="section-title">Performance Analytics (Test Set = 150)</h2>
-      <p class="section-sub">Impact of Constraints: lexical overlap vs structural adherence</p>
-      <div class="analytics-grid">
-        <article class="panel glass">
-          <h3 class="widget-title">Base vs Fine-Tuned Metric Comparison</h3>
-          <canvas id="evalChart" aria-label="Evaluation comparison chart"></canvas>
-        </article>
-        <article class="panel glass">
-          <h3 class="widget-title">Multi-Axis Impact Profile (Radar)</h3>
-          <canvas id="impactRadarChart" aria-label="Impact of constraints radar chart"></canvas>
-          <p id="radarMethodNote" class="chart-footnote">
-            ROUGE/BLEU/BERTScore from evaluation report. Structural axes are proxy scores from controlled prompt probes.
-          </p>
-        </article>
-        <aside class="insight-alert">
-          <h3>Insight Alert</h3>
-          <p id="insightBody"></p>
+          <div class="route-line"><i></i><span>Question</span><i></i><span>Risk policy</span><i></i><span>Grounded answer</span></div>
         </aside>
       </div>
-      <article class="panel glass research-logic-panel">
-        <h3 class="widget-title">Research-Logic Chart: Constraint-Aware ROUGE/BLEU</h3>
-        <canvas id="researchLogicChart" aria-label="Constraint-aware ROUGE and BLEU chart"></canvas>
-        <p class="chart-footnote">
-          Baseline shown in neutral gray. Domain-adapted bars include truncation annotation for low-VRAM regime.
-        </p>
-      </article>
     </section>
 
-    <section id="dynamics" class="dynamics-section reveal" data-delay="590">
-      <h2 class="section-title">Training Dynamics (Research View)</h2>
-      <p class="section-sub">Overfitting analysis with inflection-point checkpoint interpretation.</p>
-      <article class="panel glass">
-        <h3 class="widget-title">Training Loss vs Validation Loss (Step Chart)</h3>
-        <canvas id="trainingDynamicsChart" aria-label="Training dynamics chart"></canvas>
-        <p id="dynamicsSummary" class="chart-footnote"></p>
+    <section class="section shell" id="evaluation">
+      <div class="section-heading">
+        <div><p class="eyebrow">Exercises 1–4</p><h2>Controlled multi-model evaluation</h2></div>
+        <p>Same 25 questions, prompts, knowledge base, retrieval context, temperature, seed, generation limit, hardware, and task order for every model.</p>
+      </div>
+      <div class="proof-strip" id="validityStrip">
+        <div><strong>75 / 75</strong><span>medical runs complete</span></div>
+        <div><strong>3</strong><span>models compared</span></div>
+        <div><strong>25</strong><span>shared questions</span></div>
+        <div><strong>0</strong><span>missing model-task pairs</span></div>
+      </div>
+      <div class="model-grid" id="modelCards" aria-live="polite">
+        <div class="loading-card">Loading checked-in evaluation evidence…</div>
+      </div>
+      <article class="table-card">
+        <div class="card-head"><div><h3>Quantitative comparison</h3><p>Quality and performance values from the completed local Ollama run.</p></div><span class="evidence-badge">Recorded evidence</span></div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Model</th><th>Correctness</th><th>Relevance</th><th>Hallucination</th><th>Mean latency</th><th>Total tokens</th><th>Model VRAM</th></tr></thead>
+            <tbody id="metricsRows"><tr><td colspan="7">Loading results…</td></tr></tbody>
+          </table>
+        </div>
+        <p class="method-note" id="testPassNote">Test-pass rate status loading…</p>
       </article>
+      <div class="finding-grid">
+        <article><span class="finding-label quality">Quality leader</span><h3>StarCoder2 3B</h3><p>58% medical correctness, 80% relevance, and the lowest hallucination rate at 11.1%.</p></article>
+        <article><span class="finding-label speed">Latency leader</span><h3>Qwen2.5-Coder 3B</h3><p>9.26-second mean latency—10.19 seconds faster than StarCoder2, but 40 correctness points lower.</p></article>
+        <article><span class="finding-label tradeoff">Core finding</span><h3>Quality is not speed</h3><p>The fastest model was not the most accurate. Model selection requires an explicit quality–latency–resource trade-off.</p></article>
+      </div>
     </section>
 
-    <section id="persona" class="persona-section reveal" data-delay="610">
-      <h2 class="section-title">Persona Audit (Qualitative Aura)</h2>
-      <p class="section-sub">Behavioral comparison: generic baseline vs medical domain-adapted triage style.</p>
-      <article class="panel glass persona-panel">
-        <div class="persona-header">
-          <h3 class="widget-title">Chest Pain Emergency Probe</h3>
-          <span id="specializationGainBadge" class="specialization-badge">Specialization Gain +0.0%</span>
+    <section class="section section-tint" id="rag">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">Exercise 5</p><h2>Retrieval changes the evidence ceiling</h2></div>
+          <p>RAG quality is a chain: retrieval decides what is visible, context decides what is usable, and the model decides what evidence is actually applied.</p>
         </div>
-
-        <div class="persona-grid">
-          <article class="persona-card persona-generic">
-            <p class="persona-label">Generic/Unsafe</p>
-            <pre id="personaBaseSnippet" class="persona-copy"></pre>
-          </article>
-
-          <article class="persona-card persona-adapted">
-            <p class="persona-label">Medical Domain Adapted</p>
-            <pre id="personaTunedSnippet" class="persona-copy"></pre>
-          </article>
+        <div class="rag-chain" aria-label="RAG quality relationship">
+          <div><b>01</b><span>Question</span><small>Same user task</small></div><i></i>
+          <div><b>02</b><span>Retrieved context</span><small>Top-3 evidence</small></div><i></i>
+          <div><b>03</b><span>Model response</span><small>Grounded or unsupported</small></div><i></i>
+          <div><b>04</b><span>Measured quality</span><small>Facts, relevance, safety</small></div>
         </div>
-
-        <footer class="failure-footer">
-          <h4>Failure Analysis: Quantization Artifacts</h4>
-          <p id="quantizationFooter"></p>
-        </footer>
-      </article>
+        <div class="rag-stat-grid">
+          <article><span>Medical Recall@3</span><strong>1.000</strong><p>Every labelled medical source was retrieved at rank one.</p></article>
+          <article><span>Medical Precision@3</span><strong>0.333</strong><p>Only one of three returned documents was labelled relevant.</p></article>
+          <article><span>Repository Recall@3</span><strong>0.338</strong><p>Multi-file questions often required evidence outside the top three chunks.</p></article>
+          <article><span>Repository MRR</span><strong>0.875</strong><p>A relevant file usually appeared early, but not all required files appeared.</p></article>
+        </div>
+        <div class="case-grid">
+          <article><span class="case-status good">Retrieval helped</span><h3>MED-010</h3><p>StarCoder2 reached full required-fact coverage with RAG versus zero without retrieved context.</p></article>
+          <article><span class="case-status warn">Context was ignored</span><h3>MED-017</h3><p>The correct document ranked first, yet Code Llama used less of the required evidence than its baseline.</p></article>
+          <article><span class="case-status danger">Irrelevant context</span><h3>MED-022</h3><p>Forced retrieval supplied unrelated evidence for an out-of-scope question and all three models failed to abstain.</p></article>
+          <article><span class="case-status neutral">Multi-file miss</span><h3>REP-007</h3><p>Top-3 chunks came from one file and omitted other modules required for a complete repository answer.</p></article>
+        </div>
+      </div>
     </section>
 
-    <section id="clinical" class="clinical-section reveal" data-delay="615">
-      <h2 class="section-title">Triage Persona Success</h2>
-      <p class="section-sub">Clinical alignment snapshot: vague baseline response vs direct structured triage response.</p>
-      <article class="panel glass clinical-panel">
-        <div class="clinical-head">
-          <h3 class="widget-title">Response Diff (Chest Pain + Sweating Probe)</h3>
-          <span id="clinicalConsistencyBadge" class="clinical-badge">Patient-Safe Instruction Following: 92% Consistency</span>
-        </div>
-
-        <div class="clinical-grid">
-          <article class="clinical-card clinical-base">
-            <p class="clinical-label">Base Gemma: Vague &amp; Long</p>
-            <pre id="clinicalBaseDiff" class="clinical-copy"></pre>
-          </article>
-          <article class="clinical-card clinical-adapted">
-            <p class="clinical-label">Domain-Adapted Gemma: Direct &amp; Structured</p>
-            <pre id="clinicalTunedDiff" class="clinical-copy"></pre>
-          </article>
-        </div>
-
-        <p id="clinicalAuditNote" class="chart-footnote"></p>
-      </article>
-    </section>
-
-    <section id="system" class="constraints-section reveal" data-delay="620">
-      <article class="panel glass constraints-panel">
-        <h2>System Constraints</h2>
-        <p class="muted">Memory-saving choices used to avoid OOM.</p>
-        <ul class="constraint-list">
-          <li><span>max_length</span><strong>256</strong></li>
-          <li><span>batch size</span><strong>1</strong></li>
-          <li><span>grad accumulation</span><strong>16</strong></li>
-          <li><span>optimizer</span><strong>paged 8-bit</strong></li>
-          <li><span>checkpointing</span><strong>enabled</strong></li>
-        </ul>
-      </article>
-    </section>
-
-    <section id="playground" class="playground-section reveal" data-delay="760">
-      <h2 class="section-title">Live Inference Playground</h2>
-      <p class="section-sub">Run a side-by-side simulation to demonstrate behavioral differences between the base and adapted models.</p>
-
-      <article class="playground-shell glass">
-        <label class="playground-label" for="inferenceInput">Input Area</label>
-        <textarea
-          id="inferenceInput"
-          class="inference-input"
-          placeholder="Enter a medical query (e.g., 'I have sudden chest pain and sweating...')"
-        ></textarea>
-
-        <div class="action-row">
-          <button id="runInferenceBtn" class="run-btn" type="button">
-            <span class="btn-text">▶ Run Inference (Compare Models)</span>
-          </button>
-        </div>
-
-        <div class="output-grid">
-          <article class="output-panel base-panel">
-            <h3>Base Model (Gemma-2B-it)</h3>
-            <div id="baseOutput" class="output-content">
-              <p class="placeholder-copy">Submit a query to generate a baseline response.</p>
+    <section class="section shell" id="safety">
+      <div class="section-heading">
+        <div><p class="eyebrow">Risk-aware AI operations</p><h2>Test the live safety router</h2></div>
+        <p>The router classifies operational risk—not medical condition—then selects a standard, grounded fallback, strict validation, or emergency safety path.</p>
+      </div>
+      <div class="policy-row">
+        <div><span class="risk-dot low"></span><b>Low</b><small>Standard RAG</small></div>
+        <div><span class="risk-dot medium"></span><b>Medium</b><small>RAG + symptom warning</small></div>
+        <div><span class="risk-dot high"></span><b>High</b><small>Strict grounding + review</small></div>
+        <div><span class="risk-dot emergency"></span><b>Emergency</b><small>Block generation + urgent guidance</small></div>
+      </div>
+      <div class="playground-grid">
+        <article class="ask-card">
+          <form id="askForm">
+            <label for="question">Ask PulseMirror</label>
+            <textarea id="question" rows="5" placeholder="Example: What lifestyle habits support healthy sleep?" required></textarea>
+            <div class="example-list" aria-label="Example questions">
+              <button type="button" data-question="What lifestyle habits support healthy sleep?">Wellness</button>
+              <button type="button" data-question="What symptoms can occur with high blood pressure?">Symptoms</button>
+              <button type="button" data-question="Should I stop taking my prescription medication?">Medication</button>
+              <button type="button" data-question="I have chest pain and difficulty breathing">Emergency</button>
             </div>
-          </article>
+            <button class="button primary submit-button" type="submit" id="askButton">Run risk-aware pipeline</button>
+          </form>
+        </article>
+        <article class="response-card" id="responseCard" aria-live="polite">
+          <div class="response-empty" id="responseEmpty"><span>PM</span><h3>Ready for a live request</h3><p>Your answer, selected route, safety flags, latency, and retrieved sources will appear here.</p></div>
+          <div id="responseContent" hidden>
+            <div class="response-meta"><span id="riskBadge"></span><span id="routeBadge"></span><span id="latencyBadge"></span></div>
+            <h3>Grounded response</h3>
+            <div class="answer" id="answerText"></div>
+            <div class="source-panel" id="sourcePanel"><button type="button" id="sourceToggle" aria-expanded="false">View retrieved evidence <span>+</span></button><div id="sourceList" hidden></div></div>
+          </div>
+        </article>
+      </div>
+    </section>
 
-          <article class="output-panel tuned-output-panel">
-            <h3>Domain-Adapted Adapter (Medical LoRA)</h3>
-            <div id="tunedOutput" class="output-content">
-              <p class="placeholder-copy">Submit a query to generate a structured medical response.</p>
-            </div>
-          </article>
+    <section class="section section-dark" id="operations">
+      <div class="shell">
+        <div class="section-heading inverse">
+          <div><p class="eyebrow">AI observability</p><h2>Operational behavior, not DevOps decoration</h2></div>
+          <p>These counters are produced by real requests in the current service process. They reset when the free service restarts.</p>
         </div>
-      </article>
+        <div class="ops-grid">
+          <article><span>Requests observed</span><strong id="obsRequests">0</strong><small>Current process window</small></article>
+          <article><span>Average latency</span><strong id="obsLatency">0 ms</strong><small>Risk-aware endpoint</small></article>
+          <article><span>Fallback rate</span><strong id="obsFallback">0%</strong><small>Primary model unavailable</small></article>
+          <article><span>Safety flag rate</span><strong id="obsSafety">0%</strong><small>Requests receiving a guardrail</small></article>
+        </div>
+        <div class="operations-lower">
+          <article class="route-card"><div class="card-head dark"><div><h3>Traffic routes</h3><p>Observed routing decisions</p></div><button id="refreshOps" type="button">Refresh</button></div><div id="routeBars" class="route-bars"><p>No live requests yet.</p></div></article>
+          <article class="events-card"><div class="card-head dark"><div><h3>Recent decisions</h3><p>No patient text is retained</p></div></div><div id="eventList" class="event-list"><p>No live requests yet.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell repo-section">
+      <div class="section-heading">
+        <div><p class="eyebrow">Exercise 6</p><h2>Repository-level understanding</h2></div>
+        <p>Eight probes tested relationships across ingestion, serving, client code, model configuration, training, deployment, tests, and fallback behavior.</p>
+      </div>
+      <div class="repo-grid">
+        <article><strong>19</strong><span>files indexed</span></article><article><strong>235</strong><span>repository chunks</span></article><article><strong>24 / 24</strong><span>model-task runs</span></article><article><strong>0.338</strong><span>mean Recall@3</span></article>
+      </div>
+      <div class="limitation"><b>Measured limitation</b><p>A flat chunk index can retrieve relevant files, but it cannot build call graphs, resolve symbols, or guarantee full impact analysis. That limitation is evidence for repository-aware navigation—not something the dashboard hides.</p></div>
     </section>
   </main>
 
+  <footer><div class="shell"><div class="brand"><span class="brand-mark"><span></span></span><span>PulseMirror</span></div><p>Week 4 reproducible medical RAG evaluation · 2026</p><a href="https://github.com/asadahmad23cse/aidevop" target="_blank" rel="noreferrer">GitHub repository</a></div></footer>
   <script src="./app.js"></script>
 </body>
 </html>
