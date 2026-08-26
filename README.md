@@ -1,4 +1,6 @@
-# Medical Question Answering LLM & RAG Application (Exercises 1–5)
+# Medical Question Answering LLM & RAG Application
+
+> **Week 4 complete:** See the [actual quantitative results](docs/WEEK4_RESULTS.md) and [reproduction/metric methodology](docs/WEEK4_EVALUATION.md). The executed evidence includes 75 medical model–task records, 24 repository-understanding records, complete review CSVs, and full RAG/no-RAG traces under `outputs/week4/`.
 
 This repository contains the complete progressive implementation of a domain-specific Healthcare LLM & RAG application across all 5 lab exercises.
 

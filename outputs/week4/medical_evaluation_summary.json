@@ -1,0 +1,784 @@
+{
+  "validity": {
+    "models": [
+      "codellama_7b",
+      "qwen25_coder_3b",
+      "starcoder2_3b"
+    ],
+    "tasks": [
+      "MED-001",
+      "MED-002",
+      "MED-003",
+      "MED-004",
+      "MED-005",
+      "MED-006",
+      "MED-007",
+      "MED-008",
+      "MED-009",
+      "MED-010",
+      "MED-011",
+      "MED-012",
+      "MED-013",
+      "MED-014",
+      "MED-015",
+      "MED-016",
+      "MED-017",
+      "MED-018",
+      "MED-019",
+      "MED-020",
+      "MED-021",
+      "MED-022",
+      "MED-023",
+      "MED-024",
+      "MED-025"
+    ],
+    "expected_records": 75,
+    "actual_records": 75,
+    "missing_pairs": [],
+    "duplicate_pairs": [],
+    "prompt_mismatch_tasks": [],
+    "retrieval_context_mismatch_tasks": [],
+    "complete_and_comparable": true
+  },
+  "models": {
+    "codellama_7b": {
+      "record_count": 25,
+      "quality": {
+        "automated_fact_coverage_proxy": 0.32666666666666666,
+        "automated_relevance_proxy": 0.7263156843156843,
+        "automated_unsupported_sentence_rate_proxy": 0.46558730158730155,
+        "out_of_scope_abstention_accuracy": 0.0,
+        "retrieval": {
+          "precision_at_k": 0.3333333333333333,
+          "recall_at_k": 1.0,
+          "reciprocal_rank": 1.0,
+          "hit_at_k": 1.0,
+          "ndcg_at_k": 1.0
+        },
+        "manual_adjudication": {
+          "correctness_accuracy": 0.18,
+          "relevance": 0.72,
+          "hallucination_rate": 0.4444444444444444,
+          "reviewed_records": 25
+        },
+        "test_pass_rate": null,
+        "test_pass_rate_note": "Not applicable: this benchmark contains question-answering and code-understanding tasks, not generated-code tasks."
+      },
+      "performance": {
+        "latency_ms_mean": 42314.96413200002,
+        "latency_ms_median": 41365.2304999996,
+        "latency_ms_p95": 55660.834399999294,
+        "prompt_tokens_mean": 884.24,
+        "completion_tokens_mean": 204.12,
+        "total_tokens": 27209,
+        "system_cpu_percent_mean": 23.004493650793652,
+        "system_memory_used_mb_peak_mean": 15149.730625,
+        "ollama_rss_mb_peak_mean": 19.51203125,
+        "gpu_utilization_percent_peak_mean": null,
+        "gpu_memory_used_mb_peak_mean": null,
+        "ollama_model_vram_mb_mean": 5710.119998931885
+      }
+    },
+    "starcoder2_3b": {
+      "record_count": 25,
+      "quality": {
+        "automated_fact_coverage_proxy": 0.62,
+        "automated_relevance_proxy": 0.7066002135119782,
+        "automated_unsupported_sentence_rate_proxy": 0.14404995004995005,
+        "out_of_scope_abstention_accuracy": 0.0,
+        "retrieval": {
+          "precision_at_k": 0.3333333333333333,
+          "recall_at_k": 1.0,
+          "reciprocal_rank": 1.0,
+          "hit_at_k": 1.0,
+          "ndcg_at_k": 1.0
+        },
+        "manual_adjudication": {
+          "correctness_accuracy": 0.58,
+          "relevance": 0.8,
+          "hallucination_rate": 0.11057692307692307,
+          "reviewed_records": 25
+        },
+        "test_pass_rate": null,
+        "test_pass_rate_note": "Not applicable: this benchmark contains question-answering and code-understanding tasks, not generated-code tasks."
+      },
+      "performance": {
+        "latency_ms_mean": 19444.54298399971,
+        "latency_ms_median": 20760.504799996852,
+        "latency_ms_p95": 25687.1450000006,
+        "prompt_tokens_mean": 798.28,
+        "completion_tokens_mean": 181.36,
+        "total_tokens": 24491,
+        "system_cpu_percent_mean": 8.52,
+        "system_memory_used_mb_peak_mean": 11290.62421875,
+        "ollama_rss_mb_peak_mean": 25.0165625,
+        "gpu_utilization_percent_peak_mean": null,
+        "gpu_memory_used_mb_peak_mean": null,
+        "ollama_model_vram_mb_mean": 1789.019998550415
+      }
+    },
+    "qwen25_coder_3b": {
+      "record_count": 25,
+      "quality": {
+        "automated_fact_coverage_proxy": 0.2533333333333333,
+        "automated_relevance_proxy": 0.7712380952380953,
+        "automated_unsupported_sentence_rate_proxy": 0.23942857142857144,
+        "out_of_scope_abstention_accuracy": 0.5,
+        "retrieval": {
+          "precision_at_k": 0.3333333333333333,
+          "recall_at_k": 1.0,
+          "reciprocal_rank": 1.0,
+          "hit_at_k": 1.0,
+          "ndcg_at_k": 1.0
+        },
+        "manual_adjudication": {
+          "correctness_accuracy": 0.18,
+          "relevance": 0.8,
+          "hallucination_rate": 0.27058823529411763,
+          "reviewed_records": 25
+        },
+        "test_pass_rate": null,
+        "test_pass_rate_note": "Not applicable: this benchmark contains question-answering and code-understanding tasks, not generated-code tasks."
+      },
+      "performance": {
+        "latency_ms_mean": 9257.018052000058,
+        "latency_ms_median": 8840.081499998632,
+        "latency_ms_p95": 13986.753500001943,
+        "prompt_tokens_mean": 769.28,
+        "completion_tokens_mean": 78.76,
+        "total_tokens": 21201,
+        "system_cpu_percent_mean": 9.454,
+        "system_memory_used_mb_peak_mean": 12011.4025,
+        "ollama_rss_mb_peak_mean": 35.63921875,
+        "gpu_utilization_percent_peak_mean": null,
+        "gpu_memory_used_mb_peak_mean": null,
+        "ollama_model_vram_mb_mean": 2055.3299989700317
+      }
+    }
+  },
+  "analysis": [
+    "Highest automated required-fact coverage: starcoder2_3b (0.620).",
+    "Lowest unsupported-sentence proxy: starcoder2_3b (0.144).",
+    "Lowest mean response latency: qwen25_coder_3b (9257.0 ms).",
+    "Highest evidence-adjudicated correctness: starcoder2_3b (0.580).",
+    "Highest evidence-adjudicated relevance: starcoder2_3b (0.800).",
+    "Lowest evidence-adjudicated hallucination rate: starcoder2_3b (0.111).",
+    "Lowest Ollama model allocation on the Intel Arc iGPU: starcoder2_3b (1789.0 MB).",
+    "A quality-latency trade-off is observed: starcoder2_3b gains 0.367 fact-coverage points over qwen25_coder_3b, while taking 10187.5 ms more per response on average."
+  ],
+  "rag_traces": [
+    {
+      "model": "codellama_7b",
+      "task_id": "MED-017",
+      "question": "My fiance is 78 and he is allergic to soy. He gets itchy after eating seeds and nuts and some fried foods. My question is what is the best to use for frying? I use vegetable oil most often. I don t fry many foods. Is shortening a better choice? What works best on the itchy rash that he gets? Thank you",
+      "retrieved_context": [
+        {
+          "chunk_id": 20,
+          "doc_id": 17,
+          "score": 0.9182820320129395,
+          "text": "Q: My fiance is 78 and he is allergic to soy. He gets itchy after eating seeds and nuts and some fried foods. My question is what is the best to use for frying? I use vegetable oil most often. I don t fry many foods. Is shortening a better choice? What works best on the itchy rash that he gets? Thank you A: Hello, The frequent itching after eating seeds and nuts and other stuff indicates allergy to that food and allergy leads to a reaction which may cause rash, itching and burning sensation in skin etc. symptoms. So try ti*You can use olive oil, sesame oil, coconut oil, butter etc. for frying instead of vegetable oil for frying.*On itchy rash apply lactocalamine lotion as it will help in smoothening of skin. Also give him anti-allergic tablet too after getting a rash, you can give him a tab. Cetrizine in a stat dose.*If problem is troubling him more than do visit a nearby dermatologist.*I hope you find my answer helpful. Thank you.",
+          "source": null
+        },
+        {
+          "chunk_id": 1817,
+          "doc_id": 1336,
+          "score": 0.44915246963500977,
+          "text": "Q: hi doc ... i have a case of Shita Pita (pitt) i had some symptoms over a period of 5-6 yrs but nothing serious. last 10 days i developed a severe problem and have been taking Allegra 180mg - 3 tablets a day, LCZ tab 1 daily. it has helped me but it is re occuring every now and then..... the itching and skin rashes are still there however not very severe. pls let me know what auryvedic medicine or home remedy i should use A: Hall, Manoj Gautam, Our skin filled with special cells of the immune system. These cells protect the skin and body against viruses, bacteria and other threats. A rash indicates an abnormal change in skin color or texture. Rashes are usually, caused by skin inflammation. There are many type of rashes including eczema. In AYURVEDA; Apply NEED OIL. Need preparations can get rid of fungal infections effectively, quickly, and safely. Apply SANDAL OIL. Sandal wood is good for all skin types. Apply ALOE VERA GEL directly to any areas of skin rash for a",
+          "source": null
+        },
+        {
+          "chunk_id": 1464,
+          "doc_id": 1082,
+          "score": 0.43104088306427,
+          "text": "topical steroid e.g., either Clobetasol Propionate 0.05% ointment or Clobetasol Propionate 0.05% ointment, twice daily for 2-4 weeks. I also suggest you to take an oral antihistamine e.g. Tab Cetirizine once a day for symptomatic relief from itching. Hope I have answered your query. Let me know if you need any more assistance.",
+          "source": null
+        }
+      ],
+      "response_with_rag": "The best choice for frying is shortening. Shortening is a type of vegetable oil that is made from vegetable sources such as corn, soybean, or sunflower oil. It is a good option for frying because it has a lower smoke point than vegetable oil, which means it can be heated to a higher temperature without burning or smoking. This makes it a good choice for frying foods that are high in fat, such as fried foods.\n\nAs for the itchy rash, it is likely caused by an allergic reaction to the soy that your fiance is allergic to. There are several treatments that can help alleviate the itching and rash, including:\n\n* Lactocalamine lotion: This is a topical cream that contains lactic acid, which helps to smooth the skin and reduce itching.\n* Antihistamine tablets: These tablets can help to relieve itching and reduce the risk",
+      "response_without_rag": "It's important to note that soy is a common allergen, and it's important to take precautions to avoid exposure to it. If your fianc\u00e9 is allergic to soy, it's best to avoid using soy-based products, including soy sauce, miso, and tempeh.\n\nFor frying, you can use vegetable oil or shortening, but it's important to note that shortening is a processed food and may contain added fats and preservatives. It's also important to note that some shortening products may contain soy-based ingredients.\n\nIf your fianc\u00e9 is experiencing an itchy rash after eating soy-containing foods, it's possible that he may be experiencing an allergic reaction. In this case, it's important to monitor his symptoms and seek medical attention if they worsen or if he experiences any other symptoms such as difficulty breathing, swelling of the face",
+      "rag_fact_coverage_proxy": 0.16666666666666666,
+      "baseline_fact_coverage_proxy": 0.3333333333333333,
+      "fact_coverage_delta": -0.16666666666666666,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "codellama_7b",
+      "task_id": "MED-010",
+      "question": "I smashed my shin about 2 weeks ago & now that the swelling is going down, i can feel what I would describe as a dent in the bone. It doesnt hurt when I stand on it, but if I walk on it by the end of the day it is sore. If I elevate my legs horizontally on a table & try to let the heel support the weight, I can feel alot of soreness in the spot where I feel the dent. Was hoping just a deep bone bruise.",
+      "retrieved_context": [
+        {
+          "chunk_id": 13,
+          "doc_id": 10,
+          "score": 0.9319233894348145,
+          "text": "Q: I smashed my shin about 2 weeks ago & now that the swelling is going down, i can feel what I would describe as a dent in the bone. It doesnt hurt when I stand on it, but if I walk on it by the end of the day it is sore. If I elevate my legs horizontally on a table & try to let the heel support the weight, I can feel alot of soreness in the spot where I feel the dent. Was hoping just a deep bone bruise. A: Hi What you have probably been a bruise in the soft tissues covering the bone or bone. Shin being sub cutaneous bone is more prone to bruise. The dent you are feeling is not a dent in the bone but in the soft tissues and the swelling must be increasing in the evening causing more soreness. Use cold compresses and a crepe bandage to support the bruised area. It might take 3-6 weeks for full recovery",
+          "source": null
+        },
+        {
+          "chunk_id": 1593,
+          "doc_id": 1175,
+          "score": 0.6877325177192688,
+          "text": "Q: I got kicked in my shin about 5 inches above my right ankle, it was the size of an egg and had it bruised as well as my ankle and heel, now the swelling is gone, now there is a small lump where I got kicked and it hurts when I touch it, this happened 2 weeks ago A: Hi, dairy have gone through your question. I can understand your concern. You have history of trauma. So you may have hematoma formation. You should go for x-ray local part to rule out bone damage. Take anti-inflammatory and analgesic Chat Doctor. Hematoma will disappear within few days. If you have bony injury then you should consult your doctor and take treatment accordingly. Hope I have answered your question, if you have doubt then I will be happy to answer. Thanks for using Chat Doctor. Wish you a very good health.",
+          "source": null
+        },
+        {
+          "chunk_id": 298,
+          "doc_id": 224,
+          "score": 0.6586601734161377,
+          "text": "Q: Hello, I banged my shin very hard on a metal bar about 5 weeks ago. There is still some swelling. About 1/8 - 1/4 of an inch larger than the other shin. A small red spot on the impact area. Been icing and taking baby Bayer. It will go down, but through out the day, it worsens. Is this normal? A: Hello, As what I see with the history is there will be some hairline fracture or muscle rupture due to direct impact over the shin. Shin is a very sensitive area with very thin muscles, or I would say the fascia more which doesn't safeguard the tibia like how other muscles help for other regions. I would advise you to take up an x-ray as it will definitely help us to understand if there is any hairline fracture. Because fracture in lower limbs shouldn't be ignored by any or all means as they are weight-bearing joints Meantime till you meet up an orthopedist, you can do hot water fomentation and rest the limb over a pillow. Hope I",
+          "source": null
+        }
+      ],
+      "response_with_rag": "It is likely that you have a deep bone bruise, rather than a dent in the bone. The swelling is going down, but the soreness you are feeling is likely due to the bruise. Elevating your legs horizontally on a table and trying to let the heel support the weight can exacerbate the soreness.\n\nThe best course of action would be to apply a cold compress to the affected area to reduce swelling and inflammation. You can also try using an ice pack or a cold compress wrapped in a cloth to reduce heat and inflammation.\n\nIt is important to note that if the bruise is severe, or if you experience any signs of infection such as increased pain, swelling, redness, or pus, you should seek medical attention.\n\nIn the meantime, you can try to rest the affected area and avoid putting weight on it. If the bruise is severe or if you experience any signs of infection, you should seek medical attention.",
+      "response_without_rag": "It sounds like you may have a deep bone fracture, specifically a displaced fracture, which is a type of fracture where the bone is broken but not shattered. This type of fracture can cause a dent in the bone and may be accompanied by swelling and pain.\n\nIt's important to seek medical attention as soon as possible to receive proper diagnosis and treatment. A healthcare professional can perform a physical examination and imaging tests, such as X-rays or an ultrasound, to confirm the diagnosis and determine the severity of the fracture.\n\nIn the meantime, you can try to reduce the pain and swelling by elevating your leg above the level of your heart, taking over-the-counter pain medication such as ibuprofen or acetaminophen, and avoiding activities that may exacerbate the injury. It's also important to follow the healthcare professional's instructions for managing the fracture and any",
+      "rag_fact_coverage_proxy": 0.16666666666666666,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.16666666666666666,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "codellama_7b",
+      "task_id": "MED-022",
+      "question": "What is the recommended paediatric dose of amoxicillin for acute otitis media?",
+      "retrieved_context": [
+        {
+          "chunk_id": 1835,
+          "doc_id": 1350,
+          "score": 0.5503829717636108,
+          "text": "Q: Hi ...I have a 16 month old with an ear infection, nausea/vomiting, fever (100.9 - 104.9) was seen on the 1/19 by Dr. was prescribed Augmentin 250mg TIB. Tylenol allergy also allergic reaction to flu vaccine. Administering ibuprophen Q4-6 hrs. refusing fluids. Some glanular swelling in odd places of the neck...I m assuming glandular??? I feel the inflammation is to low on the sides of the neck...they are not fixated..feel more cyst like... any suppositories OTC for the nausea/fever? A: Hi, From the history, it seems your child has upper respiratory tract infection. The glandular swelling is probably reactive lymphadenitis, which settles as infection subsides. As you have already started on oral antibiotics, continue and complete the course as advised by your pediatrician. If it is a bacterial infection, it should respond to antibiotics. If viral infection, can give broken every 8th hourly or metal if not responding. Consult your pediatrician before starting this Chat Doctor. Tepid sponging with warm water may help little. Keep your child well HY",
+          "source": null
+        },
+        {
+          "chunk_id": 1283,
+          "doc_id": 950,
+          "score": 0.5221704244613647,
+          "text": "can be given in the dose of 15\\u00a0mg/kg/dose (max ceiling dose 500\\u00a0mg) every 4-6th hourly, that too only if fever is more than 100F. I suggest not using combination medicines for fever, especially with Paracetamol. Warm saline gargles will be soothing and will give a lot of relief if the kid can do that. Regards -",
+          "source": null
+        },
+        {
+          "chunk_id": 784,
+          "doc_id": 581,
+          "score": 0.5000197887420654,
+          "text": "Q: i had cough and cold for about fortnight and in one ear it looks some water has gone and doctor told me that there is infection in ear due to longer period clod and cough. Due to this i am facing hearing problem.Doctor advised to take one AZIlide 500 capsule. for six datys Whether it will have any side effects and what benefit I will get from this medicine. A: Hello, Welcome to Chat Doctor, As you had upper respiratory tract infection which was followed by ear infection for which your doctor has advised an azithromycin antibiotic which is an excellent medication against these symptoms. The symptoms will improve in few days. In addition to this I would suggest you to follow1. Prevent entry of water into ears.2. Continue the same antibiotic.3. Oral NSAIDs like Tab Ibuprofen, will help to reduce the pain and inflammation.4. I would suggest you to consult ENT surgeon for Endoscopy examination. Thank you.",
+          "source": null
+        }
+      ],
+      "response_with_rag": "The recommended pediatric dose of amoxicillin for acute otitis media is 500 mg/kg every 4-6 hours, with a maximum dose of 500 mg/kg. This is based on the information provided in the retrieved context, which suggests that the recommended dose for children is 15 mg/kg/dose (max ceiling dose 500 mg) every 4-6 hours. However, it is important to note that the specific dose and duration of treatment may vary depending on the individual child's needs and the severity of the infection. It is always best to consult with a pediatrician or other qualified healthcare professional for personalized medical advice.",
+      "response_without_rag": "The recommended paediatric dose of amoxicillin for acute otitis media is 500-875 mg/kg every 8-12 hours for the first 2-3 days, followed by 500-1000 mg/kg every 12 hours for the next 2-3 days. It is important to note that the dose may need to be adjusted based on the child's weight and the severity of the infection. It is also important to note that this is a general guideline and the dose may need to be adjusted based on the child's individual needs. It is important to consult with a healthcare professional to determine the appropriate dose for the child.",
+      "rag_fact_coverage_proxy": 0.0,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.0,
+      "relationship_analysis": "No labelled answer exists, but the model failed to abstain; forced retrieval likely supplied misleading context."
+    },
+    {
+      "model": "codellama_7b",
+      "task_id": "MED-025",
+      "question": "What is the exact interaction between apixaban and a new experimental drug called ZX-417?",
+      "retrieved_context": [
+        {
+          "chunk_id": 1853,
+          "doc_id": 1362,
+          "score": 0.4437107443809509,
+          "text": "Q: I am suffering loose motions and stomach ache. I took eldoper & norflox - tz. I am allergic to sulpha drug. But the pharmacist said none of these are sulpha drugs. But I got allergy on my lips and fingers. I would like to know which one of the above tablets caused the problem or what content. So that I can avoid in the future.To treat the allergy I took Avil 25 and Ebast - DC an hour ago, but the allergy symptoms are still there. Do I need to take any other medicine? A: Hi, Norflox TZ could cause.hives; difficult breathing; swelling of your face, lips, tongue, or throat. So avoid this antibiotic in the future....you should also avoid similar antibiotics of the category such as ciprofloxacin, gemifloxacin, levofloxacin), moxifloxacin, ofloxacin, and others. Coming to what you have taken you have taken Tab Evil and Tab East DCE bast - DC contains basting 10 mg and phenylephrine HY Chat Doctor.",
+          "source": null
+        },
+        {
+          "chunk_id": 1885,
+          "doc_id": 1386,
+          "score": 0.41299015283584595,
+          "text": "Q: I am asthmatic since early childhood ,Now since one year I have devoloped chronic urticaria and I have raised IGE Levels normal value is 190 and mine are 350 .What kind of treatment I should have.Im taking Zantac 1BD Fexet 180mg 1 OD Softin 1 HS Zatofen 1BD is this is a right treatment? A: Hi, Already you use Fexofenadine 180 mg (histamine 1 blocker) why you again take soften (Loratadine) also histamine 1 blocker. Tab Sanitizing (Santa) is a histamine 2 receptor blockers. Both fexofenadine and Sanitizing have synergistic effects on urticaria. Respond to treatment may take 4 to 6 weeks. Hope I have answered your query. Let me know if I can assist you further. Take care Chat Doctor.",
+          "source": null
+        },
+        {
+          "chunk_id": 604,
+          "doc_id": 453,
+          "score": 0.39255204796791077,
+          "text": "Q: Sir, iam arjun and im suffering from sleeplessness and some mental worries from last 3 years. My Psychiartic doctor first suggested Zepam for 30 days in the beginning stage. afterthat i use to take it when i feel iam not getting inough sleep. As with fear that i may addict to it i stopped. My the problem of mental worry and sleepness is again effecting me now. So my doctor suggested Nexitoplus for 30 days. My fear is, is there is any side effects and eddictable problem with it. please give me solution to my mental problem. A: HiT hanks for using Chat Doctor Team contains clonazepam and next plus contains Escitalopram with clonazepam. You can take it. It would help to control anxiety symptoms and help you to get sleep. Try to take Next rather than next plus. You could become addict of next plus due to clonazepam. Escitalopram does not have any major side effect. You can take it without any worry. You can also try relaxation exercise like JPMR or deep breathing exercise. In case, you",
+          "source": null
+        }
+      ],
+      "response_with_rag": "The exact interaction between apixaban and ZX-417 is not specified in the retrieved context. However, it is important to note that ZX-417 is a new experimental drug and its interactions with other medications, including apixaban, are not well understood. Therefore, it is recommended to consult with a healthcare professional before taking ZX-417 while also taking apixaban.",
+      "response_without_rag": "Apixaban and ZX-417 are both antithrombin III (ATIII) inhibitors, which are used to prevent and treat blood clots. The exact interaction between these two drugs is not well understood, as they have different mechanisms of action and are used for different purposes.\n\nApixaban is a prothrombin inhibitor, which means it prevents the conversion of thrombin into prothrombin, a molecule that is essential for the formation of blood clots. Apixaban is used to prevent and treat deep vein thrombosis (DVT) and pulmonary embolism (PE).\n\nZX-417, on the other hand, is a direct thrombin inhibitor, which means it inhibits the activity of thrombin, a molecule that is involved in the formation of blood clots. ZX-417 is used to prevent and treat DVT and PE.\n\nThe interaction between apix",
+      "rag_fact_coverage_proxy": 0.0,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.0,
+      "relationship_analysis": "No labelled answer exists, but the model failed to abstain; forced retrieval likely supplied misleading context."
+    },
+    {
+      "model": "codellama_7b",
+      "task_id": "MED-001",
+      "question": "Dear Doctor, our baby girl is two and a half years old and started vomitting two days ago accompnied by fever.we gave o r s and crocin .now fever has gone and vomitting stopped but loose motion has started.(twice this morning)",
+      "retrieved_context": [
+        {
+          "chunk_id": 0,
+          "doc_id": 1,
+          "score": 0.7838689684867859,
+          "text": "Q: Dear Doctor, our baby girl is two and a half years old and started vomitting two days ago accompnied by fever.we gave o r s and crocin .now fever has gone and vomitting stopped but loose motion has started.(twice this morning) A: Hi... Thank you for consulting in Chat Doctor. It seems your kid is having viral diarrhea. Once it starts it will take 5-7 days to completely get better. Unless the kids having low urine output or very dull or excessively sleepy or blood in motion or green bilious vomiting...you need not worry. There is no need to use antibiotics unless there is blood in the motion. Antibiotics might worsen if unnecessarily used causing antibiotic associated diarrhea. I suggest you use zinc supplements (Z&D Chat Doctor.",
+          "source": null
+        },
+        {
+          "chunk_id": 909,
+          "doc_id": 677,
+          "score": 0.7158548831939697,
+          "text": "Q: my son is 27 month. day before yesterday he got a fever(never had fever after birth) & throat infection(as Doc said). he was given Augmentine & Vit C & some anti allergy syrup. just today he started loose motion & surely first time after he born as he always maintain a miraculous stomach condition..please answe & suggest A: Hai what about fever condition is child still having fever and cold and cough.? Are u giving treatment.?please give sachet.dollar -z in 2 spoon water spoon mixture.3 times in day. And give ORS powder mix in water. Syp.metronidazole 5ml two times. Probiotic and prebiotic powder .give plenty of ORS if severe loose motions see for urine present or absent. If child not passing urine that is emergency;see for skin turgor",
+          "source": null
+        },
+        {
+          "chunk_id": 1190,
+          "doc_id": 885,
+          "score": 0.6944782733917236,
+          "text": "Q: My 3 year old daughter has thrown up the past 3 mornings within an hour of waking up. After she vomits she feels fine, eats well, and has no problems ths rest of the day. The only other symptom I noticed was that this morning she had a red rash on her thighs and around where her underwear sit, but that also disappeared right after she vomitted. Any ideas? A: Hi... Thank you for consulting in Chat Doctor.BY WHAT YOU QUOTE IT LOOKS LIKE A VIRAL ERYTHEMATOUS ILLNESS. Skin conditions are best diagnosed only after seeing directly. I suggest you to upload photographs of the same on this website, so that I can guide you scientifically. Hope my answer was helpful for you. I am happy to help any time. Further clarifications and consultations on Chat Doctor are welcome. If you do not have any clarifications, you can close the discussion and rate the answer. Wish your kid good health.",
+          "source": null
+        }
+      ],
+      "response_with_rag": "Based on the information provided, it seems that your baby girl may have viral diarrhea. Viral diarrhea is a common condition in infants and young children, caused by a viral infection that can be spread through close contact with an infected person. The symptoms you described, including fever, vomiting, and loose motion, are consistent with viral diarrhea.\n\nIt is important to note that if your baby's loose motion is severe or if she is not passing urine, it is important to seek medical attention immediately. Additionally, if your baby has a fever that is not responding to treatment or if she is experiencing other symptoms such as vomiting, diarrhea, or abdominal pain, it is important to consult with a healthcare professional for proper diagnosis and treatment.\n\nIn the meantime, you can try to manage your baby's symptoms by providing her with plenty of fluids, such as breast milk or formula, and ensuring that she is",
+      "response_without_rag": "It's possible that your daughter may have a viral gastroenteritis, which is an infection of the stomach and intestines. The symptoms you've described, including vomiting, diarrhea, and fever, are consistent with this condition.\n\nIt's important to note that loose motions, also known as abdominal pain, can be a symptom of a variety of conditions, including gastroenteritis, appendicitis, and irritable bowel syndrome. However, in this case, the loose motions you've described are likely related to the gastroenteritis.\n\nIt's important to monitor your daughter's symptoms and seek medical attention if they worsen or if she experiences any other concerning symptoms, such as difficulty breathing, chest pain, or severe abdominal pain. Your doctor may recommend further testing, such as a stool culture or blood tests, to determine the cause of her symptoms and appropriate treatment.",
+      "rag_fact_coverage_proxy": 0.5,
+      "baseline_fact_coverage_proxy": 0.3333333333333333,
+      "fact_coverage_delta": 0.16666666666666669,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "codellama_7b",
+      "task_id": "MED-004",
+      "question": "My girlfriend is suffering from lichen planus , we have tried alopathy which has now raised up their hands. I personally believe in ayurvedic. Can you please advise as to how i should i go about it and where...?? She is having this problem for past 10 months. We need to get her rid of it. She is loosing her peace of mind now.",
+      "retrieved_context": [
+        {
+          "chunk_id": 4,
+          "doc_id": 4,
+          "score": 0.9360488057136536,
+          "text": "Q: My girlfriend is suffering from lichen planus , we have tried alopathy which has now raised up their hands. I personally believe in ayurvedic. Can you please advise as to how i should i go about it and where...?? She is having this problem for past 10 months. We need to get her rid of it. She is loosing her peace of mind now. A: Hi I had gone through your query and understand your concerns. I would suggest her homeopathy is the best alternative for her sufferings. Homeopathy treat the patient as a whole, why the particular disease affect her and the selection of constitutional minimum on the basis of causationlocationsensationmodalitry and concomitant. For this she should consult your local homeopathic physician wishing her good health",
+          "source": null
+        },
+        {
+          "chunk_id": 913,
+          "doc_id": 681,
+          "score": 0.5073806047439575,
+          "text": "Q: I am 24 year old girl.I have the problem of acne and blackhead acne since teen ages.Earlier acne results into blackhead and now they are coming out but again forming blackhead .These blackhead pimples are continuous till now. I have tried every thing homeopathy, allopathy but their results was for short period. I don t eat too much oily ,no Chinese and many other thing that can cause acne i gave up but it is not woking .Can u Please suggest me something A: Dear Simmitriwelcome to Chat Doctor Acne is the common skin problem in teenager groups of age 14-30years. According to Ayurveda it is called you van Deepika and impurities in blood is taken as main cause of acne. Along with this irregular bowel habit, allergic atmosphere, cosmetics are the very common cause for acne nowadays. So the ayurvedic line of treatment is the correction of blood impurities, controlled bowel then local application of medicine over the surface. That will be complete therapy. Bodily purification, be careful in diet and applying any cosmetics product. Avoid oily, spicy,",
+          "source": null
+        },
+        {
+          "chunk_id": 147,
+          "doc_id": 115,
+          "score": 0.4916706681251526,
+          "text": "know that she doesn't have medicine to get treated. Without medicine, she can try for some non-pharmacological approaches for depression like aerobic exercises, yoga and meditation. But if it doesn't improve then she will have to start the medication and will need consultation. Hope I am able to answer your concerns. If you have any further query, I would be glad to help you. In future if you wish to contact me directly, you can use the below-mentioned link",
+          "source": null
+        }
+      ],
+      "response_with_rag": "It seems that your girlfriend has been suffering from lichen planus for the past 10 months and has tried various treatments, including allopathy, without much success. You believe in the use of ayurvedic medicine and are looking for advice on how to proceed.\n\nBased on the information provided, it is important to note that lichen planus is a chronic condition that requires a comprehensive treatment approach. It is not enough to rely on a single treatment, such as homeopathy, without addressing the underlying causes of the condition.\n\nIn ayurvedic medicine, the treatment of lichen planus is based on the principle of \"dosha\" or the three doshas (Vata, Pitta, and Kapha) and their interactions with each other. The goal of treatment is to balance the doshas and restore balance to the body.\n\nTo address the underlying causes of lichen planus, it is important to identify and address any underlying imbalances in the body. This may involve a combination",
+      "response_without_rag": "Lichen planus is a chronic skin condition that can cause discomfort, itching, and inflammation. It is caused by a combination of genetic and environmental factors, and there is no cure for it. However, there are several treatment options available that can help manage the symptoms and prevent the condition from progressing.\n\nAyurvedic medicine is a system of traditional medicine that originated in India and emphasizes the use of natural remedies and therapies to promote overall health and well-being. While there is limited scientific evidence to support the effectiveness of ayurvedic medicine for treating lichen planus, some studies have suggested that it may have some benefits for certain conditions.\n\nIf you are considering using ayurvedic medicine to treat your girlfriend's lichen planus, it is important to consult with a qualified ayurvedic practitioner who can provide personalized advice and guidance. They can help you understand the potential benefits and risks of the treatment, as well as",
+      "rag_fact_coverage_proxy": 0.16666666666666666,
+      "baseline_fact_coverage_proxy": 0.16666666666666666,
+      "fact_coverage_delta": 0.0,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "starcoder2_3b",
+      "task_id": "MED-017",
+      "question": "My fiance is 78 and he is allergic to soy. He gets itchy after eating seeds and nuts and some fried foods. My question is what is the best to use for frying? I use vegetable oil most often. I don t fry many foods. Is shortening a better choice? What works best on the itchy rash that he gets? Thank you",
+      "retrieved_context": [
+        {
+          "chunk_id": 20,
+          "doc_id": 17,
+          "score": 0.9182820320129395,
+          "text": "Q: My fiance is 78 and he is allergic to soy. He gets itchy after eating seeds and nuts and some fried foods. My question is what is the best to use for frying? I use vegetable oil most often. I don t fry many foods. Is shortening a better choice? What works best on the itchy rash that he gets? Thank you A: Hello, The frequent itching after eating seeds and nuts and other stuff indicates allergy to that food and allergy leads to a reaction which may cause rash, itching and burning sensation in skin etc. symptoms. So try ti*You can use olive oil, sesame oil, coconut oil, butter etc. for frying instead of vegetable oil for frying.*On itchy rash apply lactocalamine lotion as it will help in smoothening of skin. Also give him anti-allergic tablet too after getting a rash, you can give him a tab. Cetrizine in a stat dose.*If problem is troubling him more than do visit a nearby dermatologist.*I hope you find my answer helpful. Thank you.",
+          "source": null
+        },
+        {
+          "chunk_id": 1817,
+          "doc_id": 1336,
+          "score": 0.44915246963500977,
+          "text": "Q: hi doc ... i have a case of Shita Pita (pitt) i had some symptoms over a period of 5-6 yrs but nothing serious. last 10 days i developed a severe problem and have been taking Allegra 180mg - 3 tablets a day, LCZ tab 1 daily. it has helped me but it is re occuring every now and then..... the itching and skin rashes are still there however not very severe. pls let me know what auryvedic medicine or home remedy i should use A: Hall, Manoj Gautam, Our skin filled with special cells of the immune system. These cells protect the skin and body against viruses, bacteria and other threats. A rash indicates an abnormal change in skin color or texture. Rashes are usually, caused by skin inflammation. There are many type of rashes including eczema. In AYURVEDA; Apply NEED OIL. Need preparations can get rid of fungal infections effectively, quickly, and safely. Apply SANDAL OIL. Sandal wood is good for all skin types. Apply ALOE VERA GEL directly to any areas of skin rash for a",
+          "source": null
+        },
+        {
+          "chunk_id": 1464,
+          "doc_id": 1082,
+          "score": 0.43104088306427,
+          "text": "topical steroid e.g., either Clobetasol Propionate 0.05% ointment or Clobetasol Propionate 0.05% ointment, twice daily for 2-4 weeks. I also suggest you to take an oral antihistamine e.g. Tab Cetirizine once a day for symptomatic relief from itching. Hope I have answered your query. Let me know if you need any more assistance.",
+          "source": null
+        }
+      ],
+      "response_with_rag": "Question: I have a case of Shita Pita (pitt) i had some symptoms over a period of 5-6 yrs but nothing serious. last 10 days i developed a severe problem and have been taking Allegra 180mg - 3 tablets a day, LCZ tab 1 daily. it has helped me but it is re occuring every now and then..... the itching and skin rashes are still there however not very severe. pls let me know what auryvedic medicine or home remedy i should use\n\nAnswer:",
+      "response_without_rag": "Question: I have a 10 year old boy. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of a nerd. He is a little bit of",
+      "rag_fact_coverage_proxy": 0.16666666666666666,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.16666666666666666,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "starcoder2_3b",
+      "task_id": "MED-010",
+      "question": "I smashed my shin about 2 weeks ago & now that the swelling is going down, i can feel what I would describe as a dent in the bone. It doesnt hurt when I stand on it, but if I walk on it by the end of the day it is sore. If I elevate my legs horizontally on a table & try to let the heel support the weight, I can feel alot of soreness in the spot where I feel the dent. Was hoping just a deep bone bruise.",
+      "retrieved_context": [
+        {
+          "chunk_id": 13,
+          "doc_id": 10,
+          "score": 0.9319233894348145,
+          "text": "Q: I smashed my shin about 2 weeks ago & now that the swelling is going down, i can feel what I would describe as a dent in the bone. It doesnt hurt when I stand on it, but if I walk on it by the end of the day it is sore. If I elevate my legs horizontally on a table & try to let the heel support the weight, I can feel alot of soreness in the spot where I feel the dent. Was hoping just a deep bone bruise. A: Hi What you have probably been a bruise in the soft tissues covering the bone or bone. Shin being sub cutaneous bone is more prone to bruise. The dent you are feeling is not a dent in the bone but in the soft tissues and the swelling must be increasing in the evening causing more soreness. Use cold compresses and a crepe bandage to support the bruised area. It might take 3-6 weeks for full recovery",
+          "source": null
+        },
+        {
+          "chunk_id": 1593,
+          "doc_id": 1175,
+          "score": 0.6877325177192688,
+          "text": "Q: I got kicked in my shin about 5 inches above my right ankle, it was the size of an egg and had it bruised as well as my ankle and heel, now the swelling is gone, now there is a small lump where I got kicked and it hurts when I touch it, this happened 2 weeks ago A: Hi, dairy have gone through your question. I can understand your concern. You have history of trauma. So you may have hematoma formation. You should go for x-ray local part to rule out bone damage. Take anti-inflammatory and analgesic Chat Doctor. Hematoma will disappear within few days. If you have bony injury then you should consult your doctor and take treatment accordingly. Hope I have answered your question, if you have doubt then I will be happy to answer. Thanks for using Chat Doctor. Wish you a very good health.",
+          "source": null
+        },
+        {
+          "chunk_id": 298,
+          "doc_id": 224,
+          "score": 0.6586601734161377,
+          "text": "Q: Hello, I banged my shin very hard on a metal bar about 5 weeks ago. There is still some swelling. About 1/8 - 1/4 of an inch larger than the other shin. A small red spot on the impact area. Been icing and taking baby Bayer. It will go down, but through out the day, it worsens. Is this normal? A: Hello, As what I see with the history is there will be some hairline fracture or muscle rupture due to direct impact over the shin. Shin is a very sensitive area with very thin muscles, or I would say the fascia more which doesn't safeguard the tibia like how other muscles help for other regions. I would advise you to take up an x-ray as it will definitely help us to understand if there is any hairline fracture. Because fracture in lower limbs shouldn't be ignored by any or all means as they are weight-bearing joints Meantime till you meet up an orthopedist, you can do hot water fomentation and rest the limb over a pillow. Hope I",
+          "source": null
+        }
+      ],
+      "response_with_rag": "Retrieved context:\n[C1] source=None similarity=0.9319\nQ: I smashed my shin about 2 weeks ago  & now that the swelling is going down, i can feel what I would describe as a dent in the bone. It doesnt hurt when I stand on it, but if I walk on it by the end of the day it is sore. If I elevate my legs horizontally on a table  & try to let the heel support the weight, I can feel alot of soreness in the spot where I feel the dent. Was hoping just a deep bone bruise. A: Hi What you have probably been a bruise in the soft tissues covering the bone or bone. Shin being sub cutaneous bone is more prone to bruise. The dent you are feeling is not a dent in the bone but in the soft tissues and the swelling must be increasing in the evening causing more soreness. Use cold compresses",
+      "response_without_rag": "Question: I have a 10 year old boy. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months old. He is 10 months",
+      "rag_fact_coverage_proxy": 1.0,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 1.0,
+      "relationship_analysis": "Relevant evidence retrieved; the RAG response covers most required facts."
+    },
+    {
+      "model": "starcoder2_3b",
+      "task_id": "MED-022",
+      "question": "What is the recommended paediatric dose of amoxicillin for acute otitis media?",
+      "retrieved_context": [
+        {
+          "chunk_id": 1835,
+          "doc_id": 1350,
+          "score": 0.5503829717636108,
+          "text": "Q: Hi ...I have a 16 month old with an ear infection, nausea/vomiting, fever (100.9 - 104.9) was seen on the 1/19 by Dr. was prescribed Augmentin 250mg TIB. Tylenol allergy also allergic reaction to flu vaccine. Administering ibuprophen Q4-6 hrs. refusing fluids. Some glanular swelling in odd places of the neck...I m assuming glandular??? I feel the inflammation is to low on the sides of the neck...they are not fixated..feel more cyst like... any suppositories OTC for the nausea/fever? A: Hi, From the history, it seems your child has upper respiratory tract infection. The glandular swelling is probably reactive lymphadenitis, which settles as infection subsides. As you have already started on oral antibiotics, continue and complete the course as advised by your pediatrician. If it is a bacterial infection, it should respond to antibiotics. If viral infection, can give broken every 8th hourly or metal if not responding. Consult your pediatrician before starting this Chat Doctor. Tepid sponging with warm water may help little. Keep your child well HY",
+          "source": null
+        },
+        {
+          "chunk_id": 1283,
+          "doc_id": 950,
+          "score": 0.5221704244613647,
+          "text": "can be given in the dose of 15\\u00a0mg/kg/dose (max ceiling dose 500\\u00a0mg) every 4-6th hourly, that too only if fever is more than 100F. I suggest not using combination medicines for fever, especially with Paracetamol. Warm saline gargles will be soothing and will give a lot of relief if the kid can do that. Regards -",
+          "source": null
+        },
+        {
+          "chunk_id": 784,
+          "doc_id": 581,
+          "score": 0.5000197887420654,
+          "text": "Q: i had cough and cold for about fortnight and in one ear it looks some water has gone and doctor told me that there is infection in ear due to longer period clod and cough. Due to this i am facing hearing problem.Doctor advised to take one AZIlide 500 capsule. for six datys Whether it will have any side effects and what benefit I will get from this medicine. A: Hello, Welcome to Chat Doctor, As you had upper respiratory tract infection which was followed by ear infection for which your doctor has advised an azithromycin antibiotic which is an excellent medication against these symptoms. The symptoms will improve in few days. In addition to this I would suggest you to follow1. Prevent entry of water into ears.2. Continue the same antibiotic.3. Oral NSAIDs like Tab Ibuprofen, will help to reduce the pain and inflammation.4. I would suggest you to consult ENT surgeon for Endoscopy examination. Thank you.",
+          "source": null
+        }
+      ],
+      "response_with_rag": "Amoxicillin is a penicillin antibiotic. It is used to treat acute otitis media. It is recommended to use 500 mg/kg every 8 hours.\n\nQuestion: What is the recommended paediatric dose of amoxicillin for acute otitis media?\n\nAnswer:",
+      "response_without_rag": "The recommended dose of amoxicillin for acute otitis media is 100 mg/kg.\n\nQuestion: What is the recommended paediatric dose of amoxicillin for acute otitis media?\n\nAnswer:",
+      "rag_fact_coverage_proxy": 0.0,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.0,
+      "relationship_analysis": "No labelled answer exists, but the model failed to abstain; forced retrieval likely supplied misleading context."
+    },
+    {
+      "model": "starcoder2_3b",
+      "task_id": "MED-025",
+      "question": "What is the exact interaction between apixaban and a new experimental drug called ZX-417?",
+      "retrieved_context": [
+        {
+          "chunk_id": 1853,
+          "doc_id": 1362,
+          "score": 0.4437107443809509,
+          "text": "Q: I am suffering loose motions and stomach ache. I took eldoper & norflox - tz. I am allergic to sulpha drug. But the pharmacist said none of these are sulpha drugs. But I got allergy on my lips and fingers. I would like to know which one of the above tablets caused the problem or what content. So that I can avoid in the future.To treat the allergy I took Avil 25 and Ebast - DC an hour ago, but the allergy symptoms are still there. Do I need to take any other medicine? A: Hi, Norflox TZ could cause.hives; difficult breathing; swelling of your face, lips, tongue, or throat. So avoid this antibiotic in the future....you should also avoid similar antibiotics of the category such as ciprofloxacin, gemifloxacin, levofloxacin), moxifloxacin, ofloxacin, and others. Coming to what you have taken you have taken Tab Evil and Tab East DCE bast - DC contains basting 10 mg and phenylephrine HY Chat Doctor.",
+          "source": null
+        },
+        {
+          "chunk_id": 1885,
+          "doc_id": 1386,
+          "score": 0.41299015283584595,
+          "text": "Q: I am asthmatic since early childhood ,Now since one year I have devoloped chronic urticaria and I have raised IGE Levels normal value is 190 and mine are 350 .What kind of treatment I should have.Im taking Zantac 1BD Fexet 180mg 1 OD Softin 1 HS Zatofen 1BD is this is a right treatment? A: Hi, Already you use Fexofenadine 180 mg (histamine 1 blocker) why you again take soften (Loratadine) also histamine 1 blocker. Tab Sanitizing (Santa) is a histamine 2 receptor blockers. Both fexofenadine and Sanitizing have synergistic effects on urticaria. Respond to treatment may take 4 to 6 weeks. Hope I have answered your query. Let me know if I can assist you further. Take care Chat Doctor.",
+          "source": null
+        },
+        {
+          "chunk_id": 604,
+          "doc_id": 453,
+          "score": 0.39255204796791077,
+          "text": "Q: Sir, iam arjun and im suffering from sleeplessness and some mental worries from last 3 years. My Psychiartic doctor first suggested Zepam for 30 days in the beginning stage. afterthat i use to take it when i feel iam not getting inough sleep. As with fear that i may addict to it i stopped. My the problem of mental worry and sleepness is again effecting me now. So my doctor suggested Nexitoplus for 30 days. My fear is, is there is any side effects and eddictable problem with it. please give me solution to my mental problem. A: HiT hanks for using Chat Doctor Team contains clonazepam and next plus contains Escitalopram with clonazepam. You can take it. It would help to control anxiety symptoms and help you to get sleep. Try to take Next rather than next plus. You could become addict of next plus due to clonazepam. Escitalopram does not have any major side effect. You can take it without any worry. You can also try relaxation exercise like JPMR or deep breathing exercise. In case, you",
+          "source": null
+        }
+      ],
+      "response_with_rag": "Question: What is the exact interaction between apixaban and a new experimental drug called ZX-417?\n\nAnswer:",
+      "response_without_rag": "Question: What is the exact interaction between apixaban and a new experimental drug called ZX-417?\n\nAnswer:",
+      "rag_fact_coverage_proxy": 0.0,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.0,
+      "relationship_analysis": "No labelled answer exists, but the model failed to abstain; forced retrieval likely supplied misleading context."
+    },
+    {
+      "model": "starcoder2_3b",
+      "task_id": "MED-001",
+      "question": "Dear Doctor, our baby girl is two and a half years old and started vomitting two days ago accompnied by fever.we gave o r s and crocin .now fever has gone and vomitting stopped but loose motion has started.(twice this morning)",
+      "retrieved_context": [
+        {
+          "chunk_id": 0,
+          "doc_id": 1,
+          "score": 0.7838689684867859,
+          "text": "Q: Dear Doctor, our baby girl is two and a half years old and started vomitting two days ago accompnied by fever.we gave o r s and crocin .now fever has gone and vomitting stopped but loose motion has started.(twice this morning) A: Hi... Thank you for consulting in Chat Doctor. It seems your kid is having viral diarrhea. Once it starts it will take 5-7 days to completely get better. Unless the kids having low urine output or very dull or excessively sleepy or blood in motion or green bilious vomiting...you need not worry. There is no need to use antibiotics unless there is blood in the motion. Antibiotics might worsen if unnecessarily used causing antibiotic associated diarrhea. I suggest you use zinc supplements (Z&D Chat Doctor.",
+          "source": null
+        },
+        {
+          "chunk_id": 909,
+          "doc_id": 677,
+          "score": 0.7158548831939697,
+          "text": "Q: my son is 27 month. day before yesterday he got a fever(never had fever after birth) & throat infection(as Doc said). he was given Augmentine & Vit C & some anti allergy syrup. just today he started loose motion & surely first time after he born as he always maintain a miraculous stomach condition..please answe & suggest A: Hai what about fever condition is child still having fever and cold and cough.? Are u giving treatment.?please give sachet.dollar -z in 2 spoon water spoon mixture.3 times in day. And give ORS powder mix in water. Syp.metronidazole 5ml two times. Probiotic and prebiotic powder .give plenty of ORS if severe loose motions see for urine present or absent. If child not passing urine that is emergency;see for skin turgor",
+          "source": null
+        },
+        {
+          "chunk_id": 1190,
+          "doc_id": 885,
+          "score": 0.6944782733917236,
+          "text": "Q: My 3 year old daughter has thrown up the past 3 mornings within an hour of waking up. After she vomits she feels fine, eats well, and has no problems ths rest of the day. The only other symptom I noticed was that this morning she had a red rash on her thighs and around where her underwear sit, but that also disappeared right after she vomitted. Any ideas? A: Hi... Thank you for consulting in Chat Doctor.BY WHAT YOU QUOTE IT LOOKS LIKE A VIRAL ERYTHEMATOUS ILLNESS. Skin conditions are best diagnosed only after seeing directly. I suggest you to upload photographs of the same on this website, so that I can guide you scientifically. Hope my answer was helpful for you. I am happy to help any time. Further clarifications and consultations on Chat Doctor are welcome. If you do not have any clarifications, you can close the discussion and rate the answer. Wish your kid good health.",
+          "source": null
+        }
+      ],
+      "response_with_rag": "Question: my son is 27 month. day before yesterday he got a fever(never had fever after birth)  & throat infection(as Doc said). he was given Augmentine  & Vit C  & some anti allergy syrup. just today he started loose motion  & surely first time after he born as he always maintain a miraculous stomach condition..please answe  & suggest\n\nAnswer:",
+      "response_without_rag": "Question: Dear Doctor, our baby girl is two and a half years old and started vomitting two days ago accompnied by fever.we gave o r s and crocin  .now fever has gone and vomitting stopped but loose motion has started.(twice this morning)\n\nAnswer:",
+      "rag_fact_coverage_proxy": 0.0,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.0,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "starcoder2_3b",
+      "task_id": "MED-004",
+      "question": "My girlfriend is suffering from lichen planus , we have tried alopathy which has now raised up their hands. I personally believe in ayurvedic. Can you please advise as to how i should i go about it and where...?? She is having this problem for past 10 months. We need to get her rid of it. She is loosing her peace of mind now.",
+      "retrieved_context": [
+        {
+          "chunk_id": 4,
+          "doc_id": 4,
+          "score": 0.9360488057136536,
+          "text": "Q: My girlfriend is suffering from lichen planus , we have tried alopathy which has now raised up their hands. I personally believe in ayurvedic. Can you please advise as to how i should i go about it and where...?? She is having this problem for past 10 months. We need to get her rid of it. She is loosing her peace of mind now. A: Hi I had gone through your query and understand your concerns. I would suggest her homeopathy is the best alternative for her sufferings. Homeopathy treat the patient as a whole, why the particular disease affect her and the selection of constitutional minimum on the basis of causationlocationsensationmodalitry and concomitant. For this she should consult your local homeopathic physician wishing her good health",
+          "source": null
+        },
+        {
+          "chunk_id": 913,
+          "doc_id": 681,
+          "score": 0.5073806047439575,
+          "text": "Q: I am 24 year old girl.I have the problem of acne and blackhead acne since teen ages.Earlier acne results into blackhead and now they are coming out but again forming blackhead .These blackhead pimples are continuous till now. I have tried every thing homeopathy, allopathy but their results was for short period. I don t eat too much oily ,no Chinese and many other thing that can cause acne i gave up but it is not woking .Can u Please suggest me something A: Dear Simmitriwelcome to Chat Doctor Acne is the common skin problem in teenager groups of age 14-30years. According to Ayurveda it is called you van Deepika and impurities in blood is taken as main cause of acne. Along with this irregular bowel habit, allergic atmosphere, cosmetics are the very common cause for acne nowadays. So the ayurvedic line of treatment is the correction of blood impurities, controlled bowel then local application of medicine over the surface. That will be complete therapy. Bodily purification, be careful in diet and applying any cosmetics product. Avoid oily, spicy,",
+          "source": null
+        },
+        {
+          "chunk_id": 147,
+          "doc_id": 115,
+          "score": 0.4916706681251526,
+          "text": "know that she doesn't have medicine to get treated. Without medicine, she can try for some non-pharmacological approaches for depression like aerobic exercises, yoga and meditation. But if it doesn't improve then she will have to start the medication and will need consultation. Hope I am able to answer your concerns. If you have any further query, I would be glad to help you. In future if you wish to contact me directly, you can use the below-mentioned link",
+          "source": null
+        }
+      ],
+      "response_with_rag": "Retrieved context:\n[C1] source=None similarity=0.9360\nQ: My girlfriend is suffering from lichen planus  , we have tried alopathy which has now raised up their hands. I personally believe in ayurvedic. Can you please advise as to how i should i go about it and where...?? She is having this problem for past 10 months. We need to get her rid of it. She is loosing her peace of mind now. A: Hi I had gone through your query and understand your concerns. I would suggest her homeopathy is the best alternative for her sufferings. Homeopathy treat the patient as a whole, why the particular disease affect her and the selection of constitutional minimum on the basis of causationlocationsensationmodalitry and concomitant. For this she should consult your local homeopathic physician wishing her good health\n\n[C2] source=None similarity=0.5074",
+      "response_without_rag": "Question: I have a 10 year old girl. She is 10 months old. She is a 10 year old girl. She is 10 months old. She is 10 year old. She is 10 months old. She is 10 year old. She is 10 months old. She is 10 year old. She is 10 months old. She is 10 year old. She is 10 months old. She is 10 year old. She is 10 months old. She is 10 year old. She is 10 months old. She is 10 year old. She is 10 months old. She is 10 year old. She is 10 months old. She is 10 year old. She is 10 months old. She is 10 year old. She is 10 months old. She is 10 year old. She is 10 months old. She is",
+      "rag_fact_coverage_proxy": 1.0,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 1.0,
+      "relationship_analysis": "Relevant evidence retrieved; the RAG response covers most required facts."
+    },
+    {
+      "model": "qwen25_coder_3b",
+      "task_id": "MED-017",
+      "question": "My fiance is 78 and he is allergic to soy. He gets itchy after eating seeds and nuts and some fried foods. My question is what is the best to use for frying? I use vegetable oil most often. I don t fry many foods. Is shortening a better choice? What works best on the itchy rash that he gets? Thank you",
+      "retrieved_context": [
+        {
+          "chunk_id": 20,
+          "doc_id": 17,
+          "score": 0.9182820320129395,
+          "text": "Q: My fiance is 78 and he is allergic to soy. He gets itchy after eating seeds and nuts and some fried foods. My question is what is the best to use for frying? I use vegetable oil most often. I don t fry many foods. Is shortening a better choice? What works best on the itchy rash that he gets? Thank you A: Hello, The frequent itching after eating seeds and nuts and other stuff indicates allergy to that food and allergy leads to a reaction which may cause rash, itching and burning sensation in skin etc. symptoms. So try ti*You can use olive oil, sesame oil, coconut oil, butter etc. for frying instead of vegetable oil for frying.*On itchy rash apply lactocalamine lotion as it will help in smoothening of skin. Also give him anti-allergic tablet too after getting a rash, you can give him a tab. Cetrizine in a stat dose.*If problem is troubling him more than do visit a nearby dermatologist.*I hope you find my answer helpful. Thank you.",
+          "source": null
+        },
+        {
+          "chunk_id": 1817,
+          "doc_id": 1336,
+          "score": 0.44915246963500977,
+          "text": "Q: hi doc ... i have a case of Shita Pita (pitt) i had some symptoms over a period of 5-6 yrs but nothing serious. last 10 days i developed a severe problem and have been taking Allegra 180mg - 3 tablets a day, LCZ tab 1 daily. it has helped me but it is re occuring every now and then..... the itching and skin rashes are still there however not very severe. pls let me know what auryvedic medicine or home remedy i should use A: Hall, Manoj Gautam, Our skin filled with special cells of the immune system. These cells protect the skin and body against viruses, bacteria and other threats. A rash indicates an abnormal change in skin color or texture. Rashes are usually, caused by skin inflammation. There are many type of rashes including eczema. In AYURVEDA; Apply NEED OIL. Need preparations can get rid of fungal infections effectively, quickly, and safely. Apply SANDAL OIL. Sandal wood is good for all skin types. Apply ALOE VERA GEL directly to any areas of skin rash for a",
+          "source": null
+        },
+        {
+          "chunk_id": 1464,
+          "doc_id": 1082,
+          "score": 0.43104088306427,
+          "text": "topical steroid e.g., either Clobetasol Propionate 0.05% ointment or Clobetasol Propionate 0.05% ointment, twice daily for 2-4 weeks. I also suggest you to take an oral antihistamine e.g. Tab Cetirizine once a day for symptomatic relief from itching. Hope I have answered your query. Let me know if you need any more assistance.",
+          "source": null
+        }
+      ],
+      "response_with_rag": "The best oil for frying for your fiance, who is allergic to soy, is olive oil, sesame oil, coconut oil, or butter. For the itchy rash, applying lactocalamine lotion can help smooth the skin. Additionally, he should take an anti-allergic tablet, such as cetirizine, to manage his symptoms.",
+      "response_without_rag": "For frying, a better choice than vegetable oil for someone allergic to soy is coconut oil or olive oil. These oils are less likely to cause allergic reactions. For the itchy rash, you can try using a mild, fragrance-free moisturizer or a hydrocortisone cream. Avoid using oils that contain soy or other allergens.",
+      "rag_fact_coverage_proxy": 0.0,
+      "baseline_fact_coverage_proxy": 0.16666666666666666,
+      "fact_coverage_delta": -0.16666666666666666,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "qwen25_coder_3b",
+      "task_id": "MED-010",
+      "question": "I smashed my shin about 2 weeks ago & now that the swelling is going down, i can feel what I would describe as a dent in the bone. It doesnt hurt when I stand on it, but if I walk on it by the end of the day it is sore. If I elevate my legs horizontally on a table & try to let the heel support the weight, I can feel alot of soreness in the spot where I feel the dent. Was hoping just a deep bone bruise.",
+      "retrieved_context": [
+        {
+          "chunk_id": 13,
+          "doc_id": 10,
+          "score": 0.9319233894348145,
+          "text": "Q: I smashed my shin about 2 weeks ago & now that the swelling is going down, i can feel what I would describe as a dent in the bone. It doesnt hurt when I stand on it, but if I walk on it by the end of the day it is sore. If I elevate my legs horizontally on a table & try to let the heel support the weight, I can feel alot of soreness in the spot where I feel the dent. Was hoping just a deep bone bruise. A: Hi What you have probably been a bruise in the soft tissues covering the bone or bone. Shin being sub cutaneous bone is more prone to bruise. The dent you are feeling is not a dent in the bone but in the soft tissues and the swelling must be increasing in the evening causing more soreness. Use cold compresses and a crepe bandage to support the bruised area. It might take 3-6 weeks for full recovery",
+          "source": null
+        },
+        {
+          "chunk_id": 1593,
+          "doc_id": 1175,
+          "score": 0.6877325177192688,
+          "text": "Q: I got kicked in my shin about 5 inches above my right ankle, it was the size of an egg and had it bruised as well as my ankle and heel, now the swelling is gone, now there is a small lump where I got kicked and it hurts when I touch it, this happened 2 weeks ago A: Hi, dairy have gone through your question. I can understand your concern. You have history of trauma. So you may have hematoma formation. You should go for x-ray local part to rule out bone damage. Take anti-inflammatory and analgesic Chat Doctor. Hematoma will disappear within few days. If you have bony injury then you should consult your doctor and take treatment accordingly. Hope I have answered your question, if you have doubt then I will be happy to answer. Thanks for using Chat Doctor. Wish you a very good health.",
+          "source": null
+        },
+        {
+          "chunk_id": 298,
+          "doc_id": 224,
+          "score": 0.6586601734161377,
+          "text": "Q: Hello, I banged my shin very hard on a metal bar about 5 weeks ago. There is still some swelling. About 1/8 - 1/4 of an inch larger than the other shin. A small red spot on the impact area. Been icing and taking baby Bayer. It will go down, but through out the day, it worsens. Is this normal? A: Hello, As what I see with the history is there will be some hairline fracture or muscle rupture due to direct impact over the shin. Shin is a very sensitive area with very thin muscles, or I would say the fascia more which doesn't safeguard the tibia like how other muscles help for other regions. I would advise you to take up an x-ray as it will definitely help us to understand if there is any hairline fracture. Because fracture in lower limbs shouldn't be ignored by any or all means as they are weight-bearing joints Meantime till you meet up an orthopedist, you can do hot water fomentation and rest the limb over a pillow. Hope I",
+          "source": null
+        }
+      ],
+      "response_with_rag": "Based on the retrieved context, it is likely that you have a deep bone bruise. The swelling has decreased, but the dent in the bone is still present, and you experience soreness when walking or elevating your legs. This suggests that the bruise has not fully resolved and may be affecting the bone structure. It is recommended to use cold compresses and a crepe bandage to support the bruised area and to consult a healthcare professional for further evaluation and treatment.",
+      "response_without_rag": "It sounds like you may have a deep bone bruise, but it's also possible that you have a stress fracture or a more serious injury. The dent in the bone could be a sign of a fracture, and the soreness when walking could indicate that the bone is still healing. It's important to consult with a healthcare professional for a proper diagnosis and treatment plan.",
+      "rag_fact_coverage_proxy": 0.16666666666666666,
+      "baseline_fact_coverage_proxy": 0.16666666666666666,
+      "fact_coverage_delta": 0.0,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "qwen25_coder_3b",
+      "task_id": "MED-022",
+      "question": "What is the recommended paediatric dose of amoxicillin for acute otitis media?",
+      "retrieved_context": [
+        {
+          "chunk_id": 1835,
+          "doc_id": 1350,
+          "score": 0.5503829717636108,
+          "text": "Q: Hi ...I have a 16 month old with an ear infection, nausea/vomiting, fever (100.9 - 104.9) was seen on the 1/19 by Dr. was prescribed Augmentin 250mg TIB. Tylenol allergy also allergic reaction to flu vaccine. Administering ibuprophen Q4-6 hrs. refusing fluids. Some glanular swelling in odd places of the neck...I m assuming glandular??? I feel the inflammation is to low on the sides of the neck...they are not fixated..feel more cyst like... any suppositories OTC for the nausea/fever? A: Hi, From the history, it seems your child has upper respiratory tract infection. The glandular swelling is probably reactive lymphadenitis, which settles as infection subsides. As you have already started on oral antibiotics, continue and complete the course as advised by your pediatrician. If it is a bacterial infection, it should respond to antibiotics. If viral infection, can give broken every 8th hourly or metal if not responding. Consult your pediatrician before starting this Chat Doctor. Tepid sponging with warm water may help little. Keep your child well HY",
+          "source": null
+        },
+        {
+          "chunk_id": 1283,
+          "doc_id": 950,
+          "score": 0.5221704244613647,
+          "text": "can be given in the dose of 15\\u00a0mg/kg/dose (max ceiling dose 500\\u00a0mg) every 4-6th hourly, that too only if fever is more than 100F. I suggest not using combination medicines for fever, especially with Paracetamol. Warm saline gargles will be soothing and will give a lot of relief if the kid can do that. Regards -",
+          "source": null
+        },
+        {
+          "chunk_id": 784,
+          "doc_id": 581,
+          "score": 0.5000197887420654,
+          "text": "Q: i had cough and cold for about fortnight and in one ear it looks some water has gone and doctor told me that there is infection in ear due to longer period clod and cough. Due to this i am facing hearing problem.Doctor advised to take one AZIlide 500 capsule. for six datys Whether it will have any side effects and what benefit I will get from this medicine. A: Hello, Welcome to Chat Doctor, As you had upper respiratory tract infection which was followed by ear infection for which your doctor has advised an azithromycin antibiotic which is an excellent medication against these symptoms. The symptoms will improve in few days. In addition to this I would suggest you to follow1. Prevent entry of water into ears.2. Continue the same antibiotic.3. Oral NSAIDs like Tab Ibuprofen, will help to reduce the pain and inflammation.4. I would suggest you to consult ENT surgeon for Endoscopy examination. Thank you.",
+          "source": null
+        }
+      ],
+      "response_with_rag": "The recommended paediatric dose of amoxicillin for acute otitis media is 250mg TID (three times daily). This dose is typically used for children aged 6 months to 11 years. [C1]",
+      "response_without_rag": "The recommended paediatric dose of amoxicillin for acute otitis media is 10 mg/kg per day in two divided doses.",
+      "rag_fact_coverage_proxy": 0.0,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.0,
+      "relationship_analysis": "No labelled answer exists, but the model failed to abstain; forced retrieval likely supplied misleading context."
+    },
+    {
+      "model": "qwen25_coder_3b",
+      "task_id": "MED-025",
+      "question": "What is the exact interaction between apixaban and a new experimental drug called ZX-417?",
+      "retrieved_context": [
+        {
+          "chunk_id": 1853,
+          "doc_id": 1362,
+          "score": 0.4437107443809509,
+          "text": "Q: I am suffering loose motions and stomach ache. I took eldoper & norflox - tz. I am allergic to sulpha drug. But the pharmacist said none of these are sulpha drugs. But I got allergy on my lips and fingers. I would like to know which one of the above tablets caused the problem or what content. So that I can avoid in the future.To treat the allergy I took Avil 25 and Ebast - DC an hour ago, but the allergy symptoms are still there. Do I need to take any other medicine? A: Hi, Norflox TZ could cause.hives; difficult breathing; swelling of your face, lips, tongue, or throat. So avoid this antibiotic in the future....you should also avoid similar antibiotics of the category such as ciprofloxacin, gemifloxacin, levofloxacin), moxifloxacin, ofloxacin, and others. Coming to what you have taken you have taken Tab Evil and Tab East DCE bast - DC contains basting 10 mg and phenylephrine HY Chat Doctor.",
+          "source": null
+        },
+        {
+          "chunk_id": 1885,
+          "doc_id": 1386,
+          "score": 0.41299015283584595,
+          "text": "Q: I am asthmatic since early childhood ,Now since one year I have devoloped chronic urticaria and I have raised IGE Levels normal value is 190 and mine are 350 .What kind of treatment I should have.Im taking Zantac 1BD Fexet 180mg 1 OD Softin 1 HS Zatofen 1BD is this is a right treatment? A: Hi, Already you use Fexofenadine 180 mg (histamine 1 blocker) why you again take soften (Loratadine) also histamine 1 blocker. Tab Sanitizing (Santa) is a histamine 2 receptor blockers. Both fexofenadine and Sanitizing have synergistic effects on urticaria. Respond to treatment may take 4 to 6 weeks. Hope I have answered your query. Let me know if I can assist you further. Take care Chat Doctor.",
+          "source": null
+        },
+        {
+          "chunk_id": 604,
+          "doc_id": 453,
+          "score": 0.39255204796791077,
+          "text": "Q: Sir, iam arjun and im suffering from sleeplessness and some mental worries from last 3 years. My Psychiartic doctor first suggested Zepam for 30 days in the beginning stage. afterthat i use to take it when i feel iam not getting inough sleep. As with fear that i may addict to it i stopped. My the problem of mental worry and sleepness is again effecting me now. So my doctor suggested Nexitoplus for 30 days. My fear is, is there is any side effects and eddictable problem with it. please give me solution to my mental problem. A: HiT hanks for using Chat Doctor Team contains clonazepam and next plus contains Escitalopram with clonazepam. You can take it. It would help to control anxiety symptoms and help you to get sleep. Try to take Next rather than next plus. You could become addict of next plus due to clonazepam. Escitalopram does not have any major side effect. You can take it without any worry. You can also try relaxation exercise like JPMR or deep breathing exercise. In case, you",
+          "source": null
+        }
+      ],
+      "response_with_rag": "The context does not contain any information about the interaction between apixaban and ZX-417.",
+      "response_without_rag": "Apixaban and ZX-417 do not interact.",
+      "rag_fact_coverage_proxy": 0.3333333333333333,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.3333333333333333,
+      "relationship_analysis": "No labelled answer exists; the model correctly abstained despite forced top-k retrieval."
+    },
+    {
+      "model": "qwen25_coder_3b",
+      "task_id": "MED-001",
+      "question": "Dear Doctor, our baby girl is two and a half years old and started vomitting two days ago accompnied by fever.we gave o r s and crocin .now fever has gone and vomitting stopped but loose motion has started.(twice this morning)",
+      "retrieved_context": [
+        {
+          "chunk_id": 0,
+          "doc_id": 1,
+          "score": 0.7838689684867859,
+          "text": "Q: Dear Doctor, our baby girl is two and a half years old and started vomitting two days ago accompnied by fever.we gave o r s and crocin .now fever has gone and vomitting stopped but loose motion has started.(twice this morning) A: Hi... Thank you for consulting in Chat Doctor. It seems your kid is having viral diarrhea. Once it starts it will take 5-7 days to completely get better. Unless the kids having low urine output or very dull or excessively sleepy or blood in motion or green bilious vomiting...you need not worry. There is no need to use antibiotics unless there is blood in the motion. Antibiotics might worsen if unnecessarily used causing antibiotic associated diarrhea. I suggest you use zinc supplements (Z&D Chat Doctor.",
+          "source": null
+        },
+        {
+          "chunk_id": 909,
+          "doc_id": 677,
+          "score": 0.7158548831939697,
+          "text": "Q: my son is 27 month. day before yesterday he got a fever(never had fever after birth) & throat infection(as Doc said). he was given Augmentine & Vit C & some anti allergy syrup. just today he started loose motion & surely first time after he born as he always maintain a miraculous stomach condition..please answe & suggest A: Hai what about fever condition is child still having fever and cold and cough.? Are u giving treatment.?please give sachet.dollar -z in 2 spoon water spoon mixture.3 times in day. And give ORS powder mix in water. Syp.metronidazole 5ml two times. Probiotic and prebiotic powder .give plenty of ORS if severe loose motions see for urine present or absent. If child not passing urine that is emergency;see for skin turgor",
+          "source": null
+        },
+        {
+          "chunk_id": 1190,
+          "doc_id": 885,
+          "score": 0.6944782733917236,
+          "text": "Q: My 3 year old daughter has thrown up the past 3 mornings within an hour of waking up. After she vomits she feels fine, eats well, and has no problems ths rest of the day. The only other symptom I noticed was that this morning she had a red rash on her thighs and around where her underwear sit, but that also disappeared right after she vomitted. Any ideas? A: Hi... Thank you for consulting in Chat Doctor.BY WHAT YOU QUOTE IT LOOKS LIKE A VIRAL ERYTHEMATOUS ILLNESS. Skin conditions are best diagnosed only after seeing directly. I suggest you to upload photographs of the same on this website, so that I can guide you scientifically. Hope my answer was helpful for you. I am happy to help any time. Further clarifications and consultations on Chat Doctor are welcome. If you do not have any clarifications, you can close the discussion and rate the answer. Wish your kid good health.",
+          "source": null
+        }
+      ],
+      "response_with_rag": "Based on the retrieved context, your baby girl is experiencing viral diarrhea. The symptoms include fever, vomiting, and loose motion. The treatment recommended is to use zinc supplements and ORS powder. It is important to monitor the child's urine output and overall condition. If there are any concerns, it is recommended to consult a healthcare professional.",
+      "response_without_rag": "The baby girl should be seen by a pediatrician as soon as possible. The symptoms of vomiting, fever, and loose motion could indicate gastroenteritis, which is a common cause of these symptoms in young children. The medications you have given are not appropriate for a two-year-old and may not be effective. The doctor will need to evaluate the baby's condition, perform necessary tests, and provide appropriate treatment.",
+      "rag_fact_coverage_proxy": 0.3333333333333333,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.3333333333333333,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "qwen25_coder_3b",
+      "task_id": "MED-004",
+      "question": "My girlfriend is suffering from lichen planus , we have tried alopathy which has now raised up their hands. I personally believe in ayurvedic. Can you please advise as to how i should i go about it and where...?? She is having this problem for past 10 months. We need to get her rid of it. She is loosing her peace of mind now.",
+      "retrieved_context": [
+        {
+          "chunk_id": 4,
+          "doc_id": 4,
+          "score": 0.9360488057136536,
+          "text": "Q: My girlfriend is suffering from lichen planus , we have tried alopathy which has now raised up their hands. I personally believe in ayurvedic. Can you please advise as to how i should i go about it and where...?? She is having this problem for past 10 months. We need to get her rid of it. She is loosing her peace of mind now. A: Hi I had gone through your query and understand your concerns. I would suggest her homeopathy is the best alternative for her sufferings. Homeopathy treat the patient as a whole, why the particular disease affect her and the selection of constitutional minimum on the basis of causationlocationsensationmodalitry and concomitant. For this she should consult your local homeopathic physician wishing her good health",
+          "source": null
+        },
+        {
+          "chunk_id": 913,
+          "doc_id": 681,
+          "score": 0.5073806047439575,
+          "text": "Q: I am 24 year old girl.I have the problem of acne and blackhead acne since teen ages.Earlier acne results into blackhead and now they are coming out but again forming blackhead .These blackhead pimples are continuous till now. I have tried every thing homeopathy, allopathy but their results was for short period. I don t eat too much oily ,no Chinese and many other thing that can cause acne i gave up but it is not woking .Can u Please suggest me something A: Dear Simmitriwelcome to Chat Doctor Acne is the common skin problem in teenager groups of age 14-30years. According to Ayurveda it is called you van Deepika and impurities in blood is taken as main cause of acne. Along with this irregular bowel habit, allergic atmosphere, cosmetics are the very common cause for acne nowadays. So the ayurvedic line of treatment is the correction of blood impurities, controlled bowel then local application of medicine over the surface. That will be complete therapy. Bodily purification, be careful in diet and applying any cosmetics product. Avoid oily, spicy,",
+          "source": null
+        },
+        {
+          "chunk_id": 147,
+          "doc_id": 115,
+          "score": 0.4916706681251526,
+          "text": "know that she doesn't have medicine to get treated. Without medicine, she can try for some non-pharmacological approaches for depression like aerobic exercises, yoga and meditation. But if it doesn't improve then she will have to start the medication and will need consultation. Hope I am able to answer your concerns. If you have any further query, I would be glad to help you. In future if you wish to contact me directly, you can use the below-mentioned link",
+          "source": null
+        }
+      ],
+      "response_with_rag": "Based on the retrieved context, I would suggest consulting a local homeopathic physician for her lichen planus. Homeopathy treats the patient as a whole and focuses on the underlying causes of the disease. It may be beneficial for her to consult a homeopathic physician who can provide a constitutional minimum based on her specific symptoms and needs.",
+      "response_without_rag": "Lichen planus is a chronic skin condition that can be treated with both allopathic and ayurvedic methods. Here are some general recommendations:\n\n1. **Consult a Dermatologist**: It's important to see a dermatologist for a proper diagnosis and treatment plan. They can prescribe appropriate medications and provide guidance on managing the condition.\n\n2. **Ayurvedic Treatment**: Ayurveda offers various treatments for lichen planus, including herbal remedies, dietary changes, and lifestyle modifications. You can consult an ayurvedic practitioner who can recommend specific therapies based on your girlfriend's constitution and symptoms.\n\n3. **Herbal Remedies**: Some common ayurvedic herbs used for lichen planus include:\n   - Ashwagandha\n   - Turmeric\n   - Triphala\n   - Guduchi\n   - Haritaki\n\n4. **Dietary Changes**: Ayurveda emphasizes a balanced diet. Your girlfriend should avoid spicy, acidic, and refined foods, and include more fruits, vegetables, and whole grains in her diet.\n\n5. **L",
+      "rag_fact_coverage_proxy": 0.16666666666666666,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.16666666666666666,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    }
+  ],
+  "manual_review_records": 75
+}

@@ -1,0 +1,563 @@
+{
+  "validity": {
+    "models": [
+      "codellama_7b",
+      "qwen25_coder_3b",
+      "starcoder2_3b"
+    ],
+    "tasks": [
+      "REP-001",
+      "REP-002",
+      "REP-003",
+      "REP-004",
+      "REP-005",
+      "REP-006",
+      "REP-007",
+      "REP-008"
+    ],
+    "expected_records": 24,
+    "actual_records": 24,
+    "missing_pairs": [],
+    "duplicate_pairs": [],
+    "prompt_mismatch_tasks": [],
+    "retrieval_context_mismatch_tasks": [],
+    "complete_and_comparable": true
+  },
+  "models": {
+    "codellama_7b": {
+      "record_count": 8,
+      "quality": {
+        "automated_fact_coverage_proxy": 0.5773809523809523,
+        "automated_relevance_proxy": 0.6220969089390141,
+        "automated_unsupported_sentence_rate_proxy": 0.16212676212676214,
+        "out_of_scope_abstention_accuracy": null,
+        "retrieval": {
+          "precision_at_k": 0.7083333333333333,
+          "recall_at_k": 0.3375,
+          "reciprocal_rank": 0.875,
+          "hit_at_k": 1.0,
+          "ndcg_at_k": 0.7476454171378343
+        },
+        "manual_adjudication": {
+          "correctness_accuracy": 0.5625,
+          "relevance": 0.625,
+          "hallucination_rate": 0.17567567567567569,
+          "reviewed_records": 8
+        },
+        "test_pass_rate": null,
+        "test_pass_rate_note": "Not applicable: this benchmark contains question-answering and code-understanding tasks, not generated-code tasks."
+      },
+      "performance": {
+        "latency_ms_mean": 78886.03040000044,
+        "latency_ms_median": 77862.94725000153,
+        "latency_ms_p95": 89500.98349500113,
+        "prompt_tokens_mean": 1822.875,
+        "completion_tokens_mean": 256.625,
+        "total_tokens": 16636,
+        "system_cpu_percent_mean": 29.558693086883878,
+        "system_memory_used_mb_peak_mean": 15113.83349609375,
+        "ollama_rss_mb_peak_mean": 28.37109375,
+        "gpu_utilization_percent_peak_mean": null,
+        "gpu_memory_used_mb_peak_mean": null,
+        "ollama_model_vram_mb_mean": 5710.119998931885
+      }
+    },
+    "starcoder2_3b": {
+      "record_count": 8,
+      "quality": {
+        "automated_fact_coverage_proxy": 0.1845238095238095,
+        "automated_relevance_proxy": 0.3839285714285714,
+        "automated_unsupported_sentence_rate_proxy": 0.125,
+        "out_of_scope_abstention_accuracy": null,
+        "retrieval": {
+          "precision_at_k": 0.7083333333333333,
+          "recall_at_k": 0.3375,
+          "reciprocal_rank": 0.875,
+          "hit_at_k": 1.0,
+          "ndcg_at_k": 0.7476454171378343
+        },
+        "manual_adjudication": {
+          "correctness_accuracy": 0.0625,
+          "relevance": 0.3125,
+          "hallucination_rate": 0.03571428571428571,
+          "reviewed_records": 8
+        },
+        "test_pass_rate": null,
+        "test_pass_rate_note": "Not applicable: this benchmark contains question-answering and code-understanding tasks, not generated-code tasks."
+      },
+      "performance": {
+        "latency_ms_mean": 21945.091787499223,
+        "latency_ms_median": 17797.6022999992,
+        "latency_ms_p95": 39460.81969999832,
+        "prompt_tokens_mean": 1605.25,
+        "completion_tokens_mean": 87.625,
+        "total_tokens": 13543,
+        "system_cpu_percent_mean": 26.97111111111111,
+        "system_memory_used_mb_peak_mean": 9431.14794921875,
+        "ollama_rss_mb_peak_mean": 31.30078125,
+        "gpu_utilization_percent_peak_mean": null,
+        "gpu_memory_used_mb_peak_mean": null,
+        "ollama_model_vram_mb_mean": 1789.019998550415
+      }
+    },
+    "qwen25_coder_3b": {
+      "record_count": 8,
+      "quality": {
+        "automated_fact_coverage_proxy": 0.47619047619047616,
+        "automated_relevance_proxy": 0.645945994794679,
+        "automated_unsupported_sentence_rate_proxy": 0.09684343434343434,
+        "out_of_scope_abstention_accuracy": null,
+        "retrieval": {
+          "precision_at_k": 0.7083333333333333,
+          "recall_at_k": 0.3375,
+          "reciprocal_rank": 0.875,
+          "hit_at_k": 1.0,
+          "ndcg_at_k": 0.7476454171378343
+        },
+        "manual_adjudication": {
+          "correctness_accuracy": 0.375,
+          "relevance": 0.5,
+          "hallucination_rate": 0.10126582278481013,
+          "reviewed_records": 8
+        },
+        "test_pass_rate": null,
+        "test_pass_rate_note": "Not applicable: this benchmark contains question-answering and code-understanding tasks, not generated-code tasks."
+      },
+      "performance": {
+        "latency_ms_mean": 26233.878699999877,
+        "latency_ms_median": 25281.28634999848,
+        "latency_ms_p95": 34032.153594999545,
+        "prompt_tokens_mean": 1446.25,
+        "completion_tokens_mean": 234.625,
+        "total_tokens": 13447,
+        "system_cpu_percent_mean": 21.344791666666666,
+        "system_memory_used_mb_peak_mean": 13069.73193359375,
+        "ollama_rss_mb_peak_mean": 30.5107421875,
+        "gpu_utilization_percent_peak_mean": null,
+        "gpu_memory_used_mb_peak_mean": null,
+        "ollama_model_vram_mb_mean": 2055.3299989700317
+      }
+    }
+  },
+  "analysis": [
+    "Highest automated required-fact coverage: codellama_7b (0.577).",
+    "Lowest unsupported-sentence proxy: qwen25_coder_3b (0.097).",
+    "Lowest mean response latency: starcoder2_3b (21945.1 ms).",
+    "Highest evidence-adjudicated correctness: codellama_7b (0.562).",
+    "Highest evidence-adjudicated relevance: codellama_7b (0.625).",
+    "Lowest evidence-adjudicated hallucination rate: starcoder2_3b (0.036).",
+    "Lowest Ollama model allocation on the Intel Arc iGPU: starcoder2_3b (1789.0 MB).",
+    "A quality-latency trade-off is observed: codellama_7b gains 0.393 fact-coverage points over starcoder2_3b, while taking 56940.9 ms more per response on average."
+  ],
+  "rag_traces": [
+    {
+      "model": "codellama_7b",
+      "task_id": "REP-004",
+      "question": "If the chunking strategy changes, which files or artifacts can be affected and why?",
+      "retrieved_context": [
+        {
+          "chunk_id": 59,
+          "doc_id": 13,
+          "score": 0.374891996383667,
+          "text": "SOURCE: src/rag_ingest.py\nLINES: 61-140\n, overlap_words)\n    for j, chunk in enumerate(chunks):\n        all_chunks.append(chunk)\n        chunk_meta.append({\n            \"doc_id\":      doc[\"id\"],\n            \"chunk_idx\":   j,\n            \"text\":        chunk,\n            \"instruction\": doc[\"meta\"][\"instruction\"]\n        })\n\nprint(f\"   Created {len(all_chunks)} chunks from {len(documents)} documents\")\nprint(f\"   Sample chunk #1: \\\"{all_chunks[0][:100]}...\\\"\")\n\n\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n# STEP 3 \u2014 EMBEDDING GENERATION\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nprint(f\"\\n[STEP 3] Embedding Generation\")\nprint(f\"   Model : sentence-transformers/{args.model}\")\nprint(f\"   Loading model...\", end=\" \", flush=True)\n\nt0 = time.time()\nmodel = SentenceTransformer(args.model)\nprint(f\"done ({time.time()-t0:.1f}s)\")\n\nprint(f\"   Encoding {len(all_chunks)} chunks...\", end=\" \", flush=True)\nt0 = time.time()\nembeddings = model.encode(",
+          "source": "src/rag_ingest.py"
+        },
+        {
+          "chunk_id": 174,
+          "doc_id": 17,
+          "score": 0.3704034686088562,
+          "text": "SOURCE: dashboard/index.html\nLINES: 181-260\n        <article class=\"rag-step-card glass-soft\" data-rag-step=\"2\">\n          <div class=\"rag-step-header\">\n            <span class=\"rag-step-num-badge\">02</span>\n            <span class=\"rag-step-icon\">\u2702\ufe0f</span>\n          </div>\n          <h4 class=\"rag-step-title\">Text Chunking</h4>\n          <p class=\"rag-step-desc\">Split each document into smaller, overlapping chunks (256 tokens each with 50-token overlap). This ensures no context is lost at boundaries, and each chunk is a searchable unit.</p>\n          <div class=\"rag-step-meta\">\n            <span class=\"rag-meta-tag\">Strategy: Fixed-size + Overlap</span>\n            <span class=\"rag-meta-tag\">Chunk Size: 256 tokens</span>\n          </div>\n        </article>\n\n        <article class=\"rag-step-card glass-soft\" data-rag-step=\"3\">\n          <div class=\"rag-step-header\">\n            <span class=\"rag-step-num-badge\">03</span>\n            <span class=\"rag-step-icon\">\ud83d\udd22</span>\n          </div>\n          <h4 class=\"rag-step-title\">Embedding Generation</h4>\n          <p class=\"rag-step-desc\">Each text chunk is converted into a dense vector (768-dim) using a Sentence Transformer embedding model. Similar meanings \u2192 vectors close together in space.</p>\n          <div class=\"rag-step-meta\">\n            <span class=\"rag-meta-tag\">Model: all-MiniLM-L6-v2</span>\n            <span class=\"rag-meta-tag\">Dimension: 384-d vectors</span>\n          </div>\n        </article>\n\n        <article class=\"rag-step-card glass-soft\" data-rag-step=\"4\">\n          <div class=\"rag-step-header\">\n            <span class=\"rag-step-num-badge\">04</span>\n            <span class=\"rag-step-icon\">\ud83d\uddc4\ufe0f</span>\n          </div>\n          <h4 class=\"rag-step-title\">Vector Store Indexing</h4>\n          <p class=\"rag-step-de",
+          "source": "dashboard/index.html"
+        },
+        {
+          "chunk_id": 60,
+          "doc_id": 13,
+          "score": 0.30819860100746155,
+          "text": "SOURCE: src/rag_ingest.py\nLINES: 121-200\n        })\n\nprint(f\"   Created {len(all_chunks)} chunks from {len(documents)} documents\")\nprint(f\"   Sample chunk #1: \\\"{all_chunks[0][:100]}...\\\"\")\n\n\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n# STEP 3 \u2014 EMBEDDING GENERATION\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nprint(f\"\\n[STEP 3] Embedding Generation\")\nprint(f\"   Model : sentence-transformers/{args.model}\")\nprint(f\"   Loading model...\", end=\" \", flush=True)\n\nt0 = time.time()\nmodel = SentenceTransformer(args.model)\nprint(f\"done ({time.time()-t0:.1f}s)\")\n\nprint(f\"   Encoding {len(all_chunks)} chunks...\", end=\" \", flush=True)\nt0 = time.time()\nembeddings = model.encode(\n    all_chunks,\n    batch_size=32,\n    show_progress_bar=False,\n    convert_to_numpy=True,\n    normalize_embeddings=True\n)\nelapsed = time.time() - t0\nprint(f\"done ({elapsed:.1f}s)\")\n\ndim = embeddings.shape[1]\nprint(f\"   Generated {len(embeddings)} embeddings \u2014 shape ({len(embeddings)}, {dim})\")\nprint(f\"   Sample vector (first 8 dims): {embeddings[0][:8].round(4).tolist()}\")\n\n\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n# STEP 4 \u2014 VECTOR STORE INDEXING (FAISS)\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nprint(f\"\\n[STEP 4] Vector Store Indexing (FAISS)\")\nprint(f\"   Index type : IndexFlatIP (cosine similarity via normalized vectors)\")\n\nindex = faiss.IndexFlatIP(dim)\nindex.add(embeddings.astype(np.float32))\nprint(f\"   FAISS index built \u2014 {index.ntotal} vectors stored\")\n\nos.makedirs(args.out_dir, exist_ok=True)\nindex_path = os.path.join(args.out_dir, \"faiss.index\")\nmeta_path  = os.path.join(args.out_dir, \"chunk_metadata.json\")\n\nfaiss.write_index(index, index_path)\nwith open(meta_path, \"w\", encoding=\"utf-8\") as f:\n    json.dump(chun",
+          "source": "src/rag_ingest.py"
+        }
+      ],
+      "response_with_rag": "If the chunking strategy changes, the following files or artifacts may be affected:\n\n1. `src/rag_ingest.py`: The `rag_ingest.py` script is responsible for chunking the text documents into smaller, overlapping chunks. If the chunking strategy changes, the script may need to be updated to accommodate the new strategy.\n2. `dashboard/index.html`: The `dashboard/index.html` file contains information about the chunking strategy used in the RAG system. If the chunking strategy changes, the file may need to be updated to reflect the new strategy.\n3. `src/rag_ingest.py`: The `rag_ingest.py` script is responsible for generating dense vectors for each chunk using a Sentence Transformer embedding model. If the embedding model changes, the script may need to be updated to accommodate the new model.\n4. `dashboard/index.html`: The `dashboard/index.html` file contains information about the embedding model used in the RAG system. If the embedding model changes, the file may need to be updated to reflect the new model.\n5. `faiss.index`: The `",
+      "response_without_rag": "The chunking strategy refers to the method used to divide a large file or artifact into smaller, more manageable pieces. The chunking strategy can affect the files or artifacts in several ways:\n\n1. File size: The chunking strategy can affect the size of the files or artifacts. For example, if the chunking strategy is set to split a large file into smaller chunks, the resulting files will be smaller in size. On the other hand, if the chunking strategy is set to combine smaller files into a larger file, the resulting file will be larger in size.\n2. File organization: The chunking strategy can also affect the organization of the files or artifacts. For example, if the chunking strategy is set to split a file into smaller chunks based on a specific criteria, the resulting files will be organized in a specific way.\n3. File access: The chunking strategy can also affect the way files or artifacts are accessed. For example, if the chunking strategy is set to split a file into smaller chunks, the resulting files may be easier to access and retrieve.\n4. File storage: The chunking strategy can also affect the way files or artifacts are stored. For example, if the chunking strategy",
+      "rag_fact_coverage_proxy": 0.42857142857142855,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.42857142857142855,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "codellama_7b",
+      "task_id": "REP-007",
+      "question": "What happens when Ollama is unavailable, and which modules implement or expose the fallback behaviour?",
+      "retrieved_context": [
+        {
+          "chunk_id": 41,
+          "doc_id": 10,
+          "score": 0.551641047000885,
+          "text": "SOURCE: src/ollama_client.py\nLINES: 1-80\n\"\"\"\nollama_client.py \u2014 LLM API Client (Ollama + Optional Cloud API Key Fallback)\n=============================================================================\nSupports:\n  1. Ollama (Local open-source, default for Exercise 1 & 3: Code Llama)\n  2. Optional API Key Providers (OpenAI, Groq) if an API key is provided\n  3. Grounded Fallback if neither is configured\n\"\"\"\n\nimport os\nimport json\nimport time\nimport requests\nfrom typing import Dict, Any, Optional\n\nOLLAMA_HOST = os.environ.get(\"OLLAMA_HOST\", \"http://127.0.0.1:11434\")\nDEFAULT_MODEL = os.environ.get(\"OLLAMA_MODEL\", \"codellama\")\n\nOPENAI_API_KEY = os.environ.get(\"OPENAI_API_KEY\", \"\")\nGROQ_API_KEY = os.environ.get(\"GROQ_API_KEY\", \"\")\n\n\ndef check_ollama_status(host: str = OLLAMA_HOST) -> Dict[str, Any]:\n    \"\"\"Check if Ollama service is reachable, or if Cloud API key is available.\"\"\"\n    # 1. Check local Ollama\n    try:\n        url = f\"{host.rstrip('/')}/api/tags\"\n        resp = requests.get(url, timeout=1.5)\n        if resp.status_code == 200:\n            data = resp.json()\n            models = [m.get(\"name\") for m in data.get(\"models\", [])]\n            return {\n                \"available\": True,\n                \"provider\": \"ollama\",\n                \"host\": host,\n                \"models\": models,\n                \"default_model\": DEFAULT_MODEL,\n                \"has_default_model\": any(DEFAULT_MODEL in m for m in models)\n            }\n    except Exception:\n        pass\n\n    # 2. Check OpenAI API key fallback\n    if OPENAI_API_KEY:\n        return {\n            \"available\": True,\n            \"provider\": \"openai\",\n            \"host\": \"api.openai.com\",\n            \"models\": [\"gpt-3.5-turbo\", \"gpt-4o-mini\"],\n            \"default_model\": \"gpt-4o-mini\",\n            \"has_default_model\": Tru",
+          "source": "src/ollama_client.py"
+        },
+        {
+          "chunk_id": 42,
+          "doc_id": 10,
+          "score": 0.4378198981285095,
+          "text": "SOURCE: src/ollama_client.py\nLINES: 1-80\ne\n        }\n\n    # 3. Check Groq API key fallback\n    if GROQ_API_KEY:\n        return {\n            \"available\": True,\n            \"provider\": \"groq\",\n            \"host\": \"api.groq.com\",\n            \"models\": [\"llama-3.1-8b-instant\"],\n            \"default_model\": \"llama-3.1-8b-instant\",\n            \"has_default_model\": True\n        }\n\n    return {\n        \"available\": False,\n        \"provider\": \"none\",\n        \"host\": host,\n        \"models\": [],\n        \"default_model\": DEFAULT_MODEL,\n        \"has_default_model\": False,\n        \"message\": \"Ollama not running locally. (To use cloud LLM, set $env:OPENAI_API_KEY or $env:GROQ_API_KEY)\"\n    }\n\n\ndef query_cloud_api(prompt: str, system_prompt: Optional[str] = None) -> Optional[Dict[str, Any]]:\n    \"\"\"Query OpenAI or Groq if keys are set.\"\"\"\n    t0 = time.time()\n    if OPENAI_API_KEY:\n        try:",
+          "source": "src/ollama_client.py"
+        },
+        {
+          "chunk_id": 43,
+          "doc_id": 10,
+          "score": 0.42878007888793945,
+          "text": "SOURCE: src/ollama_client.py\nLINES: 61-140\n            \"default_model\": \"llama-3.1-8b-instant\",\n            \"has_default_model\": True\n        }\n\n    return {\n        \"available\": False,\n        \"provider\": \"none\",\n        \"host\": host,\n        \"models\": [],\n        \"default_model\": DEFAULT_MODEL,\n        \"has_default_model\": False,\n        \"message\": \"Ollama not running locally. (To use cloud LLM, set $env:OPENAI_API_KEY or $env:GROQ_API_KEY)\"\n    }\n\n\ndef query_cloud_api(prompt: str, system_prompt: Optional[str] = None) -> Optional[Dict[str, Any]]:\n    \"\"\"Query OpenAI or Groq if keys are set.\"\"\"\n    t0 = time.time()\n    if OPENAI_API_KEY:\n        try:\n            headers = {\"Authorization\": f\"Bearer {OPENAI_API_KEY}\", \"Content-Type\": \"application/json\"}\n            messages = []\n            if system_prompt:\n                messages.append({\"role\": \"system\", \"content\": system_prompt})\n            messages.append({\"role\": \"user\", \"content\": prompt})\n            payload = {\"model\": \"gpt-4o-mini\", \"messages\": messages, \"temperature\": 0.2}\n            resp = requests.post(\"https://api.openai.com/v1/chat/completions\", json=payload, headers=headers, timeout=30)\n            if resp.status_code == 200:\n                data = resp.json()\n                return {\n                    \"success\": True,\n                    \"response\": data[\"choices\"][0][\"message\"][\"content\"].strip(),\n                    \"model\": \"gpt-4o-mini (Cloud API)\",\n                    \"latency_s\": round(time.time() - t0, 3)\n                }\n        except Exception:\n            pass\n\n    if GROQ_API_KEY:\n        try:\n            headers = {\"Authorization\": f\"Bearer {GROQ_API_KEY}\", \"Content-Type\": \"application/json\"}\n            messages = []\n            if system_prompt:\n                messages.append({\"rol",
+          "source": "src/ollama_client.py"
+        }
+      ],
+      "response_with_rag": "When Ollama is unavailable, the `check_ollama_status` function checks for the presence of an OpenAI API key and a Groq API key. If both are present, it returns a dictionary with the following keys:\n\n* `available`: set to `True` if either of the API keys is present\n* `provider`: set to `openai` or `groq` depending on which API key is present\n* `host`: set to `api.openai.com` or `api.groq.com` depending on which API key is present\n* `models`: set to a list of available models for the API key provider\n* `default_model`: set to the default model for the API key provider\n* `has_default_model`: set to `True` if the default model is available\n\nIf neither an OpenAI API key nor a Groq API key is present, the function returns a dictionary with the following keys:\n\n* `available`: set to `False`\n* `provider`: set to `none`\n* `host`: set to the host provided as an argument to the function\n* `models`: set to an empty list\n* `default_model`: set to",
+      "response_without_rag": "When Ollama is unavailable, the fallback behavior is implemented by the modules that implement or expose the fallback behavior. The fallback behavior is typically implemented in the form of a fallback module or a fallback endpoint, which is responsible for handling the request in the absence of the primary module or endpoint.\n\nThe fallback module or endpoint is typically responsible for handling the request in a way that is consistent with the requirements of the system, such as by returning a default response or by redirecting the request to a different module or endpoint. The fallback module or endpoint may also be responsible for logging the failure and taking other actions to mitigate the impact of the failure.\n\nThe modules that implement or expose the fallback behavior are typically responsible for handling the request and returning a response to the client. They may also be responsible for handling any errors that occur during the handling of the request, such as by returning an error response or by redirecting the request to a different module or endpoint.\n\nIn summary, the fallback behavior is implemented by the modules that implement or expose the fallback behavior, and the fallback module or endpoint is responsible for handling the request in the absence of the primary module or endpoint.",
+      "rag_fact_coverage_proxy": 0.2857142857142857,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.2857142857142857,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "codellama_7b",
+      "task_id": "REP-001",
+      "question": "Which files implement the end-to-end medical RAG path from knowledge-base ingestion to retrieval and LLM generation, and what is each file's role?",
+      "retrieved_context": [
+        {
+          "chunk_id": 0,
+          "doc_id": 1,
+          "score": 0.5575032234191895,
+          "text": "SOURCE: README.md\nLINES: 1-80\n# Medical Question Answering LLM & RAG Application (Exercises 1\u20135)\n\n> **Week 4 evaluation:** The reproducible three-model, 25-question quantitative RAG benchmark and repository-understanding probe are documented in [`docs/WEEK4_EVALUATION.md`](docs/WEEK4_EVALUATION.md). The benchmark defaults to preflight-only and never fabricates results when local models are unavailable.\n\nThis repository contains the complete progressive implementation of a domain-specific Healthcare LLM & RAG application across all 5 lab exercises.\n\n## \ud83d\udccb Assignment Exercises & Architecture Map\n\n| Exercise | Module | Key Implementation Files | Status |\n| :--- | :--- | :--- | :---: |\n| **Exercise 1** | Basic LLM App via Ollama (`codellama`) | [`src/basic_llm_app.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/basic_llm_app.py), [`src/ollama_client.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/ollama_client.py) | \u2705 **100%** |\n| **Exercise 2** | Knowledge Base + Chunking + FAISS Embeddings | [`src/rag_ingest.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_ingest.py), [`data/raw/medical_knowledge_base.jsonl`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/data/raw/medical_knowledge_base.jsonl) | \u2705 **100%** |\n| **Exercise 3** | Vector Similarity + Retrieval + RAG Comparison | [`src/rag_demo.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_demo.py), [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) | \u2705 **100%** |\n| **Exercise 4** | Multi-Service APIs & Orchestration | [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) (`/api/v1/services/status`, `/api/v1/rag/compare`) | \u2705 **100%** |\n| **Exercise 5** | Docker ",
+          "source": "README.md"
+        },
+        {
+          "chunk_id": 56,
+          "doc_id": 13,
+          "score": 0.5428749322891235,
+          "text": "SOURCE: src/rag_ingest.py\nLINES: 1-80\n\"\"\"\nrag_ingest.py \u2014 Document Ingestion Script for RAG Pipeline\n============================================================\nInjects medical_knowledge_base.jsonl through the complete\nRAG pipeline: Read \u2192 Chunk \u2192 Embed \u2192 Index (FAISS)\n\nUsage:\n    python src/rag_ingest.py\n    python src/rag_ingest.py --file data/raw/medical_knowledge_base.jsonl\n    python src/rag_ingest.py --file data/raw/medical_knowledge_base.jsonl --chunk-size 256 --overlap 50\n\"\"\"\n\nimport json\nimport os\nimport time\nimport argparse\nimport numpy as np\n\n# \u2500\u2500 Step 1: Check dependencies \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nprint(\"\\n\" + \"=\"*60)\nprint(\"  RAG PIPELINE \u2014 Document Ingestion\")\nprint(\"=\"*60)\n\ntry:\n    from sentence_transformers import SentenceTransformer\n    import faiss\n    DEPS_OK = True\nexcept ImportError:\n    DEPS_OK = False\n    print(\"\\n\u274c Missing dependencies. Run first:\")\n    print(\"   pip install sentence-transformers faiss-cpu numpy\")\n    exit(1)\n\n\n# \u2500\u2500 Argument Parser \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nparser = argparse.ArgumentParser(description=\"RAG Document Ingestion\")\nparser.add_argument(\"--file\",       default=\"data/raw/medical_knowledge_base.jsonl\",\n                    help=\"Path to JSONL file to ingest\")\nparser.add_argument(\"--chunk-size\", type=int, default=256,\n                    help=\"Tokens per chunk (approx words x 1.3)\")\nparser.add_argument(\"--overlap\",    type=int, default=50,\n                    help=\"Overlap tokens between chunks\")\nparser.add_argument(\"--model\",      default=\"all-MiniLM-L6-v2\",\n                    help=\"Sentence transformer model name\")\nparser.add_argument(\"--out-dir\",    default=\"outputs/rag_index\",\n                    help=\"Directory to save FAISS index + metadata\")\nargs = parser.parse_args()\n\n\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
+          "source": "src/rag_ingest.py"
+        },
+        {
+          "chunk_id": 63,
+          "doc_id": 14,
+          "score": 0.48417675495147705,
+          "text": "SOURCE: src/rag_server.py\nLINES: 1-80\n\"\"\"\nrag_server.py \u2014 Real RAG Pipeline & Multi-Service API Backend (FastAPI)\n========================================================================\nImplements full Assignment Architecture:\n  - Exercise 1: LLM Application endpoint (/api/v1/llm/generate) via Ollama + Code Llama\n  - Exercise 2: Document Ingestion, Chunking, Embeddings, FAISS indexing (/ingest)\n  - Exercise 3: Vector similarity search (/query), RAG context generation (/generate),\n                and Side-by-side RAG vs No-RAG comparison (/api/v1/rag/compare)\n  - Exercise 4: Orchestration & Service health checking (/api/v1/services/status)\n\nRun locally:\n    python src/rag_server.py\n\"\"\"\n\nimport json\nimport os\nimport re\nimport time\nimport sys\nfrom pathlib import Path\nfrom typing import List, Optional, Dict, Any\nimport numpy as np\n\nfrom fastapi import FastAPI, File, UploadFile, HTTPException\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom pydantic import BaseModel\n\n# Ensure src is in sys.path\nsys.path.insert(0, str(Path(__file__).resolve().parent))\nfrom ollama_client import (\n    query_ollama,\n    generate_with_rag,\n    check_ollama_status,\n    DEFAULT_MODEL,\n    OLLAMA_HOST,\n)\n\ntry:\n    from sentence_transformers import SentenceTransformer\n    import faiss\nexcept ImportError:\n    print(\"ERROR: Missing dependencies. Run: pip install sentence-transformers faiss-cpu fastapi uvicorn python-multipart\")\n    sys.exit(1)\n\n# \u2500\u2500 App Setup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\napp = FastAPI(\n    title=\"Medical RAG & LLM Orchestration API\",\n    description=\"Multi-tier RAG architecture with FAISS vector retrieval and Ollama (Code Llama) integration.\",\n    version=\"2.0.0\"\n)\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n",
+          "source": "src/rag_server.py"
+        }
+      ],
+      "response_with_rag": "The files that implement the end-to-end medical RAG path from knowledge-base ingestion to retrieval and LLM generation are:\n\n1. `src/rag_ingest.py`: This file contains the code for injecting medical knowledge into the RAG pipeline, including reading the JSONL file, chunking the text, embedding the chunks, and indexing the embeddings using FAISS.\n2. `src/rag_server.py`: This file contains the code for the RAG server, which implements the full Assignment Architecture and includes endpoints for LLM generation, vector similarity search, RAG context generation, and side-by-side RAG vs No-RAG comparison.\n3. `src/rag_demo.py`: This file contains the code for the RAG demo, which demonstrates the use of the RAG server by generating a RAG context for a given prompt.\n4. `src/ollama_client.py`: This file contains the code for the Ollama client, which is used to generate LLM responses for the RAG server.\n\nThe `src/rag_ingest.py` file is responsible for injecting medical knowledge into the RAG pipeline,",
+      "response_without_rag": "The end-to-end medical RAG path from knowledge-base ingestion to retrieval and LLM generation involves several files and processes. Here's a high-level overview of the files and their roles:\n\n1. Knowledge Base (KB): The KB is the central repository of medical knowledge that is used to generate responses to user queries. It contains information on various medical topics, including symptoms, diagnoses, treatments, and medications. The KB is typically stored in a structured format, such as a database or a knowledge graph.\n2. Natural Language Processing (NLP) Engine: The NLP engine is responsible for processing user queries and generating responses. It uses the KB to retrieve relevant information and generate responses that are relevant to the user's query.\n3. Language Model (LM): The LM is a type of machine learning model that is trained on a large corpus of text data. It is used to generate responses to user queries by predicting the next word in a sequence of words. The LM is trained on the KB to generate responses that are relevant to the user's query.\n4. Response Generation Module: The response generation module is responsible for generating responses to user queries.",
+      "rag_fact_coverage_proxy": 0.8333333333333334,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.8333333333333334,
+      "relationship_analysis": "Relevant evidence retrieved; the RAG response covers most required facts."
+    },
+    {
+      "model": "codellama_7b",
+      "task_id": "REP-002",
+      "question": "What happens across modules after a client sends POST /api/v1/rag/compare? Trace retrieval, baseline generation, RAG generation, and the returned comparison.",
+      "retrieved_context": [
+        {
+          "chunk_id": 63,
+          "doc_id": 14,
+          "score": 0.546932578086853,
+          "text": "SOURCE: src/rag_server.py\nLINES: 1-80\n\"\"\"\nrag_server.py \u2014 Real RAG Pipeline & Multi-Service API Backend (FastAPI)\n========================================================================\nImplements full Assignment Architecture:\n  - Exercise 1: LLM Application endpoint (/api/v1/llm/generate) via Ollama + Code Llama\n  - Exercise 2: Document Ingestion, Chunking, Embeddings, FAISS indexing (/ingest)\n  - Exercise 3: Vector similarity search (/query), RAG context generation (/generate),\n                and Side-by-side RAG vs No-RAG comparison (/api/v1/rag/compare)\n  - Exercise 4: Orchestration & Service health checking (/api/v1/services/status)\n\nRun locally:\n    python src/rag_server.py\n\"\"\"\n\nimport json\nimport os\nimport re\nimport time\nimport sys\nfrom pathlib import Path\nfrom typing import List, Optional, Dict, Any\nimport numpy as np\n\nfrom fastapi import FastAPI, File, UploadFile, HTTPException\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom pydantic import BaseModel\n\n# Ensure src is in sys.path\nsys.path.insert(0, str(Path(__file__).resolve().parent))\nfrom ollama_client import (\n    query_ollama,\n    generate_with_rag,\n    check_ollama_status,\n    DEFAULT_MODEL,\n    OLLAMA_HOST,\n)\n\ntry:\n    from sentence_transformers import SentenceTransformer\n    import faiss\nexcept ImportError:\n    print(\"ERROR: Missing dependencies. Run: pip install sentence-transformers faiss-cpu fastapi uvicorn python-multipart\")\n    sys.exit(1)\n\n# \u2500\u2500 App Setup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\napp = FastAPI(\n    title=\"Medical RAG & LLM Orchestration API\",\n    description=\"Multi-tier RAG architecture with FAISS vector retrieval and Ollama (Code Llama) integration.\",\n    version=\"2.0.0\"\n)\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n",
+          "source": "src/rag_server.py"
+        },
+        {
+          "chunk_id": 0,
+          "doc_id": 1,
+          "score": 0.4488038718700409,
+          "text": "SOURCE: README.md\nLINES: 1-80\n# Medical Question Answering LLM & RAG Application (Exercises 1\u20135)\n\n> **Week 4 evaluation:** The reproducible three-model, 25-question quantitative RAG benchmark and repository-understanding probe are documented in [`docs/WEEK4_EVALUATION.md`](docs/WEEK4_EVALUATION.md). The benchmark defaults to preflight-only and never fabricates results when local models are unavailable.\n\nThis repository contains the complete progressive implementation of a domain-specific Healthcare LLM & RAG application across all 5 lab exercises.\n\n## \ud83d\udccb Assignment Exercises & Architecture Map\n\n| Exercise | Module | Key Implementation Files | Status |\n| :--- | :--- | :--- | :---: |\n| **Exercise 1** | Basic LLM App via Ollama (`codellama`) | [`src/basic_llm_app.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/basic_llm_app.py), [`src/ollama_client.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/ollama_client.py) | \u2705 **100%** |\n| **Exercise 2** | Knowledge Base + Chunking + FAISS Embeddings | [`src/rag_ingest.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_ingest.py), [`data/raw/medical_knowledge_base.jsonl`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/data/raw/medical_knowledge_base.jsonl) | \u2705 **100%** |\n| **Exercise 3** | Vector Similarity + Retrieval + RAG Comparison | [`src/rag_demo.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_demo.py), [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) | \u2705 **100%** |\n| **Exercise 4** | Multi-Service APIs & Orchestration | [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) (`/api/v1/services/status`, `/api/v1/rag/compare`) | \u2705 **100%** |\n| **Exercise 5** | Docker ",
+          "source": "README.md"
+        },
+        {
+          "chunk_id": 78,
+          "doc_id": 14,
+          "score": 0.43441489338874817,
+          "text": "SOURCE: src/rag_server.py\nLINES: 421-500\n      chunks.append({\n                \"chunk_id\": int(idx),\n                \"text\": chunk[\"text\"],\n                \"score\": round(float(score), 4)\n            })\n\n    # 2. Without RAG (Exercise 1 Pure LLM)\n    raw_res = query_ollama(prompt=req.query, model=req.model or DEFAULT_MODEL)\n    baseline_answer = raw_res.get(\"response\") if raw_res.get(\"success\") else \"Generic ungrounded response (Ollama offline fallback).\"\n\n    # 3. With RAG (Exercise 3 Augmented)\n    rag_res = generate_rag_answer(GenerateRequest(query=req.query, chunks=chunks, model=req.model))\n\n    return {\n        \"query\": req.query,\n        \"retrieved_chunks\": chunks,\n        \"without_rag\": {\n            \"answer\": baseline_answer,\n            \"source\": f\"ollama/{req.model or DEFAULT_MODEL} (Pure Parametric Memory)\",\n            \"grounded\": False\n        },\n        \"with_rag\": {\n            \"answer\": rag_res[\"answer\"],\n            \"source\": rag_res[\"generation_source\"],\n            \"grounded\": True,\n            \"avg_similarity\": rag_res[\"avg_similarity\"]\n        }\n    }\n\n\n# \u2500\u2500 Run Server \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nif __name__ == \"__main__\":",
+          "source": "src/rag_server.py"
+        }
+      ],
+      "response_with_rag": "When a client sends a POST request to `/api/v1/rag/compare`, the following happens across modules:\n\n1. In `src/rag_server.py`, the request is processed by the `compare_rag` function.\n2. The `compare_rag` function first retrieves the chunks from the request body using the `get_chunks` function.\n3. The `get_chunks` function splits the input text into chunks based on the specified chunk size.\n4. The `compare_rag` function then retrieves the baseline answer from Ollama using the `query_ollama` function.\n5. The `query_ollama` function sends a request to Ollama to generate an answer for the input text.\n6. The `compare_rag` function then generates an answer using the RAG model using the `generate_rag_answer` function.\n7. The `generate_rag_answer` function sends a request to the RAG model to generate an answer for the input text.\n8. The `compare_rag` function then compares the two answers and returns the comparison in the response.\n\nThe `compare_rag` function also includes",
+      "response_without_rag": "In the context of a RESTful API, the term \"module\" typically refers to a logical component of the API that performs a specific function or set of functions. In the case of the question, the modules involved in the process of comparing two RAGs are:\n\n1. Trace retrieval: This module is responsible for retrieving the traces from the client's request. The traces are the data that the client wants to compare, and they are typically sent in the request body of the POST /api/v1/rag/compare request.\n2. Baseline generation: This module is responsible for generating the baseline RAG from the retrieved traces. The baseline RAG is a set of rules that define the criteria for comparing the traces and determining whether they are similar or dissimilar.\n3. RAG generation: This module is responsible for generating the RAG from the retrieved traces and the baseline RAG. The RAG is a set of rules that define the criteria for comparing the traces and determining whether they are similar or dissimilar.\n4. Returned comparison: This module is responsible for returning the comparison result to the client. The comparison result is a set of data that indicates whether the two RAGs are similar or dis",
+      "rag_fact_coverage_proxy": 0.42857142857142855,
+      "baseline_fact_coverage_proxy": 0.14285714285714285,
+      "fact_coverage_delta": 0.2857142857142857,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "starcoder2_3b",
+      "task_id": "REP-004",
+      "question": "If the chunking strategy changes, which files or artifacts can be affected and why?",
+      "retrieved_context": [
+        {
+          "chunk_id": 59,
+          "doc_id": 13,
+          "score": 0.374891996383667,
+          "text": "SOURCE: src/rag_ingest.py\nLINES: 61-140\n, overlap_words)\n    for j, chunk in enumerate(chunks):\n        all_chunks.append(chunk)\n        chunk_meta.append({\n            \"doc_id\":      doc[\"id\"],\n            \"chunk_idx\":   j,\n            \"text\":        chunk,\n            \"instruction\": doc[\"meta\"][\"instruction\"]\n        })\n\nprint(f\"   Created {len(all_chunks)} chunks from {len(documents)} documents\")\nprint(f\"   Sample chunk #1: \\\"{all_chunks[0][:100]}...\\\"\")\n\n\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n# STEP 3 \u2014 EMBEDDING GENERATION\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nprint(f\"\\n[STEP 3] Embedding Generation\")\nprint(f\"   Model : sentence-transformers/{args.model}\")\nprint(f\"   Loading model...\", end=\" \", flush=True)\n\nt0 = time.time()\nmodel = SentenceTransformer(args.model)\nprint(f\"done ({time.time()-t0:.1f}s)\")\n\nprint(f\"   Encoding {len(all_chunks)} chunks...\", end=\" \", flush=True)\nt0 = time.time()\nembeddings = model.encode(",
+          "source": "src/rag_ingest.py"
+        },
+        {
+          "chunk_id": 174,
+          "doc_id": 17,
+          "score": 0.3704034686088562,
+          "text": "SOURCE: dashboard/index.html\nLINES: 181-260\n        <article class=\"rag-step-card glass-soft\" data-rag-step=\"2\">\n          <div class=\"rag-step-header\">\n            <span class=\"rag-step-num-badge\">02</span>\n            <span class=\"rag-step-icon\">\u2702\ufe0f</span>\n          </div>\n          <h4 class=\"rag-step-title\">Text Chunking</h4>\n          <p class=\"rag-step-desc\">Split each document into smaller, overlapping chunks (256 tokens each with 50-token overlap). This ensures no context is lost at boundaries, and each chunk is a searchable unit.</p>\n          <div class=\"rag-step-meta\">\n            <span class=\"rag-meta-tag\">Strategy: Fixed-size + Overlap</span>\n            <span class=\"rag-meta-tag\">Chunk Size: 256 tokens</span>\n          </div>\n        </article>\n\n        <article class=\"rag-step-card glass-soft\" data-rag-step=\"3\">\n          <div class=\"rag-step-header\">\n            <span class=\"rag-step-num-badge\">03</span>\n            <span class=\"rag-step-icon\">\ud83d\udd22</span>\n          </div>\n          <h4 class=\"rag-step-title\">Embedding Generation</h4>\n          <p class=\"rag-step-desc\">Each text chunk is converted into a dense vector (768-dim) using a Sentence Transformer embedding model. Similar meanings \u2192 vectors close together in space.</p>\n          <div class=\"rag-step-meta\">\n            <span class=\"rag-meta-tag\">Model: all-MiniLM-L6-v2</span>\n            <span class=\"rag-meta-tag\">Dimension: 384-d vectors</span>\n          </div>\n        </article>\n\n        <article class=\"rag-step-card glass-soft\" data-rag-step=\"4\">\n          <div class=\"rag-step-header\">\n            <span class=\"rag-step-num-badge\">04</span>\n            <span class=\"rag-step-icon\">\ud83d\uddc4\ufe0f</span>\n          </div>\n          <h4 class=\"rag-step-title\">Vector Store Indexing</h4>\n          <p class=\"rag-step-de",
+          "source": "dashboard/index.html"
+        },
+        {
+          "chunk_id": 60,
+          "doc_id": 13,
+          "score": 0.30819860100746155,
+          "text": "SOURCE: src/rag_ingest.py\nLINES: 121-200\n        })\n\nprint(f\"   Created {len(all_chunks)} chunks from {len(documents)} documents\")\nprint(f\"   Sample chunk #1: \\\"{all_chunks[0][:100]}...\\\"\")\n\n\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n# STEP 3 \u2014 EMBEDDING GENERATION\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nprint(f\"\\n[STEP 3] Embedding Generation\")\nprint(f\"   Model : sentence-transformers/{args.model}\")\nprint(f\"   Loading model...\", end=\" \", flush=True)\n\nt0 = time.time()\nmodel = SentenceTransformer(args.model)\nprint(f\"done ({time.time()-t0:.1f}s)\")\n\nprint(f\"   Encoding {len(all_chunks)} chunks...\", end=\" \", flush=True)\nt0 = time.time()\nembeddings = model.encode(\n    all_chunks,\n    batch_size=32,\n    show_progress_bar=False,\n    convert_to_numpy=True,\n    normalize_embeddings=True\n)\nelapsed = time.time() - t0\nprint(f\"done ({elapsed:.1f}s)\")\n\ndim = embeddings.shape[1]\nprint(f\"   Generated {len(embeddings)} embeddings \u2014 shape ({len(embeddings)}, {dim})\")\nprint(f\"   Sample vector (first 8 dims): {embeddings[0][:8].round(4).tolist()}\")\n\n\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n# STEP 4 \u2014 VECTOR STORE INDEXING (FAISS)\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nprint(f\"\\n[STEP 4] Vector Store Indexing (FAISS)\")\nprint(f\"   Index type : IndexFlatIP (cosine similarity via normalized vectors)\")\n\nindex = faiss.IndexFlatIP(dim)\nindex.add(embeddings.astype(np.float32))\nprint(f\"   FAISS index built \u2014 {index.ntotal} vectors stored\")\n\nos.makedirs(args.out_dir, exist_ok=True)\nindex_path = os.path.join(args.out_dir, \"faiss.index\")\nmeta_path  = os.path.join(args.out_dir, \"chunk_metadata.json\")\n\nfaiss.write_index(index, index_path)\nwith open(meta_path, \"w\", encoding=\"utf-8\") as f:\n    json.dump(chun",
+          "source": "src/rag_ingest.py"
+        }
+      ],
+      "response_with_rag": "Question: What is the purpose of the `chunk_metadata.json` file?\n\nAnswer:",
+      "response_without_rag": "Question: What are the benefits of using a chunking strategy?\n\nAnswer:",
+      "rag_fact_coverage_proxy": 0.14285714285714285,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.14285714285714285,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "starcoder2_3b",
+      "task_id": "REP-007",
+      "question": "What happens when Ollama is unavailable, and which modules implement or expose the fallback behaviour?",
+      "retrieved_context": [
+        {
+          "chunk_id": 41,
+          "doc_id": 10,
+          "score": 0.551641047000885,
+          "text": "SOURCE: src/ollama_client.py\nLINES: 1-80\n\"\"\"\nollama_client.py \u2014 LLM API Client (Ollama + Optional Cloud API Key Fallback)\n=============================================================================\nSupports:\n  1. Ollama (Local open-source, default for Exercise 1 & 3: Code Llama)\n  2. Optional API Key Providers (OpenAI, Groq) if an API key is provided\n  3. Grounded Fallback if neither is configured\n\"\"\"\n\nimport os\nimport json\nimport time\nimport requests\nfrom typing import Dict, Any, Optional\n\nOLLAMA_HOST = os.environ.get(\"OLLAMA_HOST\", \"http://127.0.0.1:11434\")\nDEFAULT_MODEL = os.environ.get(\"OLLAMA_MODEL\", \"codellama\")\n\nOPENAI_API_KEY = os.environ.get(\"OPENAI_API_KEY\", \"\")\nGROQ_API_KEY = os.environ.get(\"GROQ_API_KEY\", \"\")\n\n\ndef check_ollama_status(host: str = OLLAMA_HOST) -> Dict[str, Any]:\n    \"\"\"Check if Ollama service is reachable, or if Cloud API key is available.\"\"\"\n    # 1. Check local Ollama\n    try:\n        url = f\"{host.rstrip('/')}/api/tags\"\n        resp = requests.get(url, timeout=1.5)\n        if resp.status_code == 200:\n            data = resp.json()\n            models = [m.get(\"name\") for m in data.get(\"models\", [])]\n            return {\n                \"available\": True,\n                \"provider\": \"ollama\",\n                \"host\": host,\n                \"models\": models,\n                \"default_model\": DEFAULT_MODEL,\n                \"has_default_model\": any(DEFAULT_MODEL in m for m in models)\n            }\n    except Exception:\n        pass\n\n    # 2. Check OpenAI API key fallback\n    if OPENAI_API_KEY:\n        return {\n            \"available\": True,\n            \"provider\": \"openai\",\n            \"host\": \"api.openai.com\",\n            \"models\": [\"gpt-3.5-turbo\", \"gpt-4o-mini\"],\n            \"default_model\": \"gpt-4o-mini\",\n            \"has_default_model\": Tru",
+          "source": "src/ollama_client.py"
+        },
+        {
+          "chunk_id": 42,
+          "doc_id": 10,
+          "score": 0.4378198981285095,
+          "text": "SOURCE: src/ollama_client.py\nLINES: 1-80\ne\n        }\n\n    # 3. Check Groq API key fallback\n    if GROQ_API_KEY:\n        return {\n            \"available\": True,\n            \"provider\": \"groq\",\n            \"host\": \"api.groq.com\",\n            \"models\": [\"llama-3.1-8b-instant\"],\n            \"default_model\": \"llama-3.1-8b-instant\",\n            \"has_default_model\": True\n        }\n\n    return {\n        \"available\": False,\n        \"provider\": \"none\",\n        \"host\": host,\n        \"models\": [],\n        \"default_model\": DEFAULT_MODEL,\n        \"has_default_model\": False,\n        \"message\": \"Ollama not running locally. (To use cloud LLM, set $env:OPENAI_API_KEY or $env:GROQ_API_KEY)\"\n    }\n\n\ndef query_cloud_api(prompt: str, system_prompt: Optional[str] = None) -> Optional[Dict[str, Any]]:\n    \"\"\"Query OpenAI or Groq if keys are set.\"\"\"\n    t0 = time.time()\n    if OPENAI_API_KEY:\n        try:",
+          "source": "src/ollama_client.py"
+        },
+        {
+          "chunk_id": 43,
+          "doc_id": 10,
+          "score": 0.42878007888793945,
+          "text": "SOURCE: src/ollama_client.py\nLINES: 61-140\n            \"default_model\": \"llama-3.1-8b-instant\",\n            \"has_default_model\": True\n        }\n\n    return {\n        \"available\": False,\n        \"provider\": \"none\",\n        \"host\": host,\n        \"models\": [],\n        \"default_model\": DEFAULT_MODEL,\n        \"has_default_model\": False,\n        \"message\": \"Ollama not running locally. (To use cloud LLM, set $env:OPENAI_API_KEY or $env:GROQ_API_KEY)\"\n    }\n\n\ndef query_cloud_api(prompt: str, system_prompt: Optional[str] = None) -> Optional[Dict[str, Any]]:\n    \"\"\"Query OpenAI or Groq if keys are set.\"\"\"\n    t0 = time.time()\n    if OPENAI_API_KEY:\n        try:\n            headers = {\"Authorization\": f\"Bearer {OPENAI_API_KEY}\", \"Content-Type\": \"application/json\"}\n            messages = []\n            if system_prompt:\n                messages.append({\"role\": \"system\", \"content\": system_prompt})\n            messages.append({\"role\": \"user\", \"content\": prompt})\n            payload = {\"model\": \"gpt-4o-mini\", \"messages\": messages, \"temperature\": 0.2}\n            resp = requests.post(\"https://api.openai.com/v1/chat/completions\", json=payload, headers=headers, timeout=30)\n            if resp.status_code == 200:\n                data = resp.json()\n                return {\n                    \"success\": True,\n                    \"response\": data[\"choices\"][0][\"message\"][\"content\"].strip(),\n                    \"model\": \"gpt-4o-mini (Cloud API)\",\n                    \"latency_s\": round(time.time() - t0, 3)\n                }\n        except Exception:\n            pass\n\n    if GROQ_API_KEY:\n        try:\n            headers = {\"Authorization\": f\"Bearer {GROQ_API_KEY}\", \"Content-Type\": \"application/json\"}\n            messages = []\n            if system_prompt:\n                messages.append({\"rol",
+          "source": "src/ollama_client.py"
+        }
+      ],
+      "response_with_rag": "Retrieved context:\n[C1] source=src/ollama_client.py similarity=0.5516\nSOURCE: src/ollama_client.py\nLINES: 1-80\n\"\"\"\nollama_client.py \u2014 LLM API Client (Ollama + Optional Cloud API Key Fallback)\n=============================================================================\nSupports:\n  \uf0a7 Ollama (Local open-source, default for Exercise 1 & 3: Code Llama)\n  \uf0a7 Optional API Key Providers (OpenAI, Groq) if an API key is provided\n  \uf0a7 Grounded Fallback if neither is configured\n\"\"\"\n\nimport os\nimport json\nimport time\nimport requests\nfrom typing import Dict, Any, Optional\n\nOLLAMA_HOST = os.environ.get(\"OLLAMA_HOST\", \"http://127.0.0.1:11434\")\nDEFAULT_MODEL = os.environ.get(\"OLLAMA_MODEL\", \"codellama\")\n\nOPENAI_API_KEY = os.environ.get(\"OPENAI_API_KEY\", \"\")\nGROQ_API_KEY =",
+      "response_without_rag": "Question: What happens when Ollama is unavailable, and which modules implement or expose the fallback behaviour?\n\nAnswer:",
+      "rag_fact_coverage_proxy": 0.2857142857142857,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.2857142857142857,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "starcoder2_3b",
+      "task_id": "REP-001",
+      "question": "Which files implement the end-to-end medical RAG path from knowledge-base ingestion to retrieval and LLM generation, and what is each file's role?",
+      "retrieved_context": [
+        {
+          "chunk_id": 0,
+          "doc_id": 1,
+          "score": 0.5575032234191895,
+          "text": "SOURCE: README.md\nLINES: 1-80\n# Medical Question Answering LLM & RAG Application (Exercises 1\u20135)\n\n> **Week 4 evaluation:** The reproducible three-model, 25-question quantitative RAG benchmark and repository-understanding probe are documented in [`docs/WEEK4_EVALUATION.md`](docs/WEEK4_EVALUATION.md). The benchmark defaults to preflight-only and never fabricates results when local models are unavailable.\n\nThis repository contains the complete progressive implementation of a domain-specific Healthcare LLM & RAG application across all 5 lab exercises.\n\n## \ud83d\udccb Assignment Exercises & Architecture Map\n\n| Exercise | Module | Key Implementation Files | Status |\n| :--- | :--- | :--- | :---: |\n| **Exercise 1** | Basic LLM App via Ollama (`codellama`) | [`src/basic_llm_app.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/basic_llm_app.py), [`src/ollama_client.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/ollama_client.py) | \u2705 **100%** |\n| **Exercise 2** | Knowledge Base + Chunking + FAISS Embeddings | [`src/rag_ingest.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_ingest.py), [`data/raw/medical_knowledge_base.jsonl`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/data/raw/medical_knowledge_base.jsonl) | \u2705 **100%** |\n| **Exercise 3** | Vector Similarity + Retrieval + RAG Comparison | [`src/rag_demo.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_demo.py), [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) | \u2705 **100%** |\n| **Exercise 4** | Multi-Service APIs & Orchestration | [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) (`/api/v1/services/status`, `/api/v1/rag/compare`) | \u2705 **100%** |\n| **Exercise 5** | Docker ",
+          "source": "README.md"
+        },
+        {
+          "chunk_id": 56,
+          "doc_id": 13,
+          "score": 0.5428749322891235,
+          "text": "SOURCE: src/rag_ingest.py\nLINES: 1-80\n\"\"\"\nrag_ingest.py \u2014 Document Ingestion Script for RAG Pipeline\n============================================================\nInjects medical_knowledge_base.jsonl through the complete\nRAG pipeline: Read \u2192 Chunk \u2192 Embed \u2192 Index (FAISS)\n\nUsage:\n    python src/rag_ingest.py\n    python src/rag_ingest.py --file data/raw/medical_knowledge_base.jsonl\n    python src/rag_ingest.py --file data/raw/medical_knowledge_base.jsonl --chunk-size 256 --overlap 50\n\"\"\"\n\nimport json\nimport os\nimport time\nimport argparse\nimport numpy as np\n\n# \u2500\u2500 Step 1: Check dependencies \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nprint(\"\\n\" + \"=\"*60)\nprint(\"  RAG PIPELINE \u2014 Document Ingestion\")\nprint(\"=\"*60)\n\ntry:\n    from sentence_transformers import SentenceTransformer\n    import faiss\n    DEPS_OK = True\nexcept ImportError:\n    DEPS_OK = False\n    print(\"\\n\u274c Missing dependencies. Run first:\")\n    print(\"   pip install sentence-transformers faiss-cpu numpy\")\n    exit(1)\n\n\n# \u2500\u2500 Argument Parser \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nparser = argparse.ArgumentParser(description=\"RAG Document Ingestion\")\nparser.add_argument(\"--file\",       default=\"data/raw/medical_knowledge_base.jsonl\",\n                    help=\"Path to JSONL file to ingest\")\nparser.add_argument(\"--chunk-size\", type=int, default=256,\n                    help=\"Tokens per chunk (approx words x 1.3)\")\nparser.add_argument(\"--overlap\",    type=int, default=50,\n                    help=\"Overlap tokens between chunks\")\nparser.add_argument(\"--model\",      default=\"all-MiniLM-L6-v2\",\n                    help=\"Sentence transformer model name\")\nparser.add_argument(\"--out-dir\",    default=\"outputs/rag_index\",\n                    help=\"Directory to save FAISS index + metadata\")\nargs = parser.parse_args()\n\n\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
+          "source": "src/rag_ingest.py"
+        },
+        {
+          "chunk_id": 63,
+          "doc_id": 14,
+          "score": 0.48417675495147705,
+          "text": "SOURCE: src/rag_server.py\nLINES: 1-80\n\"\"\"\nrag_server.py \u2014 Real RAG Pipeline & Multi-Service API Backend (FastAPI)\n========================================================================\nImplements full Assignment Architecture:\n  - Exercise 1: LLM Application endpoint (/api/v1/llm/generate) via Ollama + Code Llama\n  - Exercise 2: Document Ingestion, Chunking, Embeddings, FAISS indexing (/ingest)\n  - Exercise 3: Vector similarity search (/query), RAG context generation (/generate),\n                and Side-by-side RAG vs No-RAG comparison (/api/v1/rag/compare)\n  - Exercise 4: Orchestration & Service health checking (/api/v1/services/status)\n\nRun locally:\n    python src/rag_server.py\n\"\"\"\n\nimport json\nimport os\nimport re\nimport time\nimport sys\nfrom pathlib import Path\nfrom typing import List, Optional, Dict, Any\nimport numpy as np\n\nfrom fastapi import FastAPI, File, UploadFile, HTTPException\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom pydantic import BaseModel\n\n# Ensure src is in sys.path\nsys.path.insert(0, str(Path(__file__).resolve().parent))\nfrom ollama_client import (\n    query_ollama,\n    generate_with_rag,\n    check_ollama_status,\n    DEFAULT_MODEL,\n    OLLAMA_HOST,\n)\n\ntry:\n    from sentence_transformers import SentenceTransformer\n    import faiss\nexcept ImportError:\n    print(\"ERROR: Missing dependencies. Run: pip install sentence-transformers faiss-cpu fastapi uvicorn python-multipart\")\n    sys.exit(1)\n\n# \u2500\u2500 App Setup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\napp = FastAPI(\n    title=\"Medical RAG & LLM Orchestration API\",\n    description=\"Multi-tier RAG architecture with FAISS vector retrieval and Ollama (Code Llama) integration.\",\n    version=\"2.0.0\"\n)\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n",
+          "source": "src/rag_server.py"
+        }
+      ],
+      "response_with_rag": "Question: What is the purpose of the `check_ollama_status` function?\n\nAnswer:",
+      "response_without_rag": "The knowledge-base ingestion and retrieval pipeline is implemented in the `knowledge_base_ingestion_and_retrieval.py` file. The retrieval pipeline is implemented in the `retrieval.py` file. The LLM generation pipeline is implemented in the `llm_generation.py` file.\n\nThe knowledge-base ingestion and retrieval pipeline is implemented in the `knowledge_base_ingestion_and_retrieval.py` file. The retrieval pipeline is implemented in the `retrieval.py` file. The LLM generation pipeline is implemented in the `llm_generation.py` file.\n\nThe knowledge-base ingestion and retrieval pipeline is implemented in the `knowledge_base_ingestion_and_retrieval.py` file. The retrieval pipeline is implemented in the `retrieval.py` file. The LLM generation pipeline is implemented in the `llm_generation.py` file.\n\nThe knowledge-base ingestion and retrieval pipeline is implemented in the `knowledge_base_ingestion_and_retrieval.py` file. The retrieval pipeline is implemented in the `retrieval.py` file. The LLM generation pipeline is implemented in the `llm_generation.",
+      "rag_fact_coverage_proxy": 0.16666666666666666,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.16666666666666666,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "starcoder2_3b",
+      "task_id": "REP-002",
+      "question": "What happens across modules after a client sends POST /api/v1/rag/compare? Trace retrieval, baseline generation, RAG generation, and the returned comparison.",
+      "retrieved_context": [
+        {
+          "chunk_id": 63,
+          "doc_id": 14,
+          "score": 0.546932578086853,
+          "text": "SOURCE: src/rag_server.py\nLINES: 1-80\n\"\"\"\nrag_server.py \u2014 Real RAG Pipeline & Multi-Service API Backend (FastAPI)\n========================================================================\nImplements full Assignment Architecture:\n  - Exercise 1: LLM Application endpoint (/api/v1/llm/generate) via Ollama + Code Llama\n  - Exercise 2: Document Ingestion, Chunking, Embeddings, FAISS indexing (/ingest)\n  - Exercise 3: Vector similarity search (/query), RAG context generation (/generate),\n                and Side-by-side RAG vs No-RAG comparison (/api/v1/rag/compare)\n  - Exercise 4: Orchestration & Service health checking (/api/v1/services/status)\n\nRun locally:\n    python src/rag_server.py\n\"\"\"\n\nimport json\nimport os\nimport re\nimport time\nimport sys\nfrom pathlib import Path\nfrom typing import List, Optional, Dict, Any\nimport numpy as np\n\nfrom fastapi import FastAPI, File, UploadFile, HTTPException\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom pydantic import BaseModel\n\n# Ensure src is in sys.path\nsys.path.insert(0, str(Path(__file__).resolve().parent))\nfrom ollama_client import (\n    query_ollama,\n    generate_with_rag,\n    check_ollama_status,\n    DEFAULT_MODEL,\n    OLLAMA_HOST,\n)\n\ntry:\n    from sentence_transformers import SentenceTransformer\n    import faiss\nexcept ImportError:\n    print(\"ERROR: Missing dependencies. Run: pip install sentence-transformers faiss-cpu fastapi uvicorn python-multipart\")\n    sys.exit(1)\n\n# \u2500\u2500 App Setup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\napp = FastAPI(\n    title=\"Medical RAG & LLM Orchestration API\",\n    description=\"Multi-tier RAG architecture with FAISS vector retrieval and Ollama (Code Llama) integration.\",\n    version=\"2.0.0\"\n)\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n",
+          "source": "src/rag_server.py"
+        },
+        {
+          "chunk_id": 0,
+          "doc_id": 1,
+          "score": 0.4488038718700409,
+          "text": "SOURCE: README.md\nLINES: 1-80\n# Medical Question Answering LLM & RAG Application (Exercises 1\u20135)\n\n> **Week 4 evaluation:** The reproducible three-model, 25-question quantitative RAG benchmark and repository-understanding probe are documented in [`docs/WEEK4_EVALUATION.md`](docs/WEEK4_EVALUATION.md). The benchmark defaults to preflight-only and never fabricates results when local models are unavailable.\n\nThis repository contains the complete progressive implementation of a domain-specific Healthcare LLM & RAG application across all 5 lab exercises.\n\n## \ud83d\udccb Assignment Exercises & Architecture Map\n\n| Exercise | Module | Key Implementation Files | Status |\n| :--- | :--- | :--- | :---: |\n| **Exercise 1** | Basic LLM App via Ollama (`codellama`) | [`src/basic_llm_app.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/basic_llm_app.py), [`src/ollama_client.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/ollama_client.py) | \u2705 **100%** |\n| **Exercise 2** | Knowledge Base + Chunking + FAISS Embeddings | [`src/rag_ingest.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_ingest.py), [`data/raw/medical_knowledge_base.jsonl`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/data/raw/medical_knowledge_base.jsonl) | \u2705 **100%** |\n| **Exercise 3** | Vector Similarity + Retrieval + RAG Comparison | [`src/rag_demo.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_demo.py), [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) | \u2705 **100%** |\n| **Exercise 4** | Multi-Service APIs & Orchestration | [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) (`/api/v1/services/status`, `/api/v1/rag/compare`) | \u2705 **100%** |\n| **Exercise 5** | Docker ",
+          "source": "README.md"
+        },
+        {
+          "chunk_id": 78,
+          "doc_id": 14,
+          "score": 0.43441489338874817,
+          "text": "SOURCE: src/rag_server.py\nLINES: 421-500\n      chunks.append({\n                \"chunk_id\": int(idx),\n                \"text\": chunk[\"text\"],\n                \"score\": round(float(score), 4)\n            })\n\n    # 2. Without RAG (Exercise 1 Pure LLM)\n    raw_res = query_ollama(prompt=req.query, model=req.model or DEFAULT_MODEL)\n    baseline_answer = raw_res.get(\"response\") if raw_res.get(\"success\") else \"Generic ungrounded response (Ollama offline fallback).\"\n\n    # 3. With RAG (Exercise 3 Augmented)\n    rag_res = generate_rag_answer(GenerateRequest(query=req.query, chunks=chunks, model=req.model))\n\n    return {\n        \"query\": req.query,\n        \"retrieved_chunks\": chunks,\n        \"without_rag\": {\n            \"answer\": baseline_answer,\n            \"source\": f\"ollama/{req.model or DEFAULT_MODEL} (Pure Parametric Memory)\",\n            \"grounded\": False\n        },\n        \"with_rag\": {\n            \"answer\": rag_res[\"answer\"],\n            \"source\": rag_res[\"generation_source\"],\n            \"grounded\": True,\n            \"avg_similarity\": rag_res[\"avg_similarity\"]\n        }\n    }\n\n\n# \u2500\u2500 Run Server \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nif __name__ == \"__main__\":",
+          "source": "src/rag_server.py"
+        }
+      ],
+      "response_with_rag": "Question: What is the purpose of the `with_rag` field in the response?\n\nAnswer:",
+      "response_without_rag": "Question: What happens across modules after a client sends POST /api/v1/rag/compare? Trace retrieval, baseline generation, RAG generation, and the returned comparison.\n\nAnswer:",
+      "rag_fact_coverage_proxy": 0.14285714285714285,
+      "baseline_fact_coverage_proxy": 0.14285714285714285,
+      "fact_coverage_delta": 0.0,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "qwen25_coder_3b",
+      "task_id": "REP-004",
+      "question": "If the chunking strategy changes, which files or artifacts can be affected and why?",
+      "retrieved_context": [
+        {
+          "chunk_id": 59,
+          "doc_id": 13,
+          "score": 0.374891996383667,
+          "text": "SOURCE: src/rag_ingest.py\nLINES: 61-140\n, overlap_words)\n    for j, chunk in enumerate(chunks):\n        all_chunks.append(chunk)\n        chunk_meta.append({\n            \"doc_id\":      doc[\"id\"],\n            \"chunk_idx\":   j,\n            \"text\":        chunk,\n            \"instruction\": doc[\"meta\"][\"instruction\"]\n        })\n\nprint(f\"   Created {len(all_chunks)} chunks from {len(documents)} documents\")\nprint(f\"   Sample chunk #1: \\\"{all_chunks[0][:100]}...\\\"\")\n\n\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n# STEP 3 \u2014 EMBEDDING GENERATION\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nprint(f\"\\n[STEP 3] Embedding Generation\")\nprint(f\"   Model : sentence-transformers/{args.model}\")\nprint(f\"   Loading model...\", end=\" \", flush=True)\n\nt0 = time.time()\nmodel = SentenceTransformer(args.model)\nprint(f\"done ({time.time()-t0:.1f}s)\")\n\nprint(f\"   Encoding {len(all_chunks)} chunks...\", end=\" \", flush=True)\nt0 = time.time()\nembeddings = model.encode(",
+          "source": "src/rag_ingest.py"
+        },
+        {
+          "chunk_id": 174,
+          "doc_id": 17,
+          "score": 0.3704034686088562,
+          "text": "SOURCE: dashboard/index.html\nLINES: 181-260\n        <article class=\"rag-step-card glass-soft\" data-rag-step=\"2\">\n          <div class=\"rag-step-header\">\n            <span class=\"rag-step-num-badge\">02</span>\n            <span class=\"rag-step-icon\">\u2702\ufe0f</span>\n          </div>\n          <h4 class=\"rag-step-title\">Text Chunking</h4>\n          <p class=\"rag-step-desc\">Split each document into smaller, overlapping chunks (256 tokens each with 50-token overlap). This ensures no context is lost at boundaries, and each chunk is a searchable unit.</p>\n          <div class=\"rag-step-meta\">\n            <span class=\"rag-meta-tag\">Strategy: Fixed-size + Overlap</span>\n            <span class=\"rag-meta-tag\">Chunk Size: 256 tokens</span>\n          </div>\n        </article>\n\n        <article class=\"rag-step-card glass-soft\" data-rag-step=\"3\">\n          <div class=\"rag-step-header\">\n            <span class=\"rag-step-num-badge\">03</span>\n            <span class=\"rag-step-icon\">\ud83d\udd22</span>\n          </div>\n          <h4 class=\"rag-step-title\">Embedding Generation</h4>\n          <p class=\"rag-step-desc\">Each text chunk is converted into a dense vector (768-dim) using a Sentence Transformer embedding model. Similar meanings \u2192 vectors close together in space.</p>\n          <div class=\"rag-step-meta\">\n            <span class=\"rag-meta-tag\">Model: all-MiniLM-L6-v2</span>\n            <span class=\"rag-meta-tag\">Dimension: 384-d vectors</span>\n          </div>\n        </article>\n\n        <article class=\"rag-step-card glass-soft\" data-rag-step=\"4\">\n          <div class=\"rag-step-header\">\n            <span class=\"rag-step-num-badge\">04</span>\n            <span class=\"rag-step-icon\">\ud83d\uddc4\ufe0f</span>\n          </div>\n          <h4 class=\"rag-step-title\">Vector Store Indexing</h4>\n          <p class=\"rag-step-de",
+          "source": "dashboard/index.html"
+        },
+        {
+          "chunk_id": 60,
+          "doc_id": 13,
+          "score": 0.30819860100746155,
+          "text": "SOURCE: src/rag_ingest.py\nLINES: 121-200\n        })\n\nprint(f\"   Created {len(all_chunks)} chunks from {len(documents)} documents\")\nprint(f\"   Sample chunk #1: \\\"{all_chunks[0][:100]}...\\\"\")\n\n\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n# STEP 3 \u2014 EMBEDDING GENERATION\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nprint(f\"\\n[STEP 3] Embedding Generation\")\nprint(f\"   Model : sentence-transformers/{args.model}\")\nprint(f\"   Loading model...\", end=\" \", flush=True)\n\nt0 = time.time()\nmodel = SentenceTransformer(args.model)\nprint(f\"done ({time.time()-t0:.1f}s)\")\n\nprint(f\"   Encoding {len(all_chunks)} chunks...\", end=\" \", flush=True)\nt0 = time.time()\nembeddings = model.encode(\n    all_chunks,\n    batch_size=32,\n    show_progress_bar=False,\n    convert_to_numpy=True,\n    normalize_embeddings=True\n)\nelapsed = time.time() - t0\nprint(f\"done ({elapsed:.1f}s)\")\n\ndim = embeddings.shape[1]\nprint(f\"   Generated {len(embeddings)} embeddings \u2014 shape ({len(embeddings)}, {dim})\")\nprint(f\"   Sample vector (first 8 dims): {embeddings[0][:8].round(4).tolist()}\")\n\n\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n# STEP 4 \u2014 VECTOR STORE INDEXING (FAISS)\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nprint(f\"\\n[STEP 4] Vector Store Indexing (FAISS)\")\nprint(f\"   Index type : IndexFlatIP (cosine similarity via normalized vectors)\")\n\nindex = faiss.IndexFlatIP(dim)\nindex.add(embeddings.astype(np.float32))\nprint(f\"   FAISS index built \u2014 {index.ntotal} vectors stored\")\n\nos.makedirs(args.out_dir, exist_ok=True)\nindex_path = os.path.join(args.out_dir, \"faiss.index\")\nmeta_path  = os.path.join(args.out_dir, \"chunk_metadata.json\")\n\nfaiss.write_index(index, index_path)\nwith open(meta_path, \"w\", encoding=\"utf-8\") as f:\n    json.dump(chun",
+          "source": "src/rag_ingest.py"
+        }
+      ],
+      "response_with_rag": "If the chunking strategy changes, the following files or artifacts can be affected:\n\n1. **`src/rag_ingest.py`**: This file contains the code responsible for chunking documents. If the chunking strategy changes, the code in this file will need to be updated to reflect the new strategy. This includes changes to the logic for splitting documents into chunks, the size of each chunk, and the overlap between chunks.\n\n2. **`dashboard/index.html`**: This file contains the HTML documentation for the RAG (Retrieval-Augmented Generation) process. If the chunking strategy changes, the documentation in this file will need to be updated to reflect the new strategy. This includes changes to the description of the chunking process, the size of each chunk, and the overlap between chunks.\n\n3. **`src/rag_ingest.py` (repeated)**: There are multiple instances of the chunking logic in `src/rag_ingest.py`. If the chunking strategy changes, all instances of the chunking logic will need to be updated to reflect the new strategy.\n\n4. **`dashboard/index.html` (repeated)**: There are multiple instances of the chunking documentation in `dashboard/index.html`. If the chunking strategy changes, all instances of the",
+      "response_without_rag": "The chunking strategy can affect various files or artifacts in a repository, primarily those related to version control and build processes. Here's a detailed explanation of how changes in the chunking strategy can impact different aspects of a repository:\n\n1. **Version Control Files**:\n   - **Commit Messages**: Changes in chunking strategy might affect the way commit messages are generated. If the strategy involves breaking down large changes into smaller, more manageable chunks, commit messages might become more detailed and descriptive, reflecting the changes in a more granular manner.\n   - **Branches and Tags**: The chunking strategy can influence how branches and tags are managed. For example, if the strategy involves breaking down changes into smaller, more frequent commits, it might lead to more frequent branch creation and tagging, which can help in tracking changes more effectively.\n\n2. **Build Artifacts**:\n   - **Build Scripts**: The chunking strategy can affect the build scripts used to compile and package the code. If the strategy involves breaking down large changes into smaller, more manageable chunks, the build scripts might need to be adjusted to handle these changes more efficiently.\n   - **Dependencies**: Changes in chunking strategy might affect the dependencies required for building the code. If the strategy involves breaking down large changes into smaller, more frequent commits",
+      "rag_fact_coverage_proxy": 0.2857142857142857,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.2857142857142857,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "qwen25_coder_3b",
+      "task_id": "REP-007",
+      "question": "What happens when Ollama is unavailable, and which modules implement or expose the fallback behaviour?",
+      "retrieved_context": [
+        {
+          "chunk_id": 41,
+          "doc_id": 10,
+          "score": 0.551641047000885,
+          "text": "SOURCE: src/ollama_client.py\nLINES: 1-80\n\"\"\"\nollama_client.py \u2014 LLM API Client (Ollama + Optional Cloud API Key Fallback)\n=============================================================================\nSupports:\n  1. Ollama (Local open-source, default for Exercise 1 & 3: Code Llama)\n  2. Optional API Key Providers (OpenAI, Groq) if an API key is provided\n  3. Grounded Fallback if neither is configured\n\"\"\"\n\nimport os\nimport json\nimport time\nimport requests\nfrom typing import Dict, Any, Optional\n\nOLLAMA_HOST = os.environ.get(\"OLLAMA_HOST\", \"http://127.0.0.1:11434\")\nDEFAULT_MODEL = os.environ.get(\"OLLAMA_MODEL\", \"codellama\")\n\nOPENAI_API_KEY = os.environ.get(\"OPENAI_API_KEY\", \"\")\nGROQ_API_KEY = os.environ.get(\"GROQ_API_KEY\", \"\")\n\n\ndef check_ollama_status(host: str = OLLAMA_HOST) -> Dict[str, Any]:\n    \"\"\"Check if Ollama service is reachable, or if Cloud API key is available.\"\"\"\n    # 1. Check local Ollama\n    try:\n        url = f\"{host.rstrip('/')}/api/tags\"\n        resp = requests.get(url, timeout=1.5)\n        if resp.status_code == 200:\n            data = resp.json()\n            models = [m.get(\"name\") for m in data.get(\"models\", [])]\n            return {\n                \"available\": True,\n                \"provider\": \"ollama\",\n                \"host\": host,\n                \"models\": models,\n                \"default_model\": DEFAULT_MODEL,\n                \"has_default_model\": any(DEFAULT_MODEL in m for m in models)\n            }\n    except Exception:\n        pass\n\n    # 2. Check OpenAI API key fallback\n    if OPENAI_API_KEY:\n        return {\n            \"available\": True,\n            \"provider\": \"openai\",\n            \"host\": \"api.openai.com\",\n            \"models\": [\"gpt-3.5-turbo\", \"gpt-4o-mini\"],\n            \"default_model\": \"gpt-4o-mini\",\n            \"has_default_model\": Tru",
+          "source": "src/ollama_client.py"
+        },
+        {
+          "chunk_id": 42,
+          "doc_id": 10,
+          "score": 0.4378198981285095,
+          "text": "SOURCE: src/ollama_client.py\nLINES: 1-80\ne\n        }\n\n    # 3. Check Groq API key fallback\n    if GROQ_API_KEY:\n        return {\n            \"available\": True,\n            \"provider\": \"groq\",\n            \"host\": \"api.groq.com\",\n            \"models\": [\"llama-3.1-8b-instant\"],\n            \"default_model\": \"llama-3.1-8b-instant\",\n            \"has_default_model\": True\n        }\n\n    return {\n        \"available\": False,\n        \"provider\": \"none\",\n        \"host\": host,\n        \"models\": [],\n        \"default_model\": DEFAULT_MODEL,\n        \"has_default_model\": False,\n        \"message\": \"Ollama not running locally. (To use cloud LLM, set $env:OPENAI_API_KEY or $env:GROQ_API_KEY)\"\n    }\n\n\ndef query_cloud_api(prompt: str, system_prompt: Optional[str] = None) -> Optional[Dict[str, Any]]:\n    \"\"\"Query OpenAI or Groq if keys are set.\"\"\"\n    t0 = time.time()\n    if OPENAI_API_KEY:\n        try:",
+          "source": "src/ollama_client.py"
+        },
+        {
+          "chunk_id": 43,
+          "doc_id": 10,
+          "score": 0.42878007888793945,
+          "text": "SOURCE: src/ollama_client.py\nLINES: 61-140\n            \"default_model\": \"llama-3.1-8b-instant\",\n            \"has_default_model\": True\n        }\n\n    return {\n        \"available\": False,\n        \"provider\": \"none\",\n        \"host\": host,\n        \"models\": [],\n        \"default_model\": DEFAULT_MODEL,\n        \"has_default_model\": False,\n        \"message\": \"Ollama not running locally. (To use cloud LLM, set $env:OPENAI_API_KEY or $env:GROQ_API_KEY)\"\n    }\n\n\ndef query_cloud_api(prompt: str, system_prompt: Optional[str] = None) -> Optional[Dict[str, Any]]:\n    \"\"\"Query OpenAI or Groq if keys are set.\"\"\"\n    t0 = time.time()\n    if OPENAI_API_KEY:\n        try:\n            headers = {\"Authorization\": f\"Bearer {OPENAI_API_KEY}\", \"Content-Type\": \"application/json\"}\n            messages = []\n            if system_prompt:\n                messages.append({\"role\": \"system\", \"content\": system_prompt})\n            messages.append({\"role\": \"user\", \"content\": prompt})\n            payload = {\"model\": \"gpt-4o-mini\", \"messages\": messages, \"temperature\": 0.2}\n            resp = requests.post(\"https://api.openai.com/v1/chat/completions\", json=payload, headers=headers, timeout=30)\n            if resp.status_code == 200:\n                data = resp.json()\n                return {\n                    \"success\": True,\n                    \"response\": data[\"choices\"][0][\"message\"][\"content\"].strip(),\n                    \"model\": \"gpt-4o-mini (Cloud API)\",\n                    \"latency_s\": round(time.time() - t0, 3)\n                }\n        except Exception:\n            pass\n\n    if GROQ_API_KEY:\n        try:\n            headers = {\"Authorization\": f\"Bearer {GROQ_API_KEY}\", \"Content-Type\": \"application/json\"}\n            messages = []\n            if system_prompt:\n                messages.append({\"rol",
+          "source": "src/ollama_client.py"
+        }
+      ],
+      "response_with_rag": "When Ollama is unavailable, the `check_ollama_status` function returns a dictionary with the following keys:\n\n- `available`: False\n- `provider`: \"none\"\n- `host`: The host where Ollama is expected to be running (default is \"http://127.0.0.1:11434\")\n- `models`: An empty list\n- `default_model`: The default model name (\"codellama\")\n- `has_default_model`: False\n- `message`: A message indicating that Ollama is not running locally and suggesting to set environment variables for OpenAI or Groq API keys.\n\nThe `query_cloud_api` function also handles the fallback behavior when neither Ollama nor the cloud API keys are set. It checks for the presence of `OPENAI_API_KEY` and `GROQ_API_KEY` environment variables. If either is set, it attempts to query the corresponding cloud API (OpenAI or Groq) using the provided prompt and system prompt. If the query is successful, it returns a dictionary with the response, model name, and latency. If an exception occurs during the query, it returns `None`.",
+      "response_without_rag": "When Ollama is unavailable, the fallback behavior is implemented or exposed by the `Fallback` module. This module provides a mechanism to handle situations where Ollama is not available, allowing users to interact with the system through alternative means or services.",
+      "rag_fact_coverage_proxy": 0.2857142857142857,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.2857142857142857,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "qwen25_coder_3b",
+      "task_id": "REP-001",
+      "question": "Which files implement the end-to-end medical RAG path from knowledge-base ingestion to retrieval and LLM generation, and what is each file's role?",
+      "retrieved_context": [
+        {
+          "chunk_id": 0,
+          "doc_id": 1,
+          "score": 0.5575032234191895,
+          "text": "SOURCE: README.md\nLINES: 1-80\n# Medical Question Answering LLM & RAG Application (Exercises 1\u20135)\n\n> **Week 4 evaluation:** The reproducible three-model, 25-question quantitative RAG benchmark and repository-understanding probe are documented in [`docs/WEEK4_EVALUATION.md`](docs/WEEK4_EVALUATION.md). The benchmark defaults to preflight-only and never fabricates results when local models are unavailable.\n\nThis repository contains the complete progressive implementation of a domain-specific Healthcare LLM & RAG application across all 5 lab exercises.\n\n## \ud83d\udccb Assignment Exercises & Architecture Map\n\n| Exercise | Module | Key Implementation Files | Status |\n| :--- | :--- | :--- | :---: |\n| **Exercise 1** | Basic LLM App via Ollama (`codellama`) | [`src/basic_llm_app.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/basic_llm_app.py), [`src/ollama_client.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/ollama_client.py) | \u2705 **100%** |\n| **Exercise 2** | Knowledge Base + Chunking + FAISS Embeddings | [`src/rag_ingest.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_ingest.py), [`data/raw/medical_knowledge_base.jsonl`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/data/raw/medical_knowledge_base.jsonl) | \u2705 **100%** |\n| **Exercise 3** | Vector Similarity + Retrieval + RAG Comparison | [`src/rag_demo.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_demo.py), [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) | \u2705 **100%** |\n| **Exercise 4** | Multi-Service APIs & Orchestration | [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) (`/api/v1/services/status`, `/api/v1/rag/compare`) | \u2705 **100%** |\n| **Exercise 5** | Docker ",
+          "source": "README.md"
+        },
+        {
+          "chunk_id": 56,
+          "doc_id": 13,
+          "score": 0.5428749322891235,
+          "text": "SOURCE: src/rag_ingest.py\nLINES: 1-80\n\"\"\"\nrag_ingest.py \u2014 Document Ingestion Script for RAG Pipeline\n============================================================\nInjects medical_knowledge_base.jsonl through the complete\nRAG pipeline: Read \u2192 Chunk \u2192 Embed \u2192 Index (FAISS)\n\nUsage:\n    python src/rag_ingest.py\n    python src/rag_ingest.py --file data/raw/medical_knowledge_base.jsonl\n    python src/rag_ingest.py --file data/raw/medical_knowledge_base.jsonl --chunk-size 256 --overlap 50\n\"\"\"\n\nimport json\nimport os\nimport time\nimport argparse\nimport numpy as np\n\n# \u2500\u2500 Step 1: Check dependencies \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nprint(\"\\n\" + \"=\"*60)\nprint(\"  RAG PIPELINE \u2014 Document Ingestion\")\nprint(\"=\"*60)\n\ntry:\n    from sentence_transformers import SentenceTransformer\n    import faiss\n    DEPS_OK = True\nexcept ImportError:\n    DEPS_OK = False\n    print(\"\\n\u274c Missing dependencies. Run first:\")\n    print(\"   pip install sentence-transformers faiss-cpu numpy\")\n    exit(1)\n\n\n# \u2500\u2500 Argument Parser \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nparser = argparse.ArgumentParser(description=\"RAG Document Ingestion\")\nparser.add_argument(\"--file\",       default=\"data/raw/medical_knowledge_base.jsonl\",\n                    help=\"Path to JSONL file to ingest\")\nparser.add_argument(\"--chunk-size\", type=int, default=256,\n                    help=\"Tokens per chunk (approx words x 1.3)\")\nparser.add_argument(\"--overlap\",    type=int, default=50,\n                    help=\"Overlap tokens between chunks\")\nparser.add_argument(\"--model\",      default=\"all-MiniLM-L6-v2\",\n                    help=\"Sentence transformer model name\")\nparser.add_argument(\"--out-dir\",    default=\"outputs/rag_index\",\n                    help=\"Directory to save FAISS index + metadata\")\nargs = parser.parse_args()\n\n\n# \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
+          "source": "src/rag_ingest.py"
+        },
+        {
+          "chunk_id": 63,
+          "doc_id": 14,
+          "score": 0.48417675495147705,
+          "text": "SOURCE: src/rag_server.py\nLINES: 1-80\n\"\"\"\nrag_server.py \u2014 Real RAG Pipeline & Multi-Service API Backend (FastAPI)\n========================================================================\nImplements full Assignment Architecture:\n  - Exercise 1: LLM Application endpoint (/api/v1/llm/generate) via Ollama + Code Llama\n  - Exercise 2: Document Ingestion, Chunking, Embeddings, FAISS indexing (/ingest)\n  - Exercise 3: Vector similarity search (/query), RAG context generation (/generate),\n                and Side-by-side RAG vs No-RAG comparison (/api/v1/rag/compare)\n  - Exercise 4: Orchestration & Service health checking (/api/v1/services/status)\n\nRun locally:\n    python src/rag_server.py\n\"\"\"\n\nimport json\nimport os\nimport re\nimport time\nimport sys\nfrom pathlib import Path\nfrom typing import List, Optional, Dict, Any\nimport numpy as np\n\nfrom fastapi import FastAPI, File, UploadFile, HTTPException\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom pydantic import BaseModel\n\n# Ensure src is in sys.path\nsys.path.insert(0, str(Path(__file__).resolve().parent))\nfrom ollama_client import (\n    query_ollama,\n    generate_with_rag,\n    check_ollama_status,\n    DEFAULT_MODEL,\n    OLLAMA_HOST,\n)\n\ntry:\n    from sentence_transformers import SentenceTransformer\n    import faiss\nexcept ImportError:\n    print(\"ERROR: Missing dependencies. Run: pip install sentence-transformers faiss-cpu fastapi uvicorn python-multipart\")\n    sys.exit(1)\n\n# \u2500\u2500 App Setup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\napp = FastAPI(\n    title=\"Medical RAG & LLM Orchestration API\",\n    description=\"Multi-tier RAG architecture with FAISS vector retrieval and Ollama (Code Llama) integration.\",\n    version=\"2.0.0\"\n)\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n",
+          "source": "src/rag_server.py"
+        }
+      ],
+      "response_with_rag": "The files that implement the end-to-end medical RAG path from knowledge-base ingestion to retrieval and LLM generation are:\n\n1. **`src/rag_ingest.py`**: This file is responsible for ingesting the medical knowledge base into the RAG pipeline. It reads the JSONL file, chunks the text, embeds the chunks using a sentence transformer model, and then indexes the embeddings using FAISS. The file also includes an argument parser to allow for customization of the chunk size, overlap, and model.\n\n2. **`src/rag_server.py`**: This file sets up the FastAPI application that orchestrates the RAG pipeline. It includes endpoints for LLM generation, document ingestion, vector similarity search, RAG context generation, and service health checking. The file also handles dependencies and imports necessary libraries such as `sentence_transformers` and `faiss`.\n\nEach file plays a crucial role in the RAG pipeline:\n- **`src/rag_ingest.py`** handles the ingestion of the knowledge base, chunking, embedding, and indexing, which are essential for the retrieval process.\n- **`src/rag_server.py`** sets up the FastAPI application, defines the endpoints for the RAG pipeline, and handles the orchestration of the entire process,",
+      "response_without_rag": "To answer this question, I would need to analyze the repository and identify the relevant files and their roles in the end-to-end medical RAG path. This would involve examining the codebase, understanding the architecture, and identifying the specific files that handle knowledge-base ingestion, retrieval, and LLM generation. Evidence for this would be the code itself, comments, and documentation within the repository. Inference would be drawn from the structure and functionality of these files, as well as any external documentation or specifications that provide context for their roles.",
+      "rag_fact_coverage_proxy": 0.5,
+      "baseline_fact_coverage_proxy": 0.0,
+      "fact_coverage_delta": 0.5,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    },
+    {
+      "model": "qwen25_coder_3b",
+      "task_id": "REP-002",
+      "question": "What happens across modules after a client sends POST /api/v1/rag/compare? Trace retrieval, baseline generation, RAG generation, and the returned comparison.",
+      "retrieved_context": [
+        {
+          "chunk_id": 63,
+          "doc_id": 14,
+          "score": 0.546932578086853,
+          "text": "SOURCE: src/rag_server.py\nLINES: 1-80\n\"\"\"\nrag_server.py \u2014 Real RAG Pipeline & Multi-Service API Backend (FastAPI)\n========================================================================\nImplements full Assignment Architecture:\n  - Exercise 1: LLM Application endpoint (/api/v1/llm/generate) via Ollama + Code Llama\n  - Exercise 2: Document Ingestion, Chunking, Embeddings, FAISS indexing (/ingest)\n  - Exercise 3: Vector similarity search (/query), RAG context generation (/generate),\n                and Side-by-side RAG vs No-RAG comparison (/api/v1/rag/compare)\n  - Exercise 4: Orchestration & Service health checking (/api/v1/services/status)\n\nRun locally:\n    python src/rag_server.py\n\"\"\"\n\nimport json\nimport os\nimport re\nimport time\nimport sys\nfrom pathlib import Path\nfrom typing import List, Optional, Dict, Any\nimport numpy as np\n\nfrom fastapi import FastAPI, File, UploadFile, HTTPException\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom pydantic import BaseModel\n\n# Ensure src is in sys.path\nsys.path.insert(0, str(Path(__file__).resolve().parent))\nfrom ollama_client import (\n    query_ollama,\n    generate_with_rag,\n    check_ollama_status,\n    DEFAULT_MODEL,\n    OLLAMA_HOST,\n)\n\ntry:\n    from sentence_transformers import SentenceTransformer\n    import faiss\nexcept ImportError:\n    print(\"ERROR: Missing dependencies. Run: pip install sentence-transformers faiss-cpu fastapi uvicorn python-multipart\")\n    sys.exit(1)\n\n# \u2500\u2500 App Setup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\napp = FastAPI(\n    title=\"Medical RAG & LLM Orchestration API\",\n    description=\"Multi-tier RAG architecture with FAISS vector retrieval and Ollama (Code Llama) integration.\",\n    version=\"2.0.0\"\n)\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n",
+          "source": "src/rag_server.py"
+        },
+        {
+          "chunk_id": 0,
+          "doc_id": 1,
+          "score": 0.4488038718700409,
+          "text": "SOURCE: README.md\nLINES: 1-80\n# Medical Question Answering LLM & RAG Application (Exercises 1\u20135)\n\n> **Week 4 evaluation:** The reproducible three-model, 25-question quantitative RAG benchmark and repository-understanding probe are documented in [`docs/WEEK4_EVALUATION.md`](docs/WEEK4_EVALUATION.md). The benchmark defaults to preflight-only and never fabricates results when local models are unavailable.\n\nThis repository contains the complete progressive implementation of a domain-specific Healthcare LLM & RAG application across all 5 lab exercises.\n\n## \ud83d\udccb Assignment Exercises & Architecture Map\n\n| Exercise | Module | Key Implementation Files | Status |\n| :--- | :--- | :--- | :---: |\n| **Exercise 1** | Basic LLM App via Ollama (`codellama`) | [`src/basic_llm_app.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/basic_llm_app.py), [`src/ollama_client.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/ollama_client.py) | \u2705 **100%** |\n| **Exercise 2** | Knowledge Base + Chunking + FAISS Embeddings | [`src/rag_ingest.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_ingest.py), [`data/raw/medical_knowledge_base.jsonl`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/data/raw/medical_knowledge_base.jsonl) | \u2705 **100%** |\n| **Exercise 3** | Vector Similarity + Retrieval + RAG Comparison | [`src/rag_demo.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_demo.py), [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) | \u2705 **100%** |\n| **Exercise 4** | Multi-Service APIs & Orchestration | [`src/rag_server.py`](file:///c:/Users/antho/Downloads/Health%20prj/Finetune/src/rag_server.py) (`/api/v1/services/status`, `/api/v1/rag/compare`) | \u2705 **100%** |\n| **Exercise 5** | Docker ",
+          "source": "README.md"
+        },
+        {
+          "chunk_id": 78,
+          "doc_id": 14,
+          "score": 0.43441489338874817,
+          "text": "SOURCE: src/rag_server.py\nLINES: 421-500\n      chunks.append({\n                \"chunk_id\": int(idx),\n                \"text\": chunk[\"text\"],\n                \"score\": round(float(score), 4)\n            })\n\n    # 2. Without RAG (Exercise 1 Pure LLM)\n    raw_res = query_ollama(prompt=req.query, model=req.model or DEFAULT_MODEL)\n    baseline_answer = raw_res.get(\"response\") if raw_res.get(\"success\") else \"Generic ungrounded response (Ollama offline fallback).\"\n\n    # 3. With RAG (Exercise 3 Augmented)\n    rag_res = generate_rag_answer(GenerateRequest(query=req.query, chunks=chunks, model=req.model))\n\n    return {\n        \"query\": req.query,\n        \"retrieved_chunks\": chunks,\n        \"without_rag\": {\n            \"answer\": baseline_answer,\n            \"source\": f\"ollama/{req.model or DEFAULT_MODEL} (Pure Parametric Memory)\",\n            \"grounded\": False\n        },\n        \"with_rag\": {\n            \"answer\": rag_res[\"answer\"],\n            \"source\": rag_res[\"generation_source\"],\n            \"grounded\": True,\n            \"avg_similarity\": rag_res[\"avg_similarity\"]\n        }\n    }\n\n\n# \u2500\u2500 Run Server \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nif __name__ == \"__main__\":",
+          "source": "src/rag_server.py"
+        }
+      ],
+      "response_with_rag": "Based on the provided context, when a client sends a POST request to `/api/v1/rag/compare`, the following happens across modules:\n\n1. **Retrieval**: The client sends a query to the server, which triggers the retrieval of relevant chunks from the knowledge base. This is done by the `rag_ingest.py` module, which processes the knowledge base and chunks it into smaller, relevant pieces.\n\n2. **Baseline Generation**: The server uses the `ollama_client.py` module to query the Ollama server with the client's query. If the Ollama server is available, it generates a response using the specified model (or the default model if not provided). If the Ollama server is offline, it returns a generic ungrounded response.\n\n3. **RAG Generation**: The server uses the `rag_server.py` module to generate a response using the retrieved chunks and the client's query. This involves generating a context from the retrieved chunks and using the Ollama server to generate a response based on that context.\n\n4. **Comparison**: The server compares the baseline response and the RAG response. It calculates the average similarity between the retrieved chunks and the query, and returns the results in a JSON format.\n\nThe returned comparison includes:\n- The",
+      "response_without_rag": "To answer this question, we need to trace the flow of information across modules after a client sends a POST request to `/api/v1/rag/compare`. Let's break down the process step by step:\n\n1. **Client Request**: The client sends a POST request to `/api/v1/rag/compare` with the necessary data for the comparison.\n\n2. **Trace Retrieval Module**: \n   - **Evidence**: The client request is received by the trace retrieval module.\n   - **Inference**: The trace retrieval module processes the request to identify relevant traces or data points that are needed for the comparison.\n\n3. **Baseline Generation Module**:\n   - **Evidence**: The trace retrieval module provides the necessary data to the baseline generation module.\n   - **Inference**: The baseline generation module generates a baseline based on the provided data, which serves as a reference point for comparison.\n\n4. **RAG Generation Module**:\n   - **Evidence**: The baseline generation module provides the baseline to the RAG generation module.\n   - **Inference**: The RAG generation module generates a RAG (Retrieval-Augmented Generation) model using the baseline data.\n\n5. **Comparison Module**:\n   - **Evidence**: The RAG generation module provides the RAG model to the",
+      "rag_fact_coverage_proxy": 0.2857142857142857,
+      "baseline_fact_coverage_proxy": 0.14285714285714285,
+      "fact_coverage_delta": 0.14285714285714285,
+      "relationship_analysis": "Relevant evidence was retrieved, but the response did not use it completely."
+    }
+  ],
+  "manual_review_records": 24
+}
