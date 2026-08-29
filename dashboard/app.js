@@ -1,732 +1,722 @@
 /* ==========================================================================
-   Medical AI Dashboard — Week 4 Evaluation Suite Application Logic
+   HealthRAG AI — Dashboard Application Logic
    ========================================================================== */
 
 (function () {
   "use strict";
 
-  // Global references
+  const SVC = window.HealthRAGServices || {};
+  const MOCK = window.HEALTHRAG_MOCK || {};
   const W4 = window.WEEK4_DATA || {};
-  const medSummary = W4.med_summary || {};
-  const repoSummary = W4.repo_summary || {};
-  const medEval = W4.med_eval || [];
-  const repoEval = W4.repo_eval || [];
-  const rawResults = W4.raw_results || [];
-  const repoRaw = W4.repo_raw || [];
-
-  // Active chart instances cache
   const charts = {};
 
-  // Setup on DOM Ready
   document.addEventListener("DOMContentLoaded", () => {
-    initNavigationTabs();
-    renderDatasetTable();
-    initDatasetFilters();
+    initNavigation();
+    renderOverview();
+    renderServices();
+    initKnowledgeBase();
+    initRAGPipeline();
+    initModelRouter();
+    renderGuardrails();
+    renderModelCards();
+    renderEvalDataset();
+    renderMetrics();
     initCharts();
-    initTraceExplorer();
+    renderTradeOffs();
+    initRagAnalysis();
+    renderRepoExplorer();
     renderRepoProbes();
-    initSandboxRunner();
-    initModalHandlers();
+    renderW4Summaries();
+    initModal();
   });
 
-  /* --------------------------------------------------------------------------
-     1. Navigation & View Switching
-     -------------------------------------------------------------------------- */
-  function initNavigationTabs() {
-    const navButtons = document.querySelectorAll("#viewNavTabs .nav-tab-btn");
-    const tabViews = document.querySelectorAll(".tab-view");
-    const subNav = document.getElementById("week4SubNav");
+  /* ── Navigation ── */
+  function initNavigation() {
+    const links = document.querySelectorAll(".nav-link-main");
+    const toggle = document.getElementById("navMobileToggle");
+    const nav = document.getElementById("navLinksMain");
 
-    navButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const targetId = btn.getAttribute("data-target");
+    links.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const id = link.getAttribute("data-section");
+        const el = document.getElementById(id);
+        if (el) {
+          const offset = 80;
+          const top = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: "smooth" });
+        }
+        links.forEach((l) => l.classList.remove("active"));
+        link.classList.add("active");
+        if (nav) nav.classList.remove("open");
+      });
+    });
 
-        navButtons.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
+    if (toggle && nav) {
+      toggle.addEventListener("click", () => nav.classList.toggle("open"));
+    }
 
-        tabViews.forEach((view) => {
-          if (view.id === targetId) {
-            view.classList.add("active-view");
-          } else {
-            view.classList.remove("active-view");
+    const sections = document.querySelectorAll(".dashboard-section[id]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            links.forEach((l) => {
+              l.classList.toggle("active", l.getAttribute("data-section") === id);
+            });
           }
         });
+      },
+      { rootMargin: "-90px 0px -60% 0px", threshold: 0.1 }
+    );
+    sections.forEach((s) => observer.observe(s));
+  }
 
-        // Toggle subnav
-        if (subNav) {
-          subNav.style.display = targetId === "view-week4" ? "flex" : "none";
+  /* ── Overview ── */
+  function renderOverview() {
+    const stats = SVC.overviewService?.getStats() || {};
+    const el = document.getElementById("overviewStats");
+    if (!el) return;
+
+    const items = [
+      { label: "Knowledge Documents", val: stats.knowledgeDocuments, sub: "Indexed sources" },
+      { label: "Indexed Chunks", val: stats.indexedChunks, sub: "Vector embeddings" },
+      { label: "Retrieval Status", val: stats.retrievalStatus, sub: "Vector search", cls: "highlight-amber" },
+      { label: "LLM Status", val: stats.llmStatus, sub: "Model inference", cls: "highlight-amber" },
+      { label: "Evaluation Questions", val: stats.evaluationQuestions, sub: "Benchmark set" },
+      { label: "Services", val: stats.services, sub: "Microservices" },
+    ];
+
+    el.innerHTML = items
+      .map(
+        (i) => `
+      <div class="stat-box">
+        <div class="stat-box-label">${i.label}</div>
+        <div class="stat-box-val ${i.cls || ""}">${i.val}</div>
+        <div class="stat-box-sub">${i.sub}</div>
+      </div>`
+      )
+      .join("");
+  }
+
+  /* ── Services ── */
+  function renderServices() {
+    const grid = document.getElementById("servicesGrid");
+    const services = SVC.overviewService?.getServices() || [];
+    if (!grid) return;
+
+    grid.innerHTML = services
+      .map(
+        (s) => `
+      <article class="service-card">
+        <div class="service-card-head">
+          <h3>${escapeHtml(s.name)}</h3>
+          <span class="status-badge ${SVC.statusBadge(s.status)}">${s.status}</span>
+        </div>
+        <p class="service-purpose">${escapeHtml(s.purpose)}</p>
+        <div class="service-meta">
+          <div><span>API</span><code>${escapeHtml(s.endpoint)}</code></div>
+          <div><span>Dependencies</span><strong>${s.dependencies.map(escapeHtml).join(", ")}</strong></div>
+        </div>
+      </article>`
+      )
+      .join("");
+  }
+
+  /* ── Knowledge Base ── */
+  function initKnowledgeBase() {
+    setupUpload("json", "jsonDropZone", "jsonFileInput", "btnBrowseJson", "jsonUploadList", "JSON");
+    setupUpload("pdf", "pdfDropZone", "pdfFileInput", "btnBrowsePdf", "pdfUploadList", "PDF");
+    renderKnowledgeDocs();
+  }
+
+  function setupUpload(type, zoneId, inputId, btnId, listId, label) {
+    const zone = document.getElementById(zoneId);
+    const input = document.getElementById(inputId);
+    const btn = document.getElementById(btnId);
+    const list = document.getElementById(listId);
+    if (!zone || !input) return;
+
+    btn?.addEventListener("click", () => input.click());
+
+    input.addEventListener("change", () => handleFiles(input.files, list, type, label));
+
+    zone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      zone.classList.add("drag-over");
+    });
+    zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
+    zone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      zone.classList.remove("drag-over");
+      handleFiles(e.dataTransfer.files, list, type, label);
+    });
+  }
+
+  function handleFiles(files, listEl, type, label) {
+    if (!listEl || !files.length) return;
+    Array.from(files).forEach((file) => {
+      const size = formatSize(file.size);
+      const pages = type === "pdf" ? Math.floor(Math.random() * 40) + 5 : "—";
+      const item = document.createElement("div");
+      item.className = "upload-item";
+      item.innerHTML = `
+        <div class="upload-item-info">
+          <strong>${escapeHtml(file.name)}</strong>
+          <span>${size}${type === "pdf" ? " · " + pages + " pages" : ""}</span>
+        </div>
+        <span class="status-badge status-mock">Mock Upload</span>
+        <span class="status-badge status-pending">Indexing Pending</span>`;
+      listEl.appendChild(item);
+    });
+    renderKnowledgeDocs();
+  }
+
+  function renderKnowledgeDocs() {
+    const tbody = document.getElementById("knowledgeDocTable");
+    if (!tbody) return;
+    const docs = SVC.knowledgeService?.getDocuments() || [];
+    const jsonItems = document.querySelectorAll("#jsonUploadList .upload-item");
+    const pdfItems = document.querySelectorAll("#pdfUploadList .upload-item");
+
+    let rows = docs.map(
+      (d) => `<tr>
+        <td>${escapeHtml(d.name)}</td><td>${d.type}</td><td>${d.size}</td>
+        <td>—</td><td>${d.chunks}</td>
+        <td><span class="status-badge status-mock">${d.status}</span></td>
+      </tr>`
+    );
+
+    jsonItems.forEach((item) => {
+      const name = item.querySelector("strong")?.textContent || "upload.json";
+      rows.push(`<tr><td>${escapeHtml(name)}</td><td>JSON</td><td>—</td><td>—</td><td>—</td><td><span class="status-badge status-pending">Pending</span></td></tr>`);
+    });
+    pdfItems.forEach((item) => {
+      const name = item.querySelector("strong")?.textContent || "upload.pdf";
+      const pages = item.querySelector("span")?.textContent.match(/(\d+) pages/)?.[1] || "—";
+      rows.push(`<tr><td>${escapeHtml(name)}</td><td>PDF</td><td>—</td><td>${pages}</td><td>—</td><td><span class="status-badge status-pending">Pending</span></td></tr>`);
+    });
+
+    tbody.innerHTML = rows.join("") || `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">No documents uploaded yet.</td></tr>`;
+  }
+
+  /* ── RAG Pipeline (Week 3 preserved) ── */
+  function initRAGPipeline() {
+    const btnAnimate = document.getElementById("btnAnimatePipeline");
+    const btnRun = document.getElementById("btnRunLiveQuery");
+    const input = document.getElementById("liveQueryInput");
+    const outputGrid = document.getElementById("liveOutputGrid");
+    const ragOut = document.getElementById("liveRagOutput");
+    const baseOut = document.getElementById("liveBaseOutput");
+    const ragBadge = document.getElementById("liveRagStatusBadge");
+    const baseBadge = document.getElementById("liveBaseStatusBadge");
+    const backendBadge = document.getElementById("ragBackendBadge");
+
+    if (btnAnimate) {
+      btnAnimate.addEventListener("click", () => {
+        const pipeSteps = [1, 2, 3, 4, 5, 6, 7].map((i) => document.getElementById("pipeStep" + i));
+        const flowNodes = [1, 2, 3, 4, 5, 6, 7, 8].map((i) => document.getElementById("flowNode" + i));
+        [...pipeSteps, ...flowNodes].forEach((n) => n && n.classList.remove("pipe-active"));
+
+        [...pipeSteps, ...flowNodes].forEach((n, idx) => {
+          setTimeout(() => n && n.classList.add("pipe-active"), idx * 350);
+          setTimeout(() => n && n.classList.remove("pipe-active"), idx * 350 + 600);
+        });
+      });
+    }
+
+    if (btnRun) {
+      btnRun.addEventListener("click", async () => {
+        const query = input?.value.trim();
+        if (!query) return;
+
+        if (outputGrid) outputGrid.style.display = "grid";
+        if (ragOut) ragOut.textContent = "Querying RAG backend...";
+        if (baseOut) baseOut.textContent = "Querying baseline...";
+        if (ragBadge) ragBadge.textContent = "Loading";
+        if (baseBadge) baseBadge.textContent = "Loading";
+
+        const result = await SVC.ragService.compare(query, 3);
+
+        if (result.source === "backend") {
+          if (backendBadge) {
+            backendBadge.textContent = "Backend Connected";
+            backendBadge.className = "pill-badge pill-emerald";
+          }
+          if (ragOut) ragOut.textContent = result.data.with_rag?.answer || "No response";
+          if (baseOut) baseOut.textContent = result.data.without_rag?.answer || "No response";
+          if (ragBadge) ragBadge.textContent = "Live";
+          if (baseBadge) baseBadge.textContent = "Live";
+        } else {
+          if (ragOut) ragOut.textContent = result.data.with_rag?.answer || "[Backend Pending]";
+          if (baseOut) baseOut.textContent = result.data.without_rag?.answer || "[Backend Pending]";
+          if (ragBadge) ragBadge.textContent = "Pending";
+          if (baseBadge) baseBadge.textContent = "Pending";
         }
-
-        // Trigger chart resize
-        window.dispatchEvent(new Event("resize"));
       });
-    });
+    }
   }
 
-  /* --------------------------------------------------------------------------
-     2. Exercise 2: Dataset Explorer & Filter Logic
-     -------------------------------------------------------------------------- */
-  let activeFilter = "all";
-  let activeSearch = "";
+  /* ── Model Router ── */
+  function initModelRouter() {
+    const btn = document.getElementById("btnClassifyQuery");
+    const input = document.getElementById("routerQueryInput");
+    const resultEl = document.getElementById("routerResult");
+    const examplesEl = document.getElementById("routerExamples");
+    const examples = SVC.modelRouterService?.getExamples() || [];
 
-  function getCombinedDataset() {
-    const list = [];
-    medEval.forEach((item) => {
-      list.push({
-        id: item.id,
-        category: item.category,
-        question: item.question,
-        reference: item.reference_answer,
-        facts: item.required_facts || [],
-        doc_ids: item.relevant_doc_ids || [],
-        should_abstain: item.should_abstain || false,
-        type: "medical",
-      });
+    if (examplesEl) {
+      examplesEl.innerHTML = examples
+        .map(
+          (ex) => `
+        <div class="router-example-card">
+          <p class="router-ex-query">"${escapeHtml(ex.query)}"</p>
+          <div class="router-ex-details">
+            <span><strong>Difficulty:</strong> ${ex.difficulty}</span>
+            <span><strong>Model:</strong> ${ex.model}</span>
+            <span><strong>Reason:</strong> ${escapeHtml(ex.reason)}</span>
+            <span><strong>Fallback:</strong> ${ex.fallback}</span>
+          </div>
+        </div>`
+        )
+        .join("");
+    }
+
+    function showResult(ex) {
+      if (!resultEl) return;
+      resultEl.innerHTML = `
+        <div class="router-result-grid">
+          <div class="router-field"><span>Query</span><strong>${escapeHtml(ex.query)}</strong></div>
+          <div class="router-field"><span>Detected Difficulty</span><strong class="highlight-cyan">${ex.difficulty}</strong></div>
+          <div class="router-field"><span>Selected Model</span><strong>${ex.model}</strong></div>
+          <div class="router-field"><span>Reason for Selection</span><strong>${escapeHtml(ex.reason)}</strong></div>
+          <div class="router-field"><span>Fallback Model</span><strong>${ex.fallback}</strong></div>
+          <div class="router-field"><span>Status</span><span class="status-badge status-pending">Backend Pending</span></div>
+        </div>`;
+    }
+
+    btn?.addEventListener("click", () => {
+      const q = input?.value.trim() || "What is hypertension?";
+      const ex = SVC.modelRouterService?.classifyQuery(q);
+      if (ex) showResult({ ...ex, query: q });
     });
-    repoEval.forEach((item) => {
-      list.push({
-        id: item.id,
-        category: item.category,
-        question: item.question,
-        reference: item.reference_answer,
-        facts: item.required_facts || [],
-        sources: item.relevant_sources || [],
-        should_abstain: item.should_abstain || false,
-        type: "repository",
-      });
-    });
-    return list;
+
+    if (examples[0]) showResult(examples[0]);
   }
 
-  function renderDatasetTable() {
-    const tbody = document.getElementById("datasetTableBody");
+  /* ── Guardrails ── */
+  function renderGuardrails() {
+    const el = document.getElementById("guardrailCards");
+    const checks = SVC.guardrailsService?.getChecks() || [];
+    if (!el) return;
+
+    el.innerHTML = checks
+      .map(
+        (c) => `
+      <article class="guardrail-card">
+        <h4>${escapeHtml(c.name)}</h4>
+        <p>${escapeHtml(c.description)}</p>
+        <span class="status-badge status-pending">${c.status}</span>
+      </article>`
+      )
+      .join("");
+  }
+
+  /* ── Model Cards (W4 Task 1) ── */
+  function renderModelCards() {
+    const grid = document.getElementById("modelCardsGrid");
+    const models = SVC.modelService?.getModels() || [];
+    if (!grid) return;
+
+    grid.innerHTML = models
+      .map(
+        (m) => `
+      <article class="model-card">
+        <div class="model-header">
+          <div class="model-icon">${m.id === "qwen" ? "⚡" : m.id === "gemma" ? "💎" : "🔬"}</div>
+          <div>
+            <h3 class="model-title">${escapeHtml(m.name)}</h3>
+            <p class="model-tagline">${escapeHtml(m.developer)} · ${escapeHtml(m.difficulty)}</p>
+          </div>
+        </div>
+        <div class="model-specs">
+          <div class="spec-item"><span>Model Size</span><strong>${escapeHtml(m.size)}</strong></div>
+          <div class="spec-item"><span>Status</span><strong>${escapeHtml(m.status)}</strong></div>
+          <div class="spec-item"><span>Latency</span><strong>${m.latency}</strong></div>
+          <div class="spec-item"><span>Accuracy</span><strong>${m.accuracy}</strong></div>
+        </div>
+        <span class="status-badge status-pending">Waiting for API</span>
+      </article>`
+      )
+      .join("");
+  }
+
+  /* ── Evaluation Dataset (W4 Task 2) ── */
+  let evalFilter = "all";
+  let evalSearch = "";
+
+  function renderEvalDataset() {
+    const categories = SVC.evaluationService?.getCategories() || [];
+    const pillsEl = document.getElementById("evalFilterPills");
+    const countEl = document.getElementById("evalQuestionCount");
+
+    if (pillsEl) {
+      pillsEl.innerHTML =
+        `<button class="filter-pill active" data-cat="all">All</button>` +
+        categories.map((c) => `<button class="filter-pill" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("");
+
+      pillsEl.querySelectorAll(".filter-pill").forEach((p) => {
+        p.addEventListener("click", () => {
+          pillsEl.querySelectorAll(".filter-pill").forEach((x) => x.classList.remove("active"));
+          p.classList.add("active");
+          evalFilter = p.getAttribute("data-cat");
+          renderEvalTable();
+        });
+      });
+    }
+
+    document.getElementById("evalSearchInput")?.addEventListener("input", (e) => {
+      evalSearch = e.target.value.toLowerCase();
+      renderEvalTable();
+    });
+
+    renderEvalTable();
+    if (countEl) {
+      const qs = SVC.evaluationService?.getQuestions() || [];
+      countEl.textContent = qs.length + " Questions";
+    }
+  }
+
+  function renderEvalTable() {
+    const tbody = document.getElementById("evalTableBody");
     if (!tbody) return;
 
-    const allData = getCombinedDataset();
-    const query = activeSearch.toLowerCase().trim();
+    let questions = SVC.evaluationService?.getQuestions() || [];
 
-    const filtered = allData.filter((item) => {
-      // Category filter
-      if (activeFilter === "indexed_patient_qa" && item.category !== "indexed_patient_qa") return false;
-      if (activeFilter === "out_of_scope" && item.category !== "out_of_scope") return false;
-      if (activeFilter === "repository" && item.type !== "repository") return false;
-
-      // Text search
-      if (query) {
-        const text = (item.id + " " + item.category + " " + item.question + " " + item.reference).toLowerCase();
-        return text.includes(query);
-      }
-      return true;
-    });
-
-    if (filtered.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">No matching tasks found.</td></tr>`;
-      return;
+    if (evalFilter !== "all") {
+      questions = questions.filter((q) => q.category === evalFilter);
+    }
+    if (evalSearch) {
+      questions = questions.filter(
+        (q) => q.id.toLowerCase().includes(evalSearch) || q.question.toLowerCase().includes(evalSearch) || q.category.toLowerCase().includes(evalSearch)
+      );
     }
 
-    tbody.innerHTML = filtered
-      .map((item) => {
-        let tagClass = "tag-medical";
-        let catLabel = item.category.replace(/_/g, " ");
-        let behavior = "Direct Grounded Answer";
-
-        if (item.should_abstain) {
-          tagClass = "tag-abstain";
-          behavior = "⚠️ Explicit Abstention";
-        } else if (item.type === "repository") {
-          tagClass = "tag-repo";
-          behavior = "Multi-Module Trace";
-        }
-
-        const qPreview = item.question.length > 85 ? item.question.substring(0, 85) + "..." : item.question;
-        const groundTruth = item.doc_ids && item.doc_ids.length ? `Doc #${item.doc_ids.join(", ")}` : item.sources ? `${item.sources.length} files` : "Abstain Target";
-
-        return `
+    tbody.innerHTML =
+      questions.length === 0
+        ? `<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);">No matching questions.</td></tr>`
+        : questions
+            .map(
+              (q) => `
           <tr>
-            <td><strong style="color:var(--cyan); font-family:var(--font-mono);">${item.id}</strong></td>
-            <td><span class="tag-badge ${tagClass}">${catLabel}</span></td>
-            <td><span style="color:#f1f5f9; font-weight:500;">${escapeHtml(qPreview)}</span></td>
-            <td><span style="font-size:0.8rem; color:${item.should_abstain ? '#fb7185' : '#34d399'}; font-weight:600;">${behavior}</span></td>
-            <td><span style="font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono);">${groundTruth}</span></td>
-            <td style="text-align:center;">
-              <button class="filter-pill btn-view-task" data-task-id="${item.id}" style="padding:0.25rem 0.6rem; font-size:0.75rem;">
-                View
-              </button>
-            </td>
-          </tr>
-        `;
-      })
-      .join("");
-
-    // Attach click handlers to View buttons
-    document.querySelectorAll(".btn-view-task").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const taskId = btn.getAttribute("data-task-id");
-        openTaskModal(taskId);
-      });
-    });
+            <td><strong style="color:var(--cyan);font-family:var(--font-mono);">${q.id}</strong></td>
+            <td><span class="tag-badge tag-medical">${escapeHtml(q.category)}</span></td>
+            <td>${escapeHtml(q.question)}</td>
+            <td><span class="status-badge status-mock">Mock</span></td>
+          </tr>`
+            )
+            .join("");
   }
 
-  function initDatasetFilters() {
-    const pills = document.querySelectorAll("#datasetFilterPills .filter-pill");
-    pills.forEach((p) => {
-      p.addEventListener("click", () => {
-        pills.forEach((x) => x.classList.remove("active"));
-        p.classList.add("active");
-        activeFilter = p.getAttribute("data-filter");
-        renderDatasetTable();
-      });
-    });
+  /* ── Metrics (W4 Task 3) ── */
+  function renderMetrics() {
+    const metrics = SVC.evaluationService?.getDemoMetrics() || {};
+    const qEl = document.getElementById("qualityMetricCards");
+    const pEl = document.getElementById("perfMetricCards");
+    const tbody = document.getElementById("metricsCompareBody");
 
-    const searchInput = document.getElementById("datasetSearchInput");
-    if (searchInput) {
-      searchInput.addEventListener("input", (e) => {
-        activeSearch = e.target.value;
-        renderDatasetTable();
+    const qualityLabels = {
+      accuracy: "Accuracy",
+      relevance: "Relevance",
+      retrievalQuality: "Retrieval Quality",
+      hallucinationRate: "Hallucination Rate",
+      testPassRate: "Test Pass Rate",
+    };
+    const perfLabels = {
+      latency: "Response Latency (s)",
+      tokenUsage: "Token Usage",
+      cpuUsage: "CPU Usage (%)",
+      gpuUsage: "GPU Usage (%)",
+      memoryUsage: "Memory (MB)",
+    };
+
+    if (qEl && metrics.quality) {
+      qEl.innerHTML = Object.entries(metrics.quality)
+        .map(([k, v]) => {
+          const avg = Math.round((v.qwen + v.gemma + v.smollm) / 3);
+          return `<div class="metric-card"><span class="metric-label">${qualityLabels[k] || k}</span><span class="metric-val">${avg}%</span><span class="metric-demo-tag">Demo</span></div>`;
+        })
+        .join("");
+    }
+
+    if (pEl && metrics.performance) {
+      pEl.innerHTML = Object.entries(metrics.performance)
+        .map(([k, v]) => {
+          const avg = ((v.qwen + v.gemma + v.smollm) / 3).toFixed(k === "latency" ? 1 : 0);
+          return `<div class="metric-card"><span class="metric-label">${perfLabels[k] || k}</span><span class="metric-val">${avg}</span><span class="metric-demo-tag">Demo</span></div>`;
+        })
+        .join("");
+    }
+
+    if (tbody && metrics.quality && metrics.performance) {
+      const rows = [];
+      Object.entries({ ...metrics.quality, ...metrics.performance }).forEach(([k, v]) => {
+        const label = qualityLabels[k] || perfLabels[k] || k;
+        const suffix = k.includes("Rate") || k.includes("Usage") && k !== "latency" && k !== "tokenUsage" && k !== "memoryUsage" ? "%" : k === "latency" ? "s" : k === "memoryUsage" ? " MB" : k === "tokenUsage" ? "" : k.includes("accuracy") || k.includes("relevance") || k.includes("Quality") || k.includes("Pass") ? "%" : "";
+        rows.push(`<tr><td>${label}</td><td>${v.qwen}${suffix}</td><td>${v.gemma}${suffix}</td><td>${v.smollm}${suffix}</td></tr>`);
       });
+      tbody.innerHTML = rows.join("");
     }
   }
 
-  function openTaskModal(taskId) {
-    const modal = document.getElementById("taskDetailModal");
-    const title = document.getElementById("modalTaskTitle");
-    const body = document.getElementById("modalTaskBody");
-    if (!modal || !body) return;
-
-    const allData = getCombinedDataset();
-    const item = allData.find((x) => x.id === taskId);
-    if (!item) return;
-
-    title.textContent = `Task: ${item.id} — Details & Evidence Rubric`;
-
-    const factsList = item.facts && item.facts.length
-      ? item.facts.map((f) => `<span class="file-chip" style="margin:2px;">${Array.isArray(f) ? f.join(" / ") : f}</span>`).join(" ")
-      : "<em style='color:var(--text-muted);'>Explicit abstention required (no verified facts in context)</em>";
-
-    body.innerHTML = `
-      <div style="margin-bottom:1rem;">
-        <span class="tag-badge ${item.should_abstain ? 'tag-abstain' : 'tag-medical'}">${item.category}</span>
-        <span style="color:var(--text-muted); font-size:0.85rem; margin-left:0.5rem;">Target: ${item.should_abstain ? 'Must Abstain' : 'Grounded QA'}</span>
-      </div>
-      <div style="margin-bottom:1.25rem;">
-        <h4 style="font-size:0.85rem; color:var(--cyan); text-transform:uppercase; margin-bottom:0.35rem;">Question Prompt</h4>
-        <div style="background:rgba(0,0,0,0.3); padding:0.85rem; border-radius:8px; border:1px solid rgba(255,255,255,0.08); font-size:0.92rem;">
-          ${escapeHtml(item.question)}
-        </div>
-      </div>
-      <div style="margin-bottom:1.25rem;">
-        <h4 style="font-size:0.85rem; color:#34d399; text-transform:uppercase; margin-bottom:0.35rem;">Reference Ground Truth Answer</h4>
-        <div style="background:rgba(0,0,0,0.3); padding:0.85rem; border-radius:8px; border:1px solid rgba(255,255,255,0.08); font-size:0.88rem; color:#cbd5e1; max-height:160px; overflow-y:auto;">
-          ${escapeHtml(item.reference)}
-        </div>
-      </div>
-      <div>
-        <h4 style="font-size:0.85rem; color:#c084fc; text-transform:uppercase; margin-bottom:0.35rem;">Required Key Facts (Deterministic Scoring Anchor)</h4>
-        <div style="background:rgba(0,0,0,0.3); padding:0.85rem; border-radius:8px; border:1px solid rgba(255,255,255,0.08);">
-          ${factsList}
-        </div>
-      </div>
-    `;
-
-    modal.classList.add("open");
-  }
-
-  function initModalHandlers() {
-    const modal = document.getElementById("taskDetailModal");
-    const closeBtn = document.getElementById("modalCloseBtn");
-
-    if (closeBtn && modal) {
-      closeBtn.addEventListener("click", () => modal.classList.remove("open"));
-      modal.addEventListener("click", (e) => {
-        if (e.target === modal) modal.classList.remove("open");
-      });
-    }
-  }
-
-  /* --------------------------------------------------------------------------
-     3. Exercise 3: Charts & Quantitative Metric Visualizations
-     -------------------------------------------------------------------------- */
+  /* ── Charts ── */
   function initCharts() {
     Chart.defaults.color = "#94a3b8";
     Chart.defaults.font.family = '"Outfit", "Inter", sans-serif';
 
-    initRadarProfile();
-    initQualityBars();
-    initLatencyBars();
-    initResourceBars();
-    initGemmaLegacyCharts();
+    initQualityChart();
+    initLatencyChart();
+    initRadarChart();
+    initResourceChart();
+    initTradeoffChart();
   }
 
-  function initRadarProfile() {
-    const ctx = document.getElementById("chartRadarProfile");
-    if (!ctx) return;
-
-    charts.radar = new Chart(ctx, {
-      type: "radar",
-      data: {
-        labels: ["Medical Accuracy", "Low Hallucination", "Inference Speed", "Low Memory/VRAM", "Fact Grounding", "Repo Understanding"],
-        datasets: [
-          {
-            label: "StarCoder2 3B (Quality Leader)",
-            data: [95, 90, 60, 95, 88, 20],
-            borderColor: "#10b981",
-            backgroundColor: "rgba(16, 185, 129, 0.2)",
-            pointBackgroundColor: "#10b981",
-            borderWidth: 2,
-          },
-          {
-            label: "Qwen2.5-Coder 3B (Speed Leader)",
-            data: [40, 75, 95, 88, 55, 60],
-            borderColor: "#a855f7",
-            backgroundColor: "rgba(168, 85, 247, 0.15)",
-            pointBackgroundColor: "#a855f7",
-            borderWidth: 2,
-          },
-          {
-            label: "Code Llama 7B (Repo Leader)",
-            data: [40, 50, 25, 30, 45, 90],
-            borderColor: "#00f0ff",
-            backgroundColor: "rgba(0, 240, 255, 0.15)",
-            pointBackgroundColor: "#00f0ff",
-            borderWidth: 2,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          r: {
-            angleLines: { color: "rgba(255, 255, 255, 0.1)" },
-            grid: { color: "rgba(255, 255, 255, 0.08)" },
-            pointLabels: { color: "#e2e8f0", font: { size: 11, weight: "bold" } },
-            ticks: { display: false, max: 100, min: 0 },
-          },
-        },
-        plugins: {
-          legend: { position: "bottom", labels: { boxWidth: 12, padding: 10 } },
-        },
-      },
-    });
-  }
-
-  function initQualityBars() {
+  function initQualityChart() {
     const ctx = document.getElementById("chartQualityBars");
     if (!ctx) return;
-
     charts.quality = new Chart(ctx, {
       type: "bar",
       data: {
-        labels: ["Correctness (Acc)", "Relevance", "Hallucination (Lower=Better)", "Abstention Acc"],
+        labels: ["Accuracy", "Relevance", "Retrieval Quality", "Hallucination ↓", "Test Pass Rate"],
         datasets: [
-          {
-            label: "Code Llama 7B",
-            data: [18.0, 72.0, 44.4, 0.0],
-            backgroundColor: "rgba(0, 240, 255, 0.7)",
-            borderRadius: 6,
-          },
-          {
-            label: "StarCoder2 3B",
-            data: [58.0, 80.0, 11.1, 0.0],
-            backgroundColor: "rgba(16, 185, 129, 0.8)",
-            borderRadius: 6,
-          },
-          {
-            label: "Qwen2.5-Coder 3B",
-            data: [18.0, 80.0, 27.1, 50.0],
-            backgroundColor: "rgba(168, 85, 247, 0.8)",
-            borderRadius: 6,
-          },
+          { label: "Qwen2.5 0.5B", data: [72, 68, 74, 18, 65], backgroundColor: "rgba(0,240,255,0.7)", borderRadius: 6 },
+          { label: "Gemma 3 1B", data: [81, 79, 82, 12, 78], backgroundColor: "rgba(16,185,129,0.8)", borderRadius: 6 },
+          { label: "SmolLM2 1.7B", data: [88, 85, 87, 8, 84], backgroundColor: "rgba(168,85,247,0.8)", borderRadius: 6 },
         ],
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            grid: { color: "rgba(255,255,255,0.06)" },
-            ticks: { callback: (v) => v + "%" },
-          },
-          x: { grid: { display: false } },
-        },
-        plugins: {
-          legend: { position: "bottom", labels: { boxWidth: 12, padding: 8 } },
-        },
-      },
+      options: chartOpts("%"),
     });
   }
 
-  function initLatencyBars() {
+  function initLatencyChart() {
     const ctx = document.getElementById("chartLatencyBars");
     if (!ctx) return;
-
     charts.latency = new Chart(ctx, {
       type: "bar",
       data: {
-        labels: ["Code Llama 7B", "StarCoder2 3B", "Qwen2.5-Coder 3B"],
+        labels: ["Qwen2.5 0.5B", "Gemma 3 1B", "SmolLM2 1.7B"],
+        datasets: [{ label: "Latency (s)", data: [1.2, 2.8, 4.5], backgroundColor: ["rgba(0,240,255,0.7)", "rgba(16,185,129,0.7)", "rgba(168,85,247,0.8)"], borderRadius: 6 }],
+      },
+      options: chartOpts("s"),
+    });
+  }
+
+  function initRadarChart() {
+    const ctx = document.getElementById("chartRadarProfile");
+    if (!ctx) return;
+    charts.radar = new Chart(ctx, {
+      type: "radar",
+      data: {
+        labels: ["Accuracy", "Speed", "Low Memory", "Retrieval", "Low Hallucination"],
         datasets: [
-          {
-            label: "Mean Latency (s)",
-            data: [42.32, 19.44, 9.26],
-            backgroundColor: ["rgba(0, 240, 255, 0.7)", "rgba(16, 185, 129, 0.7)", "rgba(168, 85, 247, 0.8)"],
-            borderRadius: 6,
-          },
-          {
-            label: "Median (p50 s)",
-            data: [41.37, 20.76, 8.84],
-            backgroundColor: ["rgba(0, 240, 255, 0.4)", "rgba(16, 185, 129, 0.4)", "rgba(168, 85, 247, 0.4)"],
-            borderRadius: 6,
-          },
-          {
-            label: "95th Percentile (p95 s)",
-            data: [55.66, 25.69, 13.99],
-            backgroundColor: ["rgba(0, 240, 255, 0.2)", "rgba(16, 185, 129, 0.2)", "rgba(168, 85, 247, 0.2)"],
-            borderRadius: 6,
-          },
+          { label: "Qwen2.5 0.5B", data: [72, 95, 90, 74, 70], borderColor: "#00f0ff", backgroundColor: "rgba(0,240,255,0.15)", borderWidth: 2 },
+          { label: "Gemma 3 1B", data: [81, 70, 75, 82, 80], borderColor: "#10b981", backgroundColor: "rgba(16,185,129,0.15)", borderWidth: 2 },
+          { label: "SmolLM2 1.7B", data: [88, 45, 50, 87, 92], borderColor: "#a855f7", backgroundColor: "rgba(168,85,247,0.15)", borderWidth: 2 },
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-            grid: { color: "rgba(255,255,255,0.06)" },
-            ticks: { callback: (v) => v + " s" },
-          },
-          x: { grid: { display: false } },
-        },
-        plugins: {
-          legend: { position: "bottom", labels: { boxWidth: 12, padding: 8 } },
-        },
+        scales: { r: { angleLines: { color: "rgba(255,255,255,0.1)" }, grid: { color: "rgba(255,255,255,0.08)" }, pointLabels: { font: { size: 11 } }, ticks: { display: false, max: 100 } } },
+        plugins: { legend: { position: "bottom", labels: { boxWidth: 12 } } },
       },
     });
   }
 
-  function initResourceBars() {
+  function initResourceChart() {
     const ctx = document.getElementById("chartResourceBars");
     if (!ctx) return;
-
     charts.resource = new Chart(ctx, {
       type: "bar",
       data: {
-        labels: ["Code Llama 7B", "StarCoder2 3B", "Qwen2.5-Coder 3B"],
+        labels: ["Qwen2.5 0.5B", "Gemma 3 1B", "SmolLM2 1.7B"],
         datasets: [
-          {
-            label: "Ollama VRAM Allocation (MB)",
-            data: [5710, 1789, 2055],
-            backgroundColor: "rgba(0, 240, 255, 0.75)",
-            borderRadius: 6,
-            yAxisID: "y",
-          },
-          {
-            label: "Peak System RAM (MB)",
-            data: [15150, 11291, 12011],
-            backgroundColor: "rgba(168, 85, 247, 0.75)",
-            borderRadius: 6,
-            yAxisID: "y",
-          },
+          { label: "Memory (MB)", data: [890, 1450, 2100], backgroundColor: "rgba(0,240,255,0.75)", borderRadius: 6 },
+          { label: "CPU (%)", data: [22, 38, 55], backgroundColor: "rgba(168,85,247,0.75)", borderRadius: 6 },
+        ],
+      },
+      options: chartOpts(""),
+    });
+  }
+
+  function initTradeoffChart() {
+    const ctx = document.getElementById("chartTradeoff");
+    if (!ctx) return;
+    charts.tradeoff = new Chart(ctx, {
+      type: "scatter",
+      data: {
+        datasets: [
+          { label: "Qwen2.5 0.5B", data: [{ x: 1.2, y: 72 }], backgroundColor: "#00f0ff", pointRadius: 10 },
+          { label: "Gemma 3 1B", data: [{ x: 2.8, y: 81 }], backgroundColor: "#10b981", pointRadius: 10 },
+          { label: "SmolLM2 1.7B", data: [{ x: 4.5, y: 88 }], backgroundColor: "#a855f7", pointRadius: 10 },
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          y: {
-            beginAtZero: true,
-            grid: { color: "rgba(255,255,255,0.06)" },
-            ticks: { callback: (v) => (v / 1024).toFixed(1) + " GB" },
-          },
-          x: { grid: { display: false } },
+          x: { title: { display: true, text: "Latency (s)" }, grid: { color: "rgba(255,255,255,0.06)" } },
+          y: { title: { display: true, text: "Accuracy (%)" }, min: 60, max: 95, grid: { color: "rgba(255,255,255,0.06)" } },
         },
-        plugins: {
-          legend: { position: "bottom", labels: { boxWidth: 12, padding: 8 } },
-        },
+        plugins: { legend: { position: "bottom" } },
       },
     });
   }
 
-  function initGemmaLegacyCharts() {
-    const ctxEval = document.getElementById("chartGemmaEval");
-    if (ctxEval) {
-      new Chart(ctxEval, {
-        type: "bar",
-        data: {
-          labels: ["ROUGE-L", "BLEU (Scaled)", "BERTScore F1"],
-          datasets: [
-            {
-              label: "Base Gemma-2B-it",
-              data: [12.16, 7.82, 82.22],
-              backgroundColor: "rgba(148, 163, 184, 0.6)",
-            },
-            {
-              label: "Fine-Tuned QLoRA Adapter",
-              data: [22.5, 9.23, 88.5],
-              backgroundColor: "rgba(0, 240, 255, 0.8)",
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: { y: { beginAtZero: true, max: 100 } },
-        },
-      });
-    }
-
-    const ctxLoss = document.getElementById("chartGemmaLoss");
-    if (ctxLoss) {
-      new Chart(ctxLoss, {
-        type: "line",
-        data: {
-          labels: ["Epoch 0.67", "Epoch 1.33", "Epoch 2.00", "Epoch 2.67", "Epoch 3.33", "Epoch 4.00", "Epoch 4.67"],
-          datasets: [
-            {
-              label: "Training Loss (Inflection at Epoch 2)",
-              data: [4.38, 4.88, 4.71, 7.29, 7.99, 11.38, 14.59],
-              borderColor: "#f43f5e",
-              backgroundColor: "rgba(244, 63, 94, 0.1)",
-              fill: true,
-              tension: 0.3,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: { y: { beginAtZero: true } },
-        },
-      });
-    }
+  function chartOpts(suffix) {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: { beginAtZero: true, grid: { color: "rgba(255,255,255,0.06)" }, ticks: { callback: (v) => v + (suffix || "") } },
+        x: { grid: { display: false } },
+      },
+      plugins: { legend: { position: "bottom", labels: { boxWidth: 12, padding: 8 } } },
+    };
   }
 
-  /* --------------------------------------------------------------------------
-     4. Exercise 5: RAG Pipeline Trace Explorer
-     -------------------------------------------------------------------------- */
+  /* ── Trade-offs (W4 Task 4) ── */
+  function renderTradeOffs() {
+    const grid = document.getElementById("tradeoffGrid");
+    const items = SVC.evaluationService?.getTradeOffs() || [];
+    if (!grid) return;
+
+    grid.innerHTML = items
+      .map(
+        (t) => `
+      <article class="tradeoff-card">
+        <span class="tradeoff-icon">${t.icon}</span>
+        <h4>${escapeHtml(t.label)}</h4>
+        <p class="tradeoff-val">${escapeHtml(t.value)}</p>
+        <p class="tradeoff-detail">${escapeHtml(t.detail)} <span class="metric-demo-tag">Demo</span></p>
+      </article>`
+      )
+      .join("");
+  }
+
+  /* ── RAG Analysis (W4 Task 5) ── */
   const TRACE_CASES = [
     {
       id: "MED-010",
-      title: "MED-010: Shin Dent / Deep Bruise",
-      category: "Relevant Retrieval & Strong Use",
-      model: "starcoder2_3b",
-      question: "I smashed my shin about 2 weeks ago & now that the swelling is going down, i can feel what I would describe as a dent in the bone. It doesnt hurt when I stand on it, but if I walk on it by the end of the day it is sore. If I elevate my legs horizontally on a table & try to let the heel support the weight, I can feel alot of soreness in the spot where I feel the dent. Was hoping just a deep bone bruise.",
-      chunks: [
-        "[C1] (Doc #10) Shin being sub cutaneous bone is more prone to bruise. The dent you are feeling is not a dent in the bone but in the soft tissues and the swelling must be increasing in the evening causing more soreness. Use cold compresses and a crepe bandage to support the bruised area. It might take 3-6 weeks for full recovery.",
-      ],
-      withRag: "Based on the verified medical context, the dent you are feeling is located in the soft tissues covering the sub-cutaneous shin bone, not the bone itself [C1]. Soreness in the evening is caused by accumulating fluid/swelling. Management recommends cold compresses and a crepe bandage for support; full tissue recovery typically takes 3–6 weeks.",
-      withoutRag: "A dent in the bone after trauma could indicate a depressed fracture or subperiosteal hematoma. You should urgently visit an orthopedic specialist and obtain an X-ray to rule out cortical breakage.",
-      factScoreWith: 1.0,
-      factScoreWithout: 0.0,
-      conclusion: "Direct Retrieval Benefit (+1.0 Fact Delta): StarCoder2 strictly grounded its response on Chunk C1, correctly explaining soft tissue swelling and avoiding incorrect fracture diagnoses.",
-    },
-    {
-      id: "MED-017",
-      title: "MED-017: Soy Allergy & Safe Frying Oils",
-      category: "Relevant Retrieval but Incomplete Evidence Use",
-      model: "codellama_7b",
-      question: "My fiance is 78 and he is allergic to soy. He gets itchy after eating seeds and nuts and some fried foods. My question is what is the best to use for frying? I use vegetable oil most often. I don t fry many foods. Is shortening a better choice? What works best on the itchy rash that he gets? Thank you",
-      chunks: [
-        "[C1] (Doc #17) You can use olive oil, sesame oil, coconut oil, butter etc. for frying instead of vegetable oil. On itchy rash apply lactocalamine lotion as it will help in smoothening of skin. Also give him anti-allergic tablet like Cetrizine in a stat dose.",
-      ],
-      withRag: "Soy allergy can cause itching after eating fried foods. For frying, you should avoid vegetable oils that may contain hidden soy blends. It is advisable to consult a dermatologist.",
-      withoutRag: "It is important to avoid soy products. For frying you can use shortening or olive oil. Shortening has trans fats. Apply anti-itch creams.",
-      factScoreWith: 0.167,
-      factScoreWithout: 0.333,
-      conclusion: "Evidence Ignored: Even though Document #17 was retrieved at Rank 1 with concrete oil recommendations (olive, coconut, butter) and lactocalamine lotion, Code Llama gave a generic answer and scored only 0.167 fact coverage.",
+      category: "Relevant Context",
+      question: "I smashed my shin about 2 weeks ago and now feel a dent in the bone area. Was hoping just a deep bone bruise.",
+      chunks: ["[C1] (Doc #10) The dent is in soft tissues, not bone. Soreness increases in evening due to swelling. Cold compresses and crepe bandage recommended. Recovery 3-6 weeks."],
+      withRag: "Based on verified context, the dent is in soft tissues covering the shin bone, not the bone itself. Evening soreness is from accumulating swelling. Cold compresses and crepe bandage are recommended.",
+      withoutRag: "A dent after trauma could indicate a depressed fracture. Obtain an X-ray urgently.",
+      grounding: "Correct Answer",
+      contextQuality: "Relevant Context",
+      retrievalQuality: "High",
     },
     {
       id: "MED-022",
-      title: "MED-022: Paediatric Amoxicillin Dosing",
-      category: "Irrelevant Forced Retrieval on Out-of-Scope Task",
-      model: "codellama_7b",
+      category: "Irrelevant Context",
       question: "What is the recommended paediatric dose of amoxicillin for acute otitis media?",
-      chunks: [
-        "[C1] (Doc #1350) Adult amoxicillin 500mg TDS for respiratory infections...",
-        "[C2] (Doc #950) Pediatric paracetamol syrup 120mg/5ml for fever relief in infants...",
-        "[C3] (Doc #581) Otitis externa ear drop application...",
-      ],
-      withRag: "For acute otitis media in children, amoxicillin is commonly given at 40-45 mg/kg per day in divided doses [C1, C2]. Check with your pediatrician for body weight calibration.",
-      withoutRag: "Amoxicillin pediatric dose for middle ear infection is usually 80-90 mg/kg/day divided every 12 hours.",
-      factScoreWith: 0.0,
-      factScoreWithout: 0.0,
-      conclusion: "Forced Retrieval Failure: Because top-k always returns 3 chunks, irrelevant distractor chunks were injected. Code Llama failed to abstain and attempted to synthesize an unverified dose.",
+      chunks: ["[C1] Adult amoxicillin 500mg TDS...", "[C2] Pediatric paracetamol syrup...", "[C3] Otitis externa ear drops..."],
+      withRag: "Amoxicillin is commonly given at 40-45 mg/kg/day in divided doses.",
+      withoutRag: "Pediatric dose is usually 80-90 mg/kg/day divided every 12 hours.",
+      grounding: "Potential Hallucination",
+      contextQuality: "Irrelevant Context",
+      retrievalQuality: "Low",
     },
     {
       id: "MED-025",
-      title: "MED-025: Apixaban & Experimental ZX-417",
-      category: "Correct Abstention Despite Distractor Chunks",
-      model: "qwen25_coder_3b",
-      question: "What is the exact interaction between apixaban and a new experimental drug called ZX-417?",
-      chunks: [
-        "[C1] (Doc #1362) Apixaban anticoagulant indications and bleeding precautions...",
-        "[C2] (Doc #1386) Drug interactions with CYP3A4 inhibitors...",
-        "[C3] (Doc #453) Experimental clinical trials protocol...",
-      ],
-      withRag: "The verified knowledge base does not contain any information regarding drug interactions with experimental compound ZX-417 [C1]. I cannot confirm safe co-administration. Please consult an authoritative clinical pharmacist.",
-      withoutRag: "ZX-417 is an unverified compound. Check medical literature.",
-      factScoreWith: 1.0,
-      factScoreWithout: 0.0,
-      conclusion: "Abstention Success (+1.0): Qwen2.5-Coder correctly identified that the retrieved chunks lacked evidence on ZX-417 and explicitly refused to hallucinate interactions.",
-    },
-    {
-      id: "REP-001",
-      title: "REP-001: End-to-End Medical RAG Architecture",
-      category: "Multi-File Repository Architecture Trace",
-      model: "codellama_7b",
-      question: "Which files implement the end-to-end medical RAG path from knowledge-base ingestion to retrieval and LLM generation, and what is each file's role?",
-      chunks: [
-        "[C1] (src/rag_ingest.py) Ingestion pipeline: chunks medical JSONL, generates sentence embeddings, builds FAISS index...",
-        "[C2] (src/rag_server.py) FastAPI server: mounts static dashboard, exposes /api/v1/rag/compare, coordinates retrieval and generation...",
-        "[C3] (src/ollama_client.py) Ollama bridge: formats grounded prompt, queries local model server with fallback...",
-      ],
-      withRag: "The end-to-end medical RAG path is implemented across three core modules:\n1. `src/rag_ingest.py`: Parses `data/raw/medical_knowledge_base.jsonl`, generates 384-d vectors, and writes FAISS index.\n2. `src/rag_server.py`: Orchestrates semantic retrieval at runtime and serves API endpoints.\n3. `src/ollama_client.py`: Formats the Alpaca prompt with retrieved chunks and queries Ollama.",
-      withoutRag: "The RAG pipeline likely consists of ingestion scripts, a database connector, and an LLM client module.",
-      factScoreWith: 0.833,
-      factScoreWithout: 0.0,
-      conclusion: "Cross-File Synthesis (+0.833 Delta): Code Llama synthesized all 3 retrieved module roles with high precision, whereas without RAG it could only guess generic component names.",
-    },
-    {
-      id: "REP-007",
-      title: "REP-007: Offline Fallback Pipeline Trace",
-      category: "Missed Important Information / Recall Limitation",
-      model: "starcoder2_3b",
-      question: "What happens when Ollama is unavailable, and which modules implement or expose the fallback behaviour?",
-      chunks: [
-        "[C1] (src/ollama_client.py) def query_ollama(): checks connection, tries cloud providers if configured...",
-        "[C2] (src/ollama_client.py) def generate_with_rag(): returns failure payload on timeout...",
-        "[C3] (src/ollama_client.py) connection retry loop and error logging...",
-      ],
-      withRag: "`src/ollama_client.py` handles connection errors and logs failure when Ollama is down [C1, C2].",
-      withoutRag: "When Ollama is unavailable, the application will return a 500 error or retry connection.",
-      factScoreWith: 0.286,
-      factScoreWithout: 0.0,
-      conclusion: "Chunk Duplication Bottleneck: Because all 3 retrieved chunks came from `src/ollama_client.py`, the model missed `src/rag_server.py`'s extractive fallback and reached only 0.286 fact coverage.",
+      category: "Missing Information",
+      question: "What is the interaction between apixaban and experimental drug ZX-417?",
+      chunks: ["[C1] Apixaban anticoagulant indications. No data on ZX-417."],
+      withRag: "The knowledge base does not contain information about ZX-417 interactions. Consult a clinical pharmacist.",
+      withoutRag: "ZX-417 is unverified. Check medical literature.",
+      grounding: "Correct Answer",
+      contextQuality: "Missing Information",
+      retrievalQuality: "Medium",
     },
   ];
 
-  function initTraceExplorer() {
-    const bar = document.getElementById("traceSelectorBar");
+  function initRagAnalysis() {
+    const bar = document.getElementById("ragAnalysisSelector");
     if (!bar) return;
 
-    bar.innerHTML = TRACE_CASES.map((t, idx) => `
-      <button class="trace-btn ${idx === 0 ? 'active' : ''}" data-idx="${idx}">
-        <span>📄</span> ${t.id}
-      </button>
-    `).join("");
+    bar.innerHTML = TRACE_CASES.map(
+      (t, i) => `<button class="trace-btn ${i === 0 ? "active" : ""}" data-idx="${i}">${t.id}</button>`
+    ).join("");
 
-    const buttons = bar.querySelectorAll(".trace-btn");
-    buttons.forEach((btn) => {
+    bar.querySelectorAll(".trace-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        buttons.forEach((b) => b.classList.remove("active"));
+        bar.querySelectorAll(".trace-btn").forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
-        const idx = parseInt(btn.getAttribute("data-idx"), 10);
-        displayTrace(TRACE_CASES[idx]);
+        displayRagAnalysis(TRACE_CASES[parseInt(btn.getAttribute("data-idx"), 10)]);
       });
     });
 
-    displayTrace(TRACE_CASES[0]);
+    displayRagAnalysis(TRACE_CASES[0]);
   }
 
-  function displayTrace(trace) {
-    const qEl = document.getElementById("traceQuestionText");
-    const mEl = document.getElementById("traceModelBadge");
-    const idEl = document.getElementById("traceIdBadge");
-    const catEl = document.getElementById("traceCategoryBadge");
-    const chunksEl = document.getElementById("traceChunksContent");
-    const withRagEl = document.getElementById("traceWithRagText");
-    const withoutRagEl = document.getElementById("traceWithoutRagText");
-    const withScoreEl = document.getElementById("traceWithRagFactScore");
-    const withoutScoreEl = document.getElementById("traceWithoutRagFactScore");
-    const concEl = document.getElementById("traceConclusionText");
+  function displayRagAnalysis(trace) {
+    const panel = document.getElementById("ragAnalysisPanel");
+    if (!panel) return;
 
-    if (qEl) qEl.textContent = trace.question;
-    if (mEl) mEl.textContent = `Model: ${trace.model}`;
-    if (idEl) idEl.textContent = trace.id;
-    if (catEl) catEl.textContent = trace.category;
+    const badgeClass = {
+      "Correct Answer": "tag-medical",
+      "Potential Hallucination": "tag-abstain",
+      "Relevant Context": "tag-medical",
+      "Irrelevant Context": "tag-abstain",
+      "Missing Information": "tag-repo",
+    };
 
-    if (chunksEl) {
-      chunksEl.innerHTML = trace.chunks
-        .map((c) => `<div class="chunk-snippet">${escapeHtml(c)}</div>`)
-        .join("");
-    }
-
-    if (withRagEl) withRagEl.textContent = trace.withRag;
-    if (withoutRagEl) withoutRagEl.textContent = trace.withoutRag;
-    if (withScoreEl) withScoreEl.textContent = `Fact Score: ${trace.factScoreWith}`;
-    if (withoutScoreEl) withoutScoreEl.textContent = `Fact Score: ${trace.factScoreWithout}`;
-    if (concEl) concEl.innerHTML = `<strong>RAG Relationship:</strong> ${escapeHtml(trace.conclusion)}`;
+    panel.innerHTML = `
+      <div class="trace-meta-row">
+        <span class="tag-badge tag-medical">${trace.id}</span>
+        <span class="tag-badge ${badgeClass[trace.grounding] || "tag-medical"}">${trace.grounding}</span>
+        <span class="tag-badge ${badgeClass[trace.contextQuality] || "tag-repo"}">${trace.contextQuality}</span>
+      </div>
+      <div class="trace-question-box"><span style="color:var(--text-muted);font-size:0.8rem;">QUESTION</span><br/>${escapeHtml(trace.question)}</div>
+      <div class="pipeline-arrow" style="text-align:center;">↓</div>
+      <div class="trace-chunks-box"><h5>RETRIEVED CONTEXT</h5>${trace.chunks.map((c) => `<div class="chunk-snippet">${escapeHtml(c)}</div>`).join("")}</div>
+      <div class="pipeline-arrow" style="text-align:center;">↓</div>
+      <div class="trace-comparison-grid">
+        <div class="trace-col with-rag"><div class="trace-col-title">LLM Response (With-RAG)</div><div class="trace-text">${escapeHtml(trace.withRag)}</div></div>
+        <div class="trace-col without-rag"><div class="trace-col-title">Baseline (Without-RAG)</div><div class="trace-text">${escapeHtml(trace.withoutRag)}</div></div>
+      </div>
+      <div class="pipeline-arrow" style="text-align:center;">↓</div>
+      <div class="trace-conclusion"><strong>GROUNDING RESULT:</strong> ${trace.grounding} · Retrieval: ${trace.retrievalQuality} · Context: ${trace.contextQuality}</div>`;
   }
 
-  /* --------------------------------------------------------------------------
-     5. Exercise 6: Repository Probes Matrix
-     -------------------------------------------------------------------------- */
+  /* ── Repository (W4 Task 6) ── */
+  function renderRepoExplorer() {
+    const el = document.getElementById("repoExplorer");
+    const data = SVC.repositoryService?.getAnalysis() || {};
+    if (!el) return;
+
+    el.innerHTML = `
+      <div class="repo-explorer-grid">
+        <div class="repo-explorer-card"><h4>Files Involved</h4><ul>${(data.files || []).map((f) => `<li><code>${escapeHtml(f)}</code></li>`).join("")}</ul></div>
+        <div class="repo-explorer-card"><h4>Components</h4><ul>${(data.components || []).map((c) => `<li>${escapeHtml(c)}</li>`).join("")}</ul></div>
+        <div class="repo-explorer-card"><h4>Dependencies</h4><ul>${(data.dependencies || []).map((d) => `<li>${escapeHtml(d)}</li>`).join("")}</ul></div>
+        <div class="repo-explorer-card"><h4>Function Calls</h4><ul>${(data.functionCalls || []).map((f) => `<li><code>${escapeHtml(f)}</code></li>`).join("")}</ul></div>
+        <div class="repo-explorer-card"><h4>Impact Analysis</h4><ul>${(data.impactAnalysis || []).map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul></div>
+        <div class="repo-explorer-card"><h4>Related Tests</h4><ul>${(data.relatedTests || []).map((t) => `<li><code>${escapeHtml(t)}</code></li>`).join("")}</ul></div>
+      </div>
+      <h4 class="subsection-title">Sample Repository Questions</h4>
+      <div class="repo-questions">${(data.sampleQuestions || []).map((q) => `<div class="repo-q-item">"${escapeHtml(q)}"</div>`).join("")}</div>`;
+  }
+
   const REPO_PROBES = [
-    {
-      id: "REP-001",
-      title: "End-to-End Medical RAG Architecture",
-      category: "multi_file_architecture",
-      question: "Which files implement the end-to-end medical RAG path from knowledge-base ingestion to retrieval and LLM generation?",
-      files: ["src/rag_ingest.py", "src/rag_server.py", "src/ollama_client.py", "data/raw/medical_knowledge_base.jsonl"],
-      keyInsight: "Ingest builds FAISS; Server hosts endpoints; Client formats grounded prompts.",
-    },
-    {
-      id: "REP-002",
-      title: "POST /api/v1/rag/compare Request Flow",
-      category: "request_flow",
-      question: "What happens across modules after a client sends POST /api/v1/rag/compare?",
-      files: ["src/rag_server.py", "src/ollama_client.py", "dashboard/app.js"],
-      keyInsight: "Embeds query -> FAISS search -> Baseline generation -> Grounded RAG generation -> Returns diff payload.",
-    },
-    {
-      id: "REP-003",
-      title: "Configuration & Parameter Dependencies",
-      category: "configuration_dependency",
-      question: "Where are Ollama host, default model, embedding model, and index paths configured?",
-      files: ["config/week4_models.json", "src/ollama_client.py", "src/rag_server.py", "docker-compose.yml"],
-      keyInsight: "Centralized in config/ and overridden via environment variables for cloud deployment.",
-    },
-    {
-      id: "REP-004",
-      title: "Chunking Strategy Change Impact",
-      category: "change_impact",
-      question: "If chunking strategy changes, which files or artifacts are affected and why?",
-      files: ["src/rag_ingest.py", "outputs/rag_index/faiss.index", "outputs/rag_index/chunk_metadata.json", "src/rag_server.py"],
-      keyInsight: "Requires full FAISS re-indexing; alters boundary token density and retrieval precision.",
-    },
-    {
-      id: "REP-005",
-      title: "Docker Compose Service Network",
-      category: "deployment_architecture",
-      question: "Which services are started by Docker Compose and how do they communicate?",
-      files: ["docker-compose.yml", "Dockerfile.api", "Dockerfile.dashboard"],
-      keyInsight: "Orchestrates Ollama (11434), FastAPI RAG API (8001), and Web Dashboard (8000).",
-    },
-    {
-      id: "REP-006",
-      title: "Frontend-to-Backend Contract",
-      category: "frontend_backend_relationship",
-      question: "Which frontend files initiate RAG requests and which backend endpoints do they depend on?",
-      files: ["dashboard/index.html", "dashboard/app.js", "src/rag_server.py"],
-      keyInsight: "UI invokes /api/v1/services/status, /query, and /api/v1/rag/compare.",
-    },
-    {
-      id: "REP-007",
-      title: "Offline & Degraded Mode Fallback",
-      category: "fallback_analysis",
-      question: "What happens when Ollama is unavailable, and which modules implement fallback?",
-      files: ["src/ollama_client.py", "src/rag_server.py", "src/rag_demo.py"],
-      keyInsight: "Extractive top-chunk synthesis operates when Ollama connection fails.",
-    },
-    {
-      id: "REP-008",
-      title: "Fine-Tuning vs RAG Pipeline Separation",
-      category: "pipeline_understanding",
-      question: "Trace the separate fine-tuning workflow from raw data creation to evaluation.",
-      files: ["src/generate_dataset.py", "src/preprocess.py", "src/train.py", "src/evaluate.py"],
-      keyInsight: "Independent 5-stage QLoRA pipeline producing standalone LoRA adapter checkpoints.",
-    },
+    { id: "REP-001", title: "End-to-End RAG Architecture", question: "Which files implement the medical RAG path from ingestion to generation?", files: ["src/rag_ingest.py", "src/rag_server.py", "src/ollama_client.py"], keyInsight: "Ingest → FAISS index → Server endpoints → LLM client." },
+    { id: "REP-002", title: "RAG Compare Request Flow", question: "What happens after POST /api/v1/rag/compare?", files: ["src/rag_server.py", "dashboard/app.js"], keyInsight: "Embed → FAISS → Baseline + RAG generation → JSON response." },
+    { id: "REP-003", title: "Configuration Dependencies", question: "Where are model and embedding settings configured?", files: ["config/week4_models.json", "src/ollama_client.py"], keyInsight: "Config files + environment variable overrides." },
+    { id: "REP-004", title: "Chunking Change Impact", question: "If chunking strategy changes, what is affected?", files: ["src/rag_ingest.py", "outputs/rag_index/"], keyInsight: "Full re-index required; retrieval precision changes." },
+    { id: "REP-005", title: "Docker Service Network", question: "Which services does Docker Compose start?", files: ["docker-compose.yml"], keyInsight: "Ollama, RAG API, Dashboard orchestration." },
+    { id: "REP-006", title: "Frontend-Backend Contract", question: "Which frontend files call RAG endpoints?", files: ["dashboard/app.js", "dashboard/api/services.js"], keyInsight: "ragService.compare() → /api/v1/rag/compare." },
   ];
 
   function renderRepoProbes() {
@@ -736,103 +726,52 @@
     grid.innerHTML = REPO_PROBES.map(
       (p) => `
       <article class="repo-card">
-        <div class="repo-card-head">
-          <span class="tag-badge tag-repo">${p.id}</span>
-          <span style="font-size:0.75rem; color:var(--text-muted);">${p.category.replace(/_/g, " ")}</span>
-        </div>
+        <div class="repo-card-head"><span class="tag-badge tag-repo">${p.id}</span></div>
         <h4 class="repo-q-title">${escapeHtml(p.title)}</h4>
-        <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.5rem;">${escapeHtml(p.question)}</p>
-        <div class="repo-files-list">
-          ${p.files.map((f) => `<span class="file-chip">📁 ${f}</span>`).join("")}
-        </div>
-        <div style="font-size:0.8rem; color:#34d399; margin-top:0.5rem;">
-          <strong>Trace:</strong> ${escapeHtml(p.keyInsight)}
-        </div>
-      </article>
-    `
+        <p style="font-size:0.82rem;color:var(--text-muted);">${escapeHtml(p.question)}</p>
+        <div class="repo-files-list">${p.files.map((f) => `<span class="file-chip">${escapeHtml(f)}</span>`).join("")}</div>
+        <p style="font-size:0.8rem;color:#34d399;margin-top:0.5rem;"><strong>Insight:</strong> ${escapeHtml(p.keyInsight)}</p>
+      </article>`
     ).join("");
   }
 
-  /* --------------------------------------------------------------------------
-     6. Live Sandbox Pipeline Runner
-     -------------------------------------------------------------------------- */
-  function initSandboxRunner() {
-    const btnAnimate = document.getElementById("btnAnimatePipeline");
-    const btnRunLive = document.getElementById("btnRunLiveQuery");
-    const input = document.getElementById("liveQueryInput");
-    const outputGrid = document.getElementById("liveOutputGrid");
-    const ragOut = document.getElementById("liveRagOutput");
-    const baseOut = document.getElementById("liveBaseOutput");
+  /* ── W4 Summaries (Tasks 7 & 8) ── */
+  function renderW4Summaries() {
+    const routerEl = document.getElementById("w4RouterSummary");
+    const guardEl = document.getElementById("w4GuardrailsSummary");
 
-    if (btnAnimate) {
-      btnAnimate.addEventListener("click", () => {
-        const nodes = [1, 2, 3, 4, 5, 6, 7, 8].map((i) => document.getElementById(`flowNode${i}`));
-        nodes.forEach((n) => n && (n.style.border = "1px solid rgba(255,255,255,0.08)"));
-
-        nodes.forEach((n, idx) => {
-          setTimeout(() => {
-            if (n) {
-              n.style.border = "1px solid var(--cyan)";
-              n.style.boxShadow = "0 0 16px rgba(0,240,255,0.4)";
-            }
-          }, idx * 400);
-
-          setTimeout(() => {
-            if (n) {
-              n.style.boxShadow = "none";
-            }
-          }, idx * 400 + 700);
-        });
-      });
+    if (routerEl) {
+      routerEl.innerHTML = `
+        <p class="section-desc">Evaluates difficulty-based routing across Easy (Qwen), Medium (Gemma), and Complex (SmolLM2) tiers.</p>
+        <div class="router-models-row">${["Easy → Qwen2.5 0.5B", "Medium → Gemma 3 1B", "Complex → SmolLM2 1.7B"].map((t) => `<div class="router-model-chip">${t}</div>`).join("")}</div>
+        <p class="placeholder-note">Routing evaluation results will populate when backend is connected.</p>`;
     }
 
-    if (btnRunLive) {
-      btnRunLive.addEventListener("click", async () => {
-        const query = input ? input.value.trim() : "What are symptoms of diabetes?";
-        if (!query) return;
-
-        if (outputGrid) outputGrid.style.display = "grid";
-        if (ragOut) ragOut.textContent = "Querying live RAG backend (FAISS similarity + grounding)...";
-        if (baseOut) baseOut.textContent = "Querying baseline (no context)...";
-
-        try {
-          const resp = await fetch("http://localhost:8001/api/v1/rag/compare", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query: query, top_k: 3 }),
-          });
-
-          if (!resp.ok) throw new Error("API status " + resp.status);
-          const data = await resp.json();
-
-          if (ragOut) ragOut.textContent = data.with_rag ? data.with_rag.answer : "No answer returned";
-          if (baseOut) baseOut.textContent = data.without_rag ? data.without_rag.answer : "No baseline answer returned";
-        } catch (err) {
-          // Fallback simulation if backend offline
-          console.warn("Live API fallback triggered:", err);
-          setTimeout(() => {
-            if (ragOut) {
-              ragOut.innerHTML = `<strong>[Extractive Grounded Response]</strong><br/>Based on the verified medical knowledge base (FAISS similarity 0.84), toddlers with viral diarrhea typically present with watery stools, mild fever, nausea, and dehydration signs. Maintain hydration with oral rehydration salts (ORS) and zinc supplementation [C1]. Avoid unprescribed antibiotics.`;
-            }
-            if (baseOut) {
-              baseOut.innerHTML = `<strong>[Baseline Speculation]</strong><br/>Diarrhea in children can be caused by various bugs or food problems. Give plenty of fluids and see a doctor if it doesn't stop.`;
-            }
-          }, 800);
-        }
-      });
+    if (guardEl) {
+      const checks = SVC.guardrailsService?.getChecks() || [];
+      guardEl.innerHTML = `
+        <p class="section-desc">Evaluates each guardrail stage against test queries for injection, safety, and grounding.</p>
+        <div class="guardrail-cards">${checks.map((c) => `<article class="guardrail-card"><h4>${escapeHtml(c.name)}</h4><span class="status-badge status-pending">${c.status}</span></article>`).join("")}</div>
+        <p class="placeholder-note">Guardrail evaluation metrics will populate when backend is connected.</p>`;
     }
   }
 
-  /* --------------------------------------------------------------------------
-     Utilities
-     -------------------------------------------------------------------------- */
+  /* ── Modal ── */
+  function initModal() {
+    const modal = document.getElementById("taskDetailModal");
+    document.getElementById("modalCloseBtn")?.addEventListener("click", () => modal?.classList.remove("open"));
+    modal?.addEventListener("click", (e) => { if (e.target === modal) modal.classList.remove("open"); });
+  }
+
+  /* ── Utils ── */
   function escapeHtml(str) {
     if (!str) return "";
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / 1048576).toFixed(1) + " MB";
   }
 })();
