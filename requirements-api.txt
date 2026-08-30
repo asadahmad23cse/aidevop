@@ -1,0 +1,10 @@
+# Slim runtime for the HealthRAG AI service (FastAPI + dashboard + Ollama client).
+# Retrieval defaults to the lightweight lexical backend, so no torch / faiss /
+# sentence-transformers are needed here. To run semantic (FAISS) retrieval,
+# additionally install: sentence-transformers faiss-cpu numpy
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1
+requests>=2.31,<3
+python-multipart>=0.0.9,<1
+pydantic>=2,<3
+psutil>=5.9,<6

@@ -8,7 +8,7 @@
       retrievalStatus: "Mock",
       llmStatus: "Pending Backend",
       evaluationQuestions: 25,
-      services: 7,
+      services: 8,
     },
 
     SERVICES: [
@@ -19,7 +19,51 @@
       { name: "Evaluation Service", purpose: "Runs benchmarks and metrics aggregation.", endpoint: "/api/eval", status: "Backend Pending", dependencies: ["RAG Service", "LLM Service"] },
       { name: "Repository Service", purpose: "Repository / codebase analysis API.", endpoint: "/api/repo/analyze", status: "Backend Pending", dependencies: ["Git Reader"] },
       { name: "Guardrails", purpose: "Safety checks and prompt-injection defenses.", endpoint: "/api/guardrails/check", status: "Backend Pending", dependencies: ["LLM Service"] },
+      { name: "Question Suggestion Service", purpose: "Suggests relevant autocomplete questions from the partial query and knowledge-base context.", endpoint: "/api/suggest/questions", status: "Frontend Mock", dependencies: ["Knowledge Service", "LLM Service"] },
     ],
+
+    // ── Question Suggestion Service (frontend mock config) ──────────────
+    // Local suggestion logic. Structured so getSuggestions() can later POST the
+    // partial query to /api/suggest/questions and receive KB/LLM-ranked results.
+    QUESTION_SUGGESTIONS: {
+      // Topics assumed to exist in the knowledge base. Replace with a live
+      // list from the Knowledge Service when the backend is connected.
+      kbTopics: [
+        "hypertension", "diabetes", "asthma", "treatment", "diagnosis", "dosage",
+        "side effects", "symptoms", "prevention", "risk factors", "amoxicillin",
+        "paracetamol", "blood pressure", "cholesterol", "vaccination",
+        "bone bruise", "diarrhea in toddlers", "otitis media", "anticoagulants",
+        "chronic kidney disease", "pregnancy", "pediatric dosing",
+      ],
+      // Partial-query templates → completed with each kbTopic.
+      templates: [
+        { match: /what does (the )?(doc(ument)?|guideline|report)s? say about\s*$/i, make: (t) => `What does the document say about ${t}?` },
+        { match: /what are the symptoms of\s*$/i, make: (t) => `What are the symptoms of ${t}?` },
+        { match: /how is\s*$/i, make: (t) => `How is ${t} treated?` },
+        { match: /what is the (recommended )?(dose|dosage) (of|for)\s*$/i, make: (t) => `What is the recommended dose of ${t}?` },
+        { match: /(tell me|explain) about\s*$/i, make: (t) => `Explain ${t} from the uploaded document.` },
+        { match: /what are the risk factors for\s*$/i, make: (t) => `What are the risk factors for ${t}?` },
+      ],
+      // Fallback bank of full questions, ranked by token overlap with the query.
+      bank: [
+        "What does the document say about hypertension?",
+        "What does the document say about diabetes?",
+        "What does the document say about treatment?",
+        "What are the symptoms of diabetes?",
+        "What are the symptoms of hypertension?",
+        "Explain hypertension from the uploaded document.",
+        "What does the guideline say about treatment?",
+        "Summarize this health document.",
+        "What is the recommended dose of amoxicillin for children?",
+        "What are the side effects of paracetamol?",
+        "How is asthma diagnosed and managed?",
+        "What are the risk factors for chronic kidney disease?",
+        "What does the document say about blood pressure targets?",
+        "How is a deep bone bruise treated?",
+        "What are the symptoms of viral diarrhea in toddlers?",
+        "What does the guideline say about vaccination schedules?",
+      ],
+    },
 
     DOCUMENTS: [
       { name: "medical_guidelines.json", type: "JSON", size: "1.2 MB", chunks: 120, status: "Indexed" },

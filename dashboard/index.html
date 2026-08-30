@@ -29,6 +29,7 @@
       <nav class="nav-links-main" id="navLinksMain">
         <a class="nav-link-main active" href="#sec-overview" data-section="sec-overview">Overview</a>
         <a class="nav-link-main" href="#sec-knowledge" data-section="sec-knowledge">Knowledge Base</a>
+        <a class="nav-link-main" href="#sec-suggestions" data-section="sec-suggestions">Suggestions</a>
         <a class="nav-link-main" href="#sec-week3-rag" data-section="sec-week3-rag">RAG</a>
         <a class="nav-link-main" href="#sec-retrieval" data-section="sec-retrieval">Retrieval</a>
         <a class="nav-link-main" href="#sec-model-router" data-section="sec-model-router">Model Router</a>
@@ -192,6 +193,25 @@
       </div>
     </section>
 
+    <!-- QUESTION SUGGESTION SERVICE -->
+    <section id="sec-suggestions" class="dashboard-section">
+      <div class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Assistive</span>
+            <h2 class="section-heading">Question Suggestion Service</h2>
+            <p class="section-desc">As you type a question, 2–4 relevant suggestions appear from the partial query and knowledge-base topics. Click one to fill the box — it is never auto-submitted. Local mock logic today; backend/LLM-ready.</p>
+          </div>
+          <span class="status-badge status-mock">Frontend Mock</span>
+        </div>
+
+        <div class="query-input-row">
+          <input type="text" id="suggestQueryInput" class="search-input query-input-full" placeholder="Try typing: what does the doc say about..." />
+        </div>
+        <p class="placeholder-note">Also active on the RAG Query Interface and Model Router inputs below.</p>
+      </div>
+    </section>
+
     <!-- WEEK 3 — RAG PIPELINE -->
     <section id="sec-week3-rag" class="dashboard-section week-section">
       <div class="week-banner week-banner-3">
@@ -325,8 +345,8 @@
         </div>
 
         <div class="query-input-row">
-          <input type="text" id="routerQueryInput" class="search-input query-input-full" placeholder="Enter a query to classify..." value="What is hypertension?" />
-          <button id="btnClassifyQuery" class="btn-primary">Classify Query</button>
+          <input type="text" id="routerQueryInput" class="search-input query-input-full" placeholder="Enter a health question to route..." value="What is hypertension?" />
+          <button id="btnClassifyQuery" class="btn-primary">Route Query</button>
         </div>
 
         <div class="router-result" id="routerResult"></div>
@@ -358,6 +378,10 @@
         </div>
 
         <div class="guardrail-cards" id="guardrailCards"></div>
+
+        <h4 class="subsection-title">Live Guardrail Tester</h4>
+        <p class="section-desc">Runs a query through the real pipeline. Out-of-scope and prompt-injection queries are rejected before any LLM call.</p>
+        <div id="guardrailTester"></div>
       </div>
     </section>
 

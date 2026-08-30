@@ -1549,6 +1549,60 @@ footer {
   border-radius: var(--radius-md) !important;
 }
 
+/* ── Question Suggestion Service — autocomplete dropdown ── */
+.qs-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+}
+.qs-wrap > .query-input-full { width: 100%; }
+
+.qs-suggestions {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  padding: 0.35rem;
+  overflow: hidden;
+}
+.qs-head {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding: 0.4rem 0.6rem 0.3rem;
+}
+.qs-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  padding: 0.5rem 0.6rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.qs-item:hover,
+.qs-item.active {
+  background: var(--cyan-dim);
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .qs-wrap { width: 100%; }
+}
+
 /* Service Detail */
 .service-detail-card {
   background: rgba(0,0,0,0.25);
@@ -1620,6 +1674,18 @@ footer {
 .router-field span { display: block; font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.2rem; }
 .router-field strong { font-size: 0.9rem; color: #fff; }
 .router-field .highlight-cyan { color: var(--cyan); }
+.router-field strong.highlight-amber { color: #fbbf24; }
+
+.router-answer {
+  margin-top: 1rem;
+  background: rgba(0, 240, 255, 0.05);
+  border: 1px solid rgba(0, 240, 255, 0.18);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+}
+.router-answer .trace-text { white-space: pre-wrap; margin-top: 0.4rem; }
+.router-sources { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.router-sources .subsection-title { margin-bottom: 0.35rem; }
 
 .router-examples { display: flex; flex-direction: column; gap: 0.75rem; }
 
