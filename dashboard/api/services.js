@@ -183,6 +183,72 @@
       getTradeOffs: () => deepSanitize(MOCK.TRADEOFFS || []),
     },
 
+    // ── Week 4 executed-evaluation data (real, from outputs/week4/) ────────
+    // Reads window.WEEK4_DATA (dashboard/week4_data.js). Falls back to the
+    // demo mock when that file is absent so the dashboard still renders.
+    week4Service: {
+      _w4: () => window.WEEK4_DATA || null,
+      hasRealData: () => {
+        const w = window.WEEK4_DATA;
+        return !!(w && w.med_summary && w.med_summary.models);
+      },
+      modelKeys: () => ["codellama_7b", "starcoder2_3b", "qwen25_coder_3b"],
+      modelLabel: (k) => ({
+        codellama_7b: "Code Llama 7B",
+        starcoder2_3b: "StarCoder2 3B",
+        qwen25_coder_3b: "Qwen2.5-Coder 3B",
+      }[k] || k),
+
+      // Per-model metric rows for Task 3 (real numbers, %/s/MB as given).
+      getMedicalModels: () => {
+        const w = window.WEEK4_DATA;
+        const m = w && w.med_summary && w.med_summary.models;
+        if (!m) return null;
+        const out = {};
+        for (const [k, d] of Object.entries(m)) {
+          const q = d.quality || {}, p = d.performance || {}, adj = q.manual_adjudication || {}, r = q.retrieval || {};
+          out[k] = {
+            correctness: adj.correctness_accuracy != null ? +(adj.correctness_accuracy * 100).toFixed(1) : null,
+            relevance: adj.relevance != null ? +(adj.relevance * 100).toFixed(1) : null,
+            hallucination: adj.hallucination_rate != null ? +(adj.hallucination_rate * 100).toFixed(1) : null,
+            retrievalPk: r.precision_at_k != null ? +(r.precision_at_k * 100).toFixed(1) : null,
+            retrievalRecall: r.recall_at_k != null ? +(r.recall_at_k * 100).toFixed(1) : null,
+            abstention: q.out_of_scope_abstention_accuracy != null ? +(q.out_of_scope_abstention_accuracy * 100).toFixed(0) : null,
+            latencyS: p.latency_ms_mean != null ? +(p.latency_ms_mean / 1000).toFixed(1) : null,
+            latencyP95S: p.latency_ms_p95 != null ? +(p.latency_ms_p95 / 1000).toFixed(1) : null,
+            totalTokens: p.total_tokens ?? null,
+            cpu: p.system_cpu_percent_mean != null ? +p.system_cpu_percent_mean.toFixed(1) : null,
+            ramMB: p.system_memory_used_mb_peak_mean != null ? Math.round(p.system_memory_used_mb_peak_mean) : null,
+            vramMB: p.ollama_model_vram_mb_mean != null ? Math.round(p.ollama_model_vram_mb_mean) : null,
+          };
+        }
+        return deepSanitize(out);
+      },
+
+      // Task 4 analysis bullets (medical + repository).
+      getAnalysis: () => {
+        const w = window.WEEK4_DATA;
+        if (!w) return null;
+        return deepSanitize({
+          medical: (w.med_summary && w.med_summary.analysis) || [],
+          repository: (w.repo_summary && w.repo_summary.analysis) || [],
+        });
+      },
+
+      // Task 5 real retrieval -> context -> response traces.
+      getTraces: () => {
+        const w = window.WEEK4_DATA;
+        const t = w && w.med_summary && w.med_summary.rag_traces;
+        return Array.isArray(t) ? deepSanitize(t) : null;
+      },
+
+      // Task 2 real evaluation dataset.
+      getDataset: () => {
+        const w = window.WEEK4_DATA;
+        return Array.isArray(w && w.med_eval) ? deepSanitize(w.med_eval) : null;
+      },
+    },
+
     guardrailsService: {
       getChecks: () => deepSanitize(MOCK.GUARDRAILS || []),
     },

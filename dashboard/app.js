@@ -633,8 +633,24 @@
   let evalFilter = "all";
   let evalSearch = "";
 
+  function w4Dataset() {
+    const W4S = SVC.week4Service;
+    const real = W4S && W4S.getDataset ? W4S.getDataset() : null;
+    if (real && real.length) {
+      return real.map((q) => ({
+        id: q.id,
+        category: q.category || "medical",
+        question: q.question || "",
+        real: true,
+        abstain: !!q.should_abstain,
+      }));
+    }
+    return (SVC.evaluationService?.getQuestions() || []).map((q) => ({ ...q, real: false }));
+  }
+
   function renderEvalDataset() {
-    const categories = SVC.evaluationService?.getCategories() || [];
+    const ds = w4Dataset();
+    const categories = [...new Set(ds.map((q) => q.category))];
     const pillsEl = document.getElementById("evalFilterPills");
     const countEl = document.getElementById("evalQuestionCount");
 
@@ -659,9 +675,10 @@
     });
 
     renderEvalTable();
-    if (countEl) {
-      const qs = SVC.evaluationService?.getQuestions() || [];
-      countEl.textContent = qs.length + " Questions";
+    if (countEl) countEl.textContent = ds.length + " Questions";
+    if (ds.some((q) => q.real)) {
+      const secDesc = document.querySelector("#sec-w4-task2 .section-desc");
+      if (secDesc) secDesc.textContent = "The exact evaluation set run against all three models (data/evaluation/week4_medical_eval.jsonl).";
     }
   }
 
@@ -669,7 +686,7 @@
     const tbody = document.getElementById("evalTableBody");
     if (!tbody) return;
 
-    let questions = SVC.evaluationService?.getQuestions() || [];
+    let questions = w4Dataset();
 
     if (evalFilter !== "all") {
       questions = questions.filter((q) => q.category === evalFilter);
@@ -684,63 +701,123 @@
       questions.length === 0
         ? `<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);">No matching questions.</td></tr>`
         : questions
-            .map(
-              (q) => `
+            .map((q) => {
+              const badge = q.real
+                ? (q.abstain
+                    ? `<span class="status-badge status-pending">Out-of-scope</span>`
+                    : `<span class="status-badge status-connected">Evaluated</span>`)
+                : `<span class="status-badge status-mock">Mock</span>`;
+              return `
           <tr>
-            <td><strong style="color:var(--cyan);font-family:var(--font-mono);">${q.id}</strong></td>
+            <td><strong style="color:var(--cyan);font-family:var(--font-mono);">${escapeHtml(q.id)}</strong></td>
             <td><span class="tag-badge tag-medical">${escapeHtml(q.category)}</span></td>
             <td>${escapeHtml(q.question)}</td>
-            <td><span class="status-badge status-mock">Mock</span></td>
-          </tr>`
-            )
+            <td>${badge}</td>
+          </tr>`;
+            })
             .join("");
   }
 
   /* ── Metrics (W4 Task 3) ── */
   function renderMetrics() {
+    const W4S = SVC.week4Service;
+    if (W4S && W4S.hasRealData()) return renderMetricsReal(W4S);
+    renderMetricsDemo();
+  }
+
+  function renderMetricsReal(W4S) {
+    const models = W4S.getMedicalModels();
+    const keys = W4S.modelKeys().filter((k) => models[k]);
+    const qEl = document.getElementById("qualityMetricCards");
+    const pEl = document.getElementById("perfMetricCards");
+    const tbody = document.getElementById("metricsCompareBody");
+    const tag = `<span class="metric-demo-tag" style="background:var(--emerald-dim);color:#34d399;">Executed</span>`;
+    const avg = (f) => {
+      const vals = keys.map((k) => models[k][f]).filter((v) => v != null);
+      return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+    };
+    const card = (label, val, unit) =>
+      `<div class="metric-card"><span class="metric-label">${label}</span><span class="metric-val">${val == null ? "—" : val}${unit || ""}</span>${tag}</div>`;
+
+    // Relabel the section from "Demo" to executed.
+    const secDesc = document.querySelector("#sec-w4-task3 .section-desc");
+    if (secDesc) secDesc.textContent = "Executed locally on Ollama: codellama:7b, starcoder2:3b, qwen2.5-coder:3b. Same app, prompts, questions, knowledge base, retrieved context.";
+    const secPill = document.querySelector("#sec-w4-task3 .pill-badge");
+    if (secPill) { secPill.textContent = "Executed Results"; secPill.className = "pill-badge pill-emerald"; }
+
+    if (qEl) qEl.innerHTML = [
+      card("Correctness (mean)", round1(avg("correctness")), "%"),
+      card("Relevance (mean)", round1(avg("relevance")), "%"),
+      card("Hallucination (mean)", round1(avg("hallucination")), "%"),
+      card("Retrieval P@3", round1(avg("retrievalPk")), "%"),
+      card("Retrieval Recall@3", round1(avg("retrievalRecall")), "%"),
+    ].join("");
+
+    if (pEl) pEl.innerHTML = [
+      card("Response Latency (mean)", round1(avg("latencyS")), " s"),
+      card("Latency p95", round1(avg("latencyP95S")), " s"),
+      card("Total Tokens", keys.reduce((a, k) => a + (models[k].totalTokens || 0), 0), ""),
+      card("CPU (mean)", round1(avg("cpu")), "%"),
+      card("Peak RAM (mean)", Math.round(avg("ramMB") || 0), " MB"),
+    ].join("");
+
+    if (tbody) {
+      const row = (label, f, unit, best) => {
+        const cells = keys.map((k) => {
+          const v = models[k][f];
+          const isBest = best && v != null && v === (best === "min"
+            ? Math.min(...keys.map((x) => models[x][f]).filter((x) => x != null))
+            : Math.max(...keys.map((x) => models[x][f]).filter((x) => x != null)));
+          return `<td>${v == null ? "—" : v}${unit || ""}${isBest ? " ★" : ""}</td>`;
+        }).join("");
+        return `<tr><td>${label}</td>${cells}</tr>`;
+      };
+      // header labels
+      const thead = document.querySelector("#metricsCompareTable thead tr");
+      if (thead) thead.innerHTML = `<th>Metric</th>` + keys.map((k) => `<th>${W4S.modelLabel(k)}</th>`).join("");
+      tbody.innerHTML = [
+        row("Correctness / Accuracy", "correctness", "%", "max"),
+        row("Relevance", "relevance", "%", "max"),
+        row("Hallucination Rate", "hallucination", "%", "min"),
+        row("Retrieval P@3", "retrievalPk", "%"),
+        row("Retrieval Recall@3", "retrievalRecall", "%"),
+        row("Out-of-scope Abstention", "abstention", "%", "max"),
+        row("Latency mean", "latencyS", " s", "min"),
+        row("Latency p95", "latencyP95S", " s", "min"),
+        row("Total Tokens", "totalTokens", "", "min"),
+        row("CPU mean", "cpu", "%", "min"),
+        row("Peak RAM", "ramMB", " MB", "min"),
+        row("Model VRAM", "vramMB", " MB", "min"),
+      ].join("") + `<tr><td>Test-Pass Rate</td><td colspan="${keys.length}" style="color:var(--text-muted);">N/A — QA / code-understanding tasks, no generated code</td></tr>`;
+    }
+  }
+
+  function round1(v) { return v == null ? null : Math.round(v * 10) / 10; }
+
+  function renderMetricsDemo() {
     const metrics = SVC.evaluationService?.getDemoMetrics() || {};
     const qEl = document.getElementById("qualityMetricCards");
     const pEl = document.getElementById("perfMetricCards");
     const tbody = document.getElementById("metricsCompareBody");
-
-    const qualityLabels = {
-      accuracy: "Accuracy",
-      relevance: "Relevance",
-      retrievalQuality: "Retrieval Quality",
-      hallucinationRate: "Hallucination Rate",
-      testPassRate: "Test Pass Rate",
-    };
-    const perfLabels = {
-      latency: "Response Latency (s)",
-      tokenUsage: "Token Usage",
-      cpuUsage: "CPU Usage (%)",
-      gpuUsage: "GPU Usage (%)",
-      memoryUsage: "Memory (MB)",
-    };
-
+    const qualityLabels = { accuracy: "Accuracy", relevance: "Relevance", retrievalQuality: "Retrieval Quality", hallucinationRate: "Hallucination Rate", testPassRate: "Test Pass Rate" };
+    const perfLabels = { latency: "Response Latency (s)", tokenUsage: "Token Usage", cpuUsage: "CPU Usage (%)", gpuUsage: "GPU Usage (%)", memoryUsage: "Memory (MB)" };
     if (qEl && metrics.quality) {
-      qEl.innerHTML = Object.entries(metrics.quality)
-        .map(([k, v]) => {
-          const avg = Math.round((v.qwen + v.gemma + v.smollm) / 3);
-          return `<div class="metric-card"><span class="metric-label">${qualityLabels[k] || k}</span><span class="metric-val">${avg}%</span><span class="metric-demo-tag">Demo</span></div>`;
-        })
-        .join("");
+      qEl.innerHTML = Object.entries(metrics.quality).map(([k, v]) => {
+        const avg = Math.round((v.qwen + v.gemma + v.smollm) / 3);
+        return `<div class="metric-card"><span class="metric-label">${qualityLabels[k] || k}</span><span class="metric-val">${avg}%</span><span class="metric-demo-tag">Demo</span></div>`;
+      }).join("");
     }
-
     if (pEl && metrics.performance) {
-      pEl.innerHTML = Object.entries(metrics.performance)
-        .map(([k, v]) => {
-          const avg = ((v.qwen + v.gemma + v.smollm) / 3).toFixed(k === "latency" ? 1 : 0);
-          return `<div class="metric-card"><span class="metric-label">${perfLabels[k] || k}</span><span class="metric-val">${avg}</span><span class="metric-demo-tag">Demo</span></div>`;
-        })
-        .join("");
+      pEl.innerHTML = Object.entries(metrics.performance).map(([k, v]) => {
+        const avg = ((v.qwen + v.gemma + v.smollm) / 3).toFixed(k === "latency" ? 1 : 0);
+        return `<div class="metric-card"><span class="metric-label">${perfLabels[k] || k}</span><span class="metric-val">${avg}</span><span class="metric-demo-tag">Demo</span></div>`;
+      }).join("");
     }
-
     if (tbody && metrics.quality && metrics.performance) {
       const rows = [];
       Object.entries({ ...metrics.quality, ...metrics.performance }).forEach(([k, v]) => {
         const label = qualityLabels[k] || perfLabels[k] || k;
-        const suffix = k.includes("Rate") || k.includes("Usage") && k !== "latency" && k !== "tokenUsage" && k !== "memoryUsage" ? "%" : k === "latency" ? "s" : k === "memoryUsage" ? " MB" : k === "tokenUsage" ? "" : k.includes("accuracy") || k.includes("relevance") || k.includes("Quality") || k.includes("Pass") ? "%" : "";
+        const suffix = k.includes("Rate") || (k.includes("Usage") && k !== "latency" && k !== "tokenUsage" && k !== "memoryUsage") ? "%" : k === "latency" ? "s" : k === "memoryUsage" ? " MB" : k === "tokenUsage" ? "" : k.includes("accuracy") || k.includes("relevance") || k.includes("Quality") || k.includes("Pass") ? "%" : "";
         rows.push(`<tr><td>${label}</td><td>${v.qwen}${suffix}</td><td>${v.gemma}${suffix}</td><td>${v.smollm}${suffix}</td></tr>`);
       });
       tbody.innerHTML = rows.join("");
@@ -752,6 +829,13 @@
     Chart.defaults.color = "#94a3b8";
     Chart.defaults.font.family = '"Outfit", "Inter", sans-serif';
 
+    if (SVC.week4Service && SVC.week4Service.hasRealData()) {
+      document.querySelectorAll("#sec-w4-task3 .chart-title .tag-badge").forEach((b) => {
+        b.textContent = "Executed";
+        b.className = "tag-badge tag-medical";
+      });
+    }
+
     initQualityChart();
     initLatencyChart();
     initRadarChart();
@@ -759,52 +843,86 @@
     initTradeoffChart();
   }
 
+  // Real Week 4 chart data (or null → charts use the demo values below).
+  function w4Charts() {
+    const W4S = SVC.week4Service;
+    if (!W4S || !W4S.hasRealData()) return null;
+    const m = W4S.getMedicalModels();
+    const keys = W4S.modelKeys().filter((k) => m[k]);
+    return {
+      keys,
+      labels: keys.map((k) => W4S.modelLabel(k)),
+      colors: ["rgba(0,240,255,0.75)", "rgba(16,185,129,0.8)", "rgba(168,85,247,0.8)"].slice(0, keys.length),
+      solid: ["#00f0ff", "#10b981", "#a855f7"].slice(0, keys.length),
+      v: (f) => keys.map((k) => m[k][f]),
+    };
+  }
+
   function initQualityChart() {
     const ctx = document.getElementById("chartQualityBars");
     if (!ctx) return;
-    charts.quality = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Accuracy", "Relevance", "Retrieval Quality", "Hallucination ↓", "Test Pass Rate"],
-        datasets: [
-          { label: "Qwen2.5 0.5B", data: [72, 68, 74, 18, 65], backgroundColor: "rgba(0,240,255,0.7)", borderRadius: 6 },
-          { label: "Gemma 3 1B", data: [81, 79, 82, 12, 78], backgroundColor: "rgba(16,185,129,0.8)", borderRadius: 6 },
-          { label: "SmolLM2 1.7B", data: [88, 85, 87, 8, 84], backgroundColor: "rgba(168,85,247,0.8)", borderRadius: 6 },
-        ],
-      },
-      options: chartOpts("%"),
-    });
+    const w = w4Charts();
+    const data = w
+      ? {
+          labels: ["Correctness", "Relevance", "Retrieval P@3", "Hallucination ↓"],
+          datasets: w.keys.map((k, i) => ({
+            label: w.labels[i],
+            data: [w.v("correctness")[i], w.v("relevance")[i], w.v("retrievalPk")[i], w.v("hallucination")[i]],
+            backgroundColor: w.colors[i], borderRadius: 6,
+          })),
+        }
+      : {
+          labels: ["Accuracy", "Relevance", "Retrieval Quality", "Hallucination ↓", "Test Pass Rate"],
+          datasets: [
+            { label: "Qwen2.5 0.5B", data: [72, 68, 74, 18, 65], backgroundColor: "rgba(0,240,255,0.7)", borderRadius: 6 },
+            { label: "Gemma 3 1B", data: [81, 79, 82, 12, 78], backgroundColor: "rgba(16,185,129,0.8)", borderRadius: 6 },
+            { label: "SmolLM2 1.7B", data: [88, 85, 87, 8, 84], backgroundColor: "rgba(168,85,247,0.8)", borderRadius: 6 },
+          ],
+        };
+    charts.quality = new Chart(ctx, { type: "bar", data, options: chartOpts("%") });
   }
 
   function initLatencyChart() {
     const ctx = document.getElementById("chartLatencyBars");
     if (!ctx) return;
-    charts.latency = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Qwen2.5 0.5B", "Gemma 3 1B", "SmolLM2 1.7B"],
-        datasets: [{ label: "Latency (s)", data: [1.2, 2.8, 4.5], backgroundColor: ["rgba(0,240,255,0.7)", "rgba(16,185,129,0.7)", "rgba(168,85,247,0.8)"], borderRadius: 6 }],
-      },
-      options: chartOpts("s"),
-    });
+    const w = w4Charts();
+    const data = w
+      ? { labels: w.labels, datasets: [{ label: "Mean latency (s)", data: w.v("latencyS"), backgroundColor: w.colors, borderRadius: 6 }] }
+      : { labels: ["Qwen2.5 0.5B", "Gemma 3 1B", "SmolLM2 1.7B"], datasets: [{ label: "Latency (s)", data: [1.2, 2.8, 4.5], backgroundColor: ["rgba(0,240,255,0.7)", "rgba(16,185,129,0.7)", "rgba(168,85,247,0.8)"], borderRadius: 6 }] };
+    charts.latency = new Chart(ctx, { type: "bar", data, options: chartOpts("s") });
   }
 
   function initRadarChart() {
     const ctx = document.getElementById("chartRadarProfile");
     if (!ctx) return;
+    const w = w4Charts();
+    let datasets;
+    if (w) {
+      const maxLat = Math.max(...w.v("latencyS"));
+      const maxRam = Math.max(...w.v("ramMB"));
+      datasets = w.keys.map((k, i) => ({
+        label: w.labels[i],
+        data: [
+          w.v("correctness")[i],
+          Math.round(100 * (1 - w.v("latencyS")[i] / maxLat)) + 5,
+          Math.round(100 * (1 - w.v("ramMB")[i] / maxRam)) + 5,
+          w.v("relevance")[i],
+          Math.round(100 - w.v("hallucination")[i]),
+        ],
+        borderColor: w.solid[i], backgroundColor: w.solid[i] + "26", borderWidth: 2,
+      }));
+    } else {
+      datasets = [
+        { label: "Qwen2.5 0.5B", data: [72, 95, 90, 74, 70], borderColor: "#00f0ff", backgroundColor: "rgba(0,240,255,0.15)", borderWidth: 2 },
+        { label: "Gemma 3 1B", data: [81, 70, 75, 82, 80], borderColor: "#10b981", backgroundColor: "rgba(16,185,129,0.15)", borderWidth: 2 },
+        { label: "SmolLM2 1.7B", data: [88, 45, 50, 87, 92], borderColor: "#a855f7", backgroundColor: "rgba(168,85,247,0.15)", borderWidth: 2 },
+      ];
+    }
     charts.radar = new Chart(ctx, {
       type: "radar",
-      data: {
-        labels: ["Accuracy", "Speed", "Low Memory", "Retrieval", "Low Hallucination"],
-        datasets: [
-          { label: "Qwen2.5 0.5B", data: [72, 95, 90, 74, 70], borderColor: "#00f0ff", backgroundColor: "rgba(0,240,255,0.15)", borderWidth: 2 },
-          { label: "Gemma 3 1B", data: [81, 70, 75, 82, 80], borderColor: "#10b981", backgroundColor: "rgba(16,185,129,0.15)", borderWidth: 2 },
-          { label: "SmolLM2 1.7B", data: [88, 45, 50, 87, 92], borderColor: "#a855f7", backgroundColor: "rgba(168,85,247,0.15)", borderWidth: 2 },
-        ],
-      },
+      data: { labels: ["Correctness", "Speed", "Low Memory", "Relevance", "Low Hallucination"], datasets },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         scales: { r: { angleLines: { color: "rgba(255,255,255,0.1)" }, grid: { color: "rgba(255,255,255,0.08)" }, pointLabels: { font: { size: 11 } }, ticks: { display: false, max: 100 } } },
         plugins: { legend: { position: "bottom", labels: { boxWidth: 12 } } },
       },
@@ -814,37 +932,50 @@
   function initResourceChart() {
     const ctx = document.getElementById("chartResourceBars");
     if (!ctx) return;
-    charts.resource = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Qwen2.5 0.5B", "Gemma 3 1B", "SmolLM2 1.7B"],
-        datasets: [
+    const w = w4Charts();
+    const data = w
+      ? { labels: w.labels, datasets: [
+          { label: "Peak RAM (MB)", data: w.v("ramMB"), backgroundColor: "rgba(0,240,255,0.75)", borderRadius: 6 },
+          { label: "Model VRAM (MB)", data: w.v("vramMB"), backgroundColor: "rgba(16,185,129,0.75)", borderRadius: 6 },
+          { label: "CPU (%)", data: w.v("cpu"), backgroundColor: "rgba(168,85,247,0.75)", borderRadius: 6 },
+        ] }
+      : { labels: ["Qwen2.5 0.5B", "Gemma 3 1B", "SmolLM2 1.7B"], datasets: [
           { label: "Memory (MB)", data: [890, 1450, 2100], backgroundColor: "rgba(0,240,255,0.75)", borderRadius: 6 },
           { label: "CPU (%)", data: [22, 38, 55], backgroundColor: "rgba(168,85,247,0.75)", borderRadius: 6 },
-        ],
-      },
-      options: chartOpts(""),
-    });
+        ] };
+    charts.resource = new Chart(ctx, { type: "bar", data, options: chartOpts("") });
   }
 
   function initTradeoffChart() {
     const ctx = document.getElementById("chartTradeoff");
     if (!ctx) return;
+    const w = w4Charts();
+    let datasets, yMin, yMax;
+    if (w) {
+      datasets = w.keys.map((k, i) => ({
+        label: w.labels[i],
+        data: [{ x: w.v("latencyS")[i], y: w.v("correctness")[i] }],
+        backgroundColor: w.solid[i], pointRadius: 10,
+      }));
+      const ys = w.v("correctness");
+      yMin = Math.max(0, Math.min(...ys) - 15);
+      yMax = Math.min(100, Math.max(...ys) + 15);
+    } else {
+      datasets = [
+        { label: "Qwen2.5 0.5B", data: [{ x: 1.2, y: 72 }], backgroundColor: "#00f0ff", pointRadius: 10 },
+        { label: "Gemma 3 1B", data: [{ x: 2.8, y: 81 }], backgroundColor: "#10b981", pointRadius: 10 },
+        { label: "SmolLM2 1.7B", data: [{ x: 4.5, y: 88 }], backgroundColor: "#a855f7", pointRadius: 10 },
+      ];
+      yMin = 60; yMax = 95;
+    }
     charts.tradeoff = new Chart(ctx, {
       type: "scatter",
-      data: {
-        datasets: [
-          { label: "Qwen2.5 0.5B", data: [{ x: 1.2, y: 72 }], backgroundColor: "#00f0ff", pointRadius: 10 },
-          { label: "Gemma 3 1B", data: [{ x: 2.8, y: 81 }], backgroundColor: "#10b981", pointRadius: 10 },
-          { label: "SmolLM2 1.7B", data: [{ x: 4.5, y: 88 }], backgroundColor: "#a855f7", pointRadius: 10 },
-        ],
-      },
+      data: { datasets },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         scales: {
-          x: { title: { display: true, text: "Latency (s)" }, grid: { color: "rgba(255,255,255,0.06)" } },
-          y: { title: { display: true, text: "Accuracy (%)" }, min: 60, max: 95, grid: { color: "rgba(255,255,255,0.06)" } },
+          x: { title: { display: true, text: "Mean latency (s)" }, grid: { color: "rgba(255,255,255,0.06)" } },
+          y: { title: { display: true, text: "Correctness (%)" }, min: yMin, max: yMax, grid: { color: "rgba(255,255,255,0.06)" } },
         },
         plugins: { legend: { position: "bottom" } },
       },
@@ -866,20 +997,37 @@
   /* ── Trade-offs (W4 Task 4) ── */
   function renderTradeOffs() {
     const grid = document.getElementById("tradeoffGrid");
-    const items = SVC.evaluationService?.getTradeOffs() || [];
     if (!grid) return;
+    const W4S = SVC.week4Service;
+    const analysis = W4S && W4S.hasRealData() ? W4S.getAnalysis() : null;
 
-    grid.innerHTML = items
-      .map(
-        (t) => `
+    if (analysis && (analysis.medical.length || analysis.repository.length)) {
+      const secDesc = document.querySelector("#sec-w4-task4 .section-desc");
+      if (secDesc) secDesc.textContent = "Findings computed from the executed evaluation results (outputs/week4/).";
+      const secPill = document.querySelector("#sec-w4-task4 .pill-badge");
+      if (secPill) { secPill.textContent = "Executed Results"; secPill.className = "pill-badge pill-emerald"; }
+
+      const block = (title, bullets) => bullets.length
+        ? `<article class="tradeoff-card" style="grid-column:1/-1;text-align:left;">
+             <h4>${title}</h4>
+             <ul style="margin:0.5rem 0 0;padding-left:1.1rem;line-height:1.7;font-size:0.86rem;color:var(--text-muted);">
+               ${bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join("")}
+             </ul>
+           </article>` : "";
+      grid.innerHTML = block("Medical RAG — model comparison (25 tasks)", analysis.medical)
+        + block("Repository understanding — model comparison (8 multi-file tasks)", analysis.repository);
+      return;
+    }
+
+    // Demo fallback
+    const items = SVC.evaluationService?.getTradeOffs() || [];
+    grid.innerHTML = items.map((t) => `
       <article class="tradeoff-card">
         <span class="tradeoff-icon">${t.icon}</span>
         <h4>${escapeHtml(t.label)}</h4>
         <p class="tradeoff-val">${escapeHtml(t.value)}</p>
         <p class="tradeoff-detail">${escapeHtml(t.detail)} <span class="metric-demo-tag">Demo</span></p>
-      </article>`
-      )
-      .join("");
+      </article>`).join("");
   }
 
   /* ── RAG Analysis (W4 Task 5) ── */
@@ -923,10 +1071,29 @@
     const bar = document.getElementById("ragAnalysisSelector");
     if (!bar) return;
 
+    const W4S = SVC.week4Service;
+    const real = W4S && W4S.hasRealData() ? W4S.getTraces() : null;
+
+    if (real && real.length) {
+      const secDesc = document.querySelector("#sec-w4-task5 .section-desc");
+      if (secDesc) secDesc.textContent = "Executed traces: QUESTION → RETRIEVED CONTEXT → WITH-RAG RESPONSE vs WITHOUT-RAG BASELINE, with the required-fact coverage delta.";
+      bar.innerHTML = real.map((t, i) =>
+        `<button class="trace-btn ${i === 0 ? "active" : ""}" data-idx="${i}">${escapeHtml(t.task_id)} · ${escapeHtml(shortModel(t.model))}</button>`
+      ).join("");
+      bar.querySelectorAll(".trace-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          bar.querySelectorAll(".trace-btn").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          displayRealTrace(real[parseInt(btn.getAttribute("data-idx"), 10)]);
+        });
+      });
+      displayRealTrace(real[0]);
+      return;
+    }
+
     bar.innerHTML = TRACE_CASES.map(
       (t, i) => `<button class="trace-btn ${i === 0 ? "active" : ""}" data-idx="${i}">${t.id}</button>`
     ).join("");
-
     bar.querySelectorAll(".trace-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         bar.querySelectorAll(".trace-btn").forEach((b) => b.classList.remove("active"));
@@ -934,9 +1101,41 @@
         displayRagAnalysis(TRACE_CASES[parseInt(btn.getAttribute("data-idx"), 10)]);
       });
     });
-
     displayRagAnalysis(TRACE_CASES[0]);
   }
+
+  function shortModel(k) {
+    return { codellama_7b: "Code Llama", starcoder2_3b: "StarCoder2", qwen25_coder_3b: "Qwen-Coder" }[k] || k;
+  }
+
+  function displayRealTrace(t) {
+    const panel = document.getElementById("ragAnalysisPanel");
+    if (!panel) return;
+    const delta = t.fact_coverage_delta;
+    const deltaCls = delta > 0 ? "tag-medical" : delta < 0 ? "tag-abstain" : "tag-repo";
+    const deltaTxt = delta == null ? "—" : (delta > 0 ? "+" : "") + (delta * 100).toFixed(1) + "% vs baseline";
+    const ctx = (t.retrieved_context || []).map((c, i) =>
+      `<div class="chunk-snippet">[C${i + 1}] (doc ${c.doc_id}, score ${Number(c.score).toFixed(3)}) ${escapeHtml((c.text || "").slice(0, 240))}…</div>`
+    ).join("");
+    panel.innerHTML = `
+      <div class="trace-meta-row">
+        <span class="tag-badge tag-medical">${escapeHtml(t.task_id)}</span>
+        <span class="tag-badge tag-repo">${escapeHtml(shortModel(t.model))}</span>
+        <span class="tag-badge ${deltaCls}">RAG fact-coverage ${deltaTxt}</span>
+      </div>
+      <div class="trace-question-box"><span style="color:var(--text-muted);font-size:0.8rem;">QUESTION</span><br/>${escapeHtml(t.question)}</div>
+      <div class="pipeline-arrow" style="text-align:center;">↓</div>
+      <div class="trace-chunks-box"><h5>RETRIEVED CONTEXT</h5>${ctx || '<div class="chunk-snippet">No context retrieved.</div>'}</div>
+      <div class="pipeline-arrow" style="text-align:center;">↓</div>
+      <div class="trace-comparison-grid">
+        <div class="trace-col with-rag"><div class="trace-col-title">With-RAG Response (fact coverage ${pct(t.rag_fact_coverage_proxy)})</div><div class="trace-text">${escapeHtml(t.response_with_rag || "")}</div></div>
+        <div class="trace-col without-rag"><div class="trace-col-title">Without-RAG Baseline (fact coverage ${pct(t.baseline_fact_coverage_proxy)})</div><div class="trace-text">${escapeHtml(t.response_without_rag || "")}</div></div>
+      </div>
+      <div class="pipeline-arrow" style="text-align:center;">↓</div>
+      <div class="trace-conclusion"><strong>RETRIEVAL → CONTEXT → RESPONSE:</strong> ${escapeHtml(t.relationship_analysis || "")}</div>`;
+  }
+
+  function pct(v) { return v == null ? "—" : (v * 100).toFixed(0) + "%"; }
 
   function displayRagAnalysis(trace) {
     const panel = document.getElementById("ragAnalysisPanel");
