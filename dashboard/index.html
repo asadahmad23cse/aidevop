@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=20260830c" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -28,7 +28,9 @@
 
       <nav class="nav-links-main" id="navLinksMain">
         <a class="nav-link-main active" href="#sec-overview" data-section="sec-overview">Overview</a>
+        <a class="nav-link-main" href="#sec-chat" data-section="sec-chat">Ask</a>
         <a class="nav-link-main" href="#sec-knowledge" data-section="sec-knowledge">Knowledge Base</a>
+        <a class="nav-link-main" href="#sec-suggestions" data-section="sec-suggestions">Suggestions</a>
         <a class="nav-link-main" href="#sec-week3-rag" data-section="sec-week3-rag">RAG</a>
         <a class="nav-link-main" href="#sec-retrieval" data-section="sec-retrieval">Retrieval</a>
         <a class="nav-link-main" href="#sec-model-router" data-section="sec-model-router">Model Router</a>
@@ -73,6 +75,34 @@
           <div class="flow-arrow">↓</div>
           <div class="flow-step flow-step-highlight">Grounded Response</div>
         </div>
+      </div>
+    </section>
+
+    <!-- ASK HEALTHRAG — CONVERSATIONAL CHAT -->
+    <section id="sec-chat" class="dashboard-section">
+      <div class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Assistant</span>
+            <h2 class="section-heading">Ask HealthRAG</h2>
+            <p class="section-desc">Ask health questions in your own words and get grounded answers from the knowledge base. Every message runs the full pipeline: guardrails &rarr; retrieval &rarr; difficulty &rarr; model &rarr; grounding &amp; safety checks. Follow-up questions keep the conversation context.</p>
+          </div>
+          <button id="btnChatReset" class="btn-secondary">New chat</button>
+        </div>
+
+        <div class="chat-window" id="chatWindow">
+          <div class="chat-empty" id="chatEmpty">
+            <p>Try: <button type="button" class="chat-example">What are the symptoms of diabetes?</button>
+            <button type="button" class="chat-example">How is high blood pressure treated?</button>
+            <button type="button" class="chat-example">What does the document say about asthma?</button></p>
+          </div>
+        </div>
+
+        <form class="chat-input-row" id="chatForm" autocomplete="off">
+          <input type="text" id="chatInput" class="search-input query-input-full" placeholder="Ask a health question..." />
+          <button type="submit" id="chatSend" class="btn-primary">Send</button>
+        </form>
+        <p class="placeholder-note">Educational use only — not personalised medical advice. Out-of-scope and unsafe requests are declined without calling the model.</p>
       </div>
     </section>
 
@@ -189,6 +219,25 @@
             <tbody id="knowledgeDocTable"></tbody>
           </table>
         </div>
+      </div>
+    </section>
+
+    <!-- QUESTION SUGGESTION SERVICE -->
+    <section id="sec-suggestions" class="dashboard-section">
+      <div class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Assistive</span>
+            <h2 class="section-heading">Question Suggestion Service</h2>
+            <p class="section-desc">As you type a question, 2–4 relevant suggestions appear from the partial query and knowledge-base topics. Click one to fill the box — it is never auto-submitted. Local mock logic today; backend/LLM-ready.</p>
+          </div>
+          <span class="status-badge status-mock">Frontend Mock</span>
+        </div>
+
+        <div class="query-input-row">
+          <input type="text" id="suggestQueryInput" class="search-input query-input-full" placeholder="Try typing: what does the doc say about..." />
+        </div>
+        <p class="placeholder-note">Also active on the RAG Query Interface and Model Router inputs below.</p>
       </div>
     </section>
 
@@ -325,8 +374,8 @@
         </div>
 
         <div class="query-input-row">
-          <input type="text" id="routerQueryInput" class="search-input query-input-full" placeholder="Enter a query to classify..." value="What is hypertension?" />
-          <button id="btnClassifyQuery" class="btn-primary">Classify Query</button>
+          <input type="text" id="routerQueryInput" class="search-input query-input-full" placeholder="Enter a health question to route..." value="What is hypertension?" />
+          <button id="btnClassifyQuery" class="btn-primary">Route Query</button>
         </div>
 
         <div class="router-result" id="routerResult"></div>
@@ -358,6 +407,10 @@
         </div>
 
         <div class="guardrail-cards" id="guardrailCards"></div>
+
+        <h4 class="subsection-title">Live Guardrail Tester</h4>
+        <p class="section-desc">Runs a query through the real pipeline. Out-of-scope and prompt-injection queries are rejected before any LLM call.</p>
+        <div id="guardrailTester"></div>
       </div>
     </section>
 
@@ -586,9 +639,9 @@
     </div>
   </footer>
 
-  <script src="./api/mockData.js"></script>
-  <script src="./api/services.js"></script>
+  <script src="./api/mockData.js?v=20260830c"></script>
+  <script src="./api/services.js?v=20260830c"></script>
   <script src="./week4_data.js"></script>
-  <script src="./app.js"></script>
+  <script src="./app.js?v=20260830c"></script>
 </body>
 </html>

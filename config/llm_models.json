@@ -1,0 +1,29 @@
+{
+  "_comment": "Difficulty-based Ollama model routing for HealthRAG AI (PRD sections 3, 5). Tags can be overridden with the env vars LLM_MODEL_EASY / LLM_MODEL_MEDIUM / LLM_MODEL_COMPLEX. Models are installed by the user with 'ollama pull <tag>' - the application never downloads them.",
+  "routing": {
+    "easy": {
+      "ollama_tag": "qwen2.5:0.5b",
+      "name": "Qwen2.5 0.5B",
+      "developer": "Alibaba",
+      "reason": "Short, factual health questions do not need a larger model."
+    },
+    "medium": {
+      "ollama_tag": "gemma3:1b",
+      "name": "Gemma 3 1B",
+      "developer": "Google",
+      "reason": "Questions needing explanation or comparison of a few facts."
+    },
+    "complex": {
+      "ollama_tag": "smollm2:1.7b",
+      "name": "SmolLM2 1.7B",
+      "developer": "Hugging Face",
+      "reason": "Multi-step reasoning or synthesis across several pieces of context."
+    }
+  },
+  "fallback_order": ["medium", "easy", "complex"],
+  "generation": {
+    "temperature": 0.2,
+    "num_predict": 320
+  },
+  "grounded_system_prompt": "You are HealthRAG AI, a careful health knowledge assistant. Answer the user's question using ONLY the verified retrieved context provided. If the context does not contain enough information, say clearly that the available knowledge base does not contain enough information - do not invent an answer. Never state doses, diagnoses, or treatment recommendations that are not supported by the context. Be concise and clear. Cite supporting context as [C1], [C2]. Do not claim to have accessed information that was not supplied. This is not a substitute for professional medical advice."
+}

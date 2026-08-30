@@ -2,6 +2,11 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 
+# Local environment & runtime data
+.env
+data/uploads/
+*.log
+
 # Keep final evidence artifacts; ignore indexes, smoke/failed runs, and scratch output.
 outputs/week4/*
 !outputs/week4/raw_results.jsonl

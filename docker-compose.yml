@@ -1,55 +1,75 @@
-version: '3.8'
-
+# HealthRAG AI - local stack (PRD section 25)
+#   ollama  : local LLM runtime (persistent model storage)
+#   app     : FastAPI backend + dashboard (one origin, port 8001)
+#
+# Quick start:
+#   cp .env.example .env
+#   docker compose up --build
+#   # one-time, pull the routed models into the ollama volume:
+#   docker compose --profile setup run --rm model-puller
+#   # open http://localhost:8001
 services:
-  # ── 1. LLM Service (Ollama running Code Llama) ─────────────────
   ollama:
     image: ollama/ollama:latest
-    container_name: medical-ollama-service
+    container_name: healthrag-ollama
     ports:
-      - "11434:11434"
+      - "${OLLAMA_PORT:-11434}:11434"
     volumes:
-      - ollama_storage:/root/.ollama
+      - ollama_models:/root/.ollama
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:11434/api/tags || exit 1"]
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1 || exit 1"]
       interval: 15s
       timeout: 10s
-      retries: 3
+      retries: 5
       start_period: 20s
 
-  # ── 2. Retrieval & Orchestration Service (FastAPI + FAISS) ─────
-  rag-api:
+  app:
     build:
       context: .
       dockerfile: Dockerfile.api
-    container_name: medical-rag-api-service
-    environment:
-      - PORT=8001
-      - OLLAMA_HOST=http://ollama:11434
-      - OLLAMA_MODEL=codellama
-      - EMBEDDING_MODEL=all-MiniLM-L6-v2
-      - RAG_INDEX_DIR=outputs/rag_index
+    container_name: healthrag-app
     ports:
-      - "8001:8001"
+      - "${APP_PORT:-8001}:8001"
+    environment:
+      PORT: 8001
+      RETRIEVAL_BACKEND: ${RETRIEVAL_BACKEND:-lexical}
+      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_MODEL: ${LLM_MODEL_MEDIUM:-gemma3:1b}
+      OLLAMA_TIMEOUT: ${OLLAMA_TIMEOUT:-120}
+      LLM_MODEL_EASY: ${LLM_MODEL_EASY:-qwen2.5:0.5b}
+      LLM_MODEL_MEDIUM: ${LLM_MODEL_MEDIUM:-gemma3:1b}
+      LLM_MODEL_COMPLEX: ${LLM_MODEL_COMPLEX:-smollm2:1.7b}
+      RAG_INDEX_DIR: /app/outputs/rag_index
+    volumes:
+      # Persist uploaded knowledge (JSON/PDF) and the rebuilt index across restarts.
+      - ./data/uploads:/app/data/uploads
+      - rag_index:/app/outputs/rag_index
     depends_on:
       ollama:
         condition: service_started
     restart: unless-stopped
-    volumes:
-      - ./outputs/rag_index:/app/outputs/rag_index
 
-  # ── 3. Application Frontend Service (Dashboard Web UI) ────────
-  dashboard:
-    build:
-      context: .
-      dockerfile: Dockerfile.dashboard
-    container_name: medical-dashboard-service
-    ports:
-      - "8000:8000"
+  # One-shot helper: pulls the three routed models into the ollama volume.
+  # Run manually with:  docker compose --profile setup run --rm model-puller
+  model-puller:
+    image: curlimages/curl:latest
+    profiles: ["setup"]
     depends_on:
-      - rag-api
-    restart: unless-stopped
+      ollama:
+        condition: service_started
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        for m in "${LLM_MODEL_EASY:-qwen2.5:0.5b}" "${LLM_MODEL_MEDIUM:-gemma3:1b}" "${LLM_MODEL_COMPLEX:-smollm2:1.7b}"; do
+          echo "Pulling $$m ..." ;
+          curl -s http://ollama:11434/api/pull -d "{\"name\":\"$$m\"}" -o /dev/null ;
+        done ;
+        echo "Done. Installed models:" ;
+        curl -s http://ollama:11434/api/tags
 
 volumes:
-  ollama_storage:
-    name: ollama_models_cache
+  ollama_models:
+    name: healthrag_ollama_models
+  rag_index:
+    name: healthrag_rag_index

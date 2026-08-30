@@ -14,10 +14,15 @@ import requests
 from typing import Dict, Any, Optional
 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
-DEFAULT_MODEL = os.environ.get("OLLAMA_MODEL", "codellama")
+DEFAULT_MODEL = os.environ.get("OLLAMA_MODEL", "gemma3:1b")
+OLLAMA_TIMEOUT = int(os.environ.get("OLLAMA_TIMEOUT", "120"))
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+
+# One-time latch: once a cloud provider errors out (e.g. quota exhausted) stop
+# retrying it on every request so a dead key does not add latency to fallbacks.
+_CLOUD_DISABLED = False
 
 
 def check_ollama_status(host: str = OLLAMA_HOST) -> Dict[str, Any]:
@@ -25,7 +30,7 @@ def check_ollama_status(host: str = OLLAMA_HOST) -> Dict[str, Any]:
     # 1. Check local Ollama
     try:
         url = f"{host.rstrip('/')}/api/tags"
-        resp = requests.get(url, timeout=1.5)
+        resp = requests.get(url, timeout=1.0)
         if resp.status_code == 200:
             data = resp.json()
             models = [m.get("name") for m in data.get("models", [])]
@@ -73,8 +78,43 @@ def check_ollama_status(host: str = OLLAMA_HOST) -> Dict[str, Any]:
     }
 
 
+def list_installed_models(host: str = OLLAMA_HOST) -> Dict[str, Any]:
+    """Return the models Ollama has pulled locally, or online=False if unreachable."""
+    try:
+        resp = requests.get(f"{host.rstrip('/')}/api/tags", timeout=1.0)
+        if resp.status_code == 200:
+            names = [m.get("name", "") for m in resp.json().get("models", [])]
+            return {"online": True, "models": names}
+    except Exception:
+        pass
+    return {"online": False, "models": []}
+
+
+def _tag_matches(tag: str, installed: list) -> bool:
+    """Ollama reports 'qwen2.5:0.5b'; also accept a bare name match ('qwen2.5')."""
+    tag = (tag or "").strip()
+    if not tag:
+        return False
+    base = tag.split(":")[0]
+    for name in installed:
+        if name == tag or name.startswith(tag) or name.split(":")[0] == base:
+            return True
+    return False
+
+
+def model_status(tag: str, host: str = OLLAMA_HOST) -> str:
+    """One of: 'available' | 'not_installed' | 'ollama_offline'."""
+    info = list_installed_models(host)
+    if not info["online"]:
+        return "ollama_offline"
+    return "available" if _tag_matches(tag, info["models"]) else "not_installed"
+
+
 def query_cloud_api(prompt: str, system_prompt: Optional[str] = None) -> Optional[Dict[str, Any]]:
-    """Query OpenAI or Groq if keys are set."""
+    """Query OpenAI or Groq if keys are set (skipped once a provider has failed)."""
+    global _CLOUD_DISABLED
+    if _CLOUD_DISABLED or (not OPENAI_API_KEY and not GROQ_API_KEY):
+        return None
     t0 = time.time()
     if OPENAI_API_KEY:
         try:
@@ -116,6 +156,8 @@ def query_cloud_api(prompt: str, system_prompt: Optional[str] = None) -> Optiona
         except Exception:
             pass
 
+    # Neither provider produced a usable answer - stop trying for this process.
+    _CLOUD_DISABLED = True
     return None
 
 
@@ -125,7 +167,7 @@ def query_ollama(
     model: str = DEFAULT_MODEL,
     host: str = OLLAMA_HOST,
     temperature: float = 0.2,
-    timeout: int = 60
+    timeout: int = OLLAMA_TIMEOUT
 ) -> Dict[str, Any]:
     """
     Send prompt to Ollama /api/generate endpoint (or Cloud API key if Ollama is not running).
@@ -135,6 +177,9 @@ def query_ollama(
         "model": model,
         "prompt": prompt,
         "stream": False,
+        # Keep the model resident between requests so back-to-back queries on
+        # modest hardware do not pay the full load cost every time.
+        "keep_alive": os.environ.get("OLLAMA_KEEP_ALIVE", "10m"),
         "options": {
             "temperature": temperature
         }
@@ -175,23 +220,42 @@ def generate_with_rag(
     query: str,
     context_chunks: list,
     model: str = DEFAULT_MODEL,
-    host: str = OLLAMA_HOST
+    host: str = OLLAMA_HOST,
+    history: Optional[list] = None,
+    system_prompt: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Exercise 3: Construct RAG context prompt and query Ollama / Code Llama (or Cloud API).
+
+    `history` (optional): prior turns as [{"role": "user"|"assistant", "content": str}, ...]
+    for a multi-turn chat. It is added to the prompt as prior conversation, but the
+    answer must still come only from the retrieved context.
     """
     context_text = "\n\n".join([
         f"[Context {i+1}] (Score: {chunk.get('score', 0):.4f})\n{chunk.get('text', '')}"
         for i, chunk in enumerate(context_chunks)
     ])
 
-    system_prompt = (
-        "You are an expert medical AI assistant. Answer the user's question accurately "
-        "and concisely using ONLY the provided verified context. If the context does not contain "
-        "the answer, state clearly that the verified knowledge base does not have this information."
-    )
+    if system_prompt is None:
+        system_prompt = (
+            "You are an expert medical AI assistant. Answer the user's question accurately "
+            "and concisely using ONLY the provided verified context. If the context does not contain "
+            "the answer, state clearly that the verified knowledge base does not have this information."
+        )
+
+    history_text = ""
+    if history:
+        lines = []
+        for turn in history[-6:]:
+            role = "User" if turn.get("role") == "user" else "Assistant"
+            content = (turn.get("content") or "").strip()
+            if content:
+                lines.append(f"{role}: {content}")
+        if lines:
+            history_text = "### Prior Conversation:\n" + "\n".join(lines) + "\n\n"
 
     prompt = (
+        f"{history_text}"
         f"### Retrieved Context:\n{context_text}\n\n"
         f"### User Question:\n{query}\n\n"
         f"### Answer:"

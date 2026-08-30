@@ -1,42 +1,38 @@
-# Multi-Stage Python Dockerfile for Medical RAG API Service (Exercise 5)
-FROM python:3.10-slim AS builder
+# HealthRAG AI - single service: FastAPI API + static dashboard (PRD section 25).
+# The dashboard is served by FastAPI at "/", so the frontend and API share one
+# origin and there is no separate web container.
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUTF8=1 \
+    PORT=8001 \
+    RETRIEVAL_BACKEND=lexical \
+    OLLAMA_HOST=http://ollama:11434 \
+    OLLAMA_MODEL=gemma3:1b \
+    LLM_MODEL_EASY=qwen2.5:0.5b \
+    LLM_MODEL_MEDIUM=gemma3:1b \
+    LLM_MODEL_COMPLEX=smollm2:1.7b \
+    RAG_INDEX_DIR=/app/outputs/rag_index
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
+COPY requirements-api.txt .
+RUN pip install --no-cache-dir -r requirements-api.txt
 
-# Final Runtime Stage
-FROM python:3.10-slim
-
-WORKDIR /app
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgomp1 \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy installed packages from builder
-COPY --from=builder /root/.local /root/.local
-ENV PATH=/root/.local/bin:$PATH
-ENV PYTHONUNBUFFERED=1
-ENV PORT=8001
-ENV OLLAMA_HOST=http://ollama:11434
-ENV OLLAMA_MODEL=codellama
-
-# Copy application source code and pre-built vector index
+# Application code + config + seed knowledge base and pre-built index.
 COPY src/ /app/src/
-COPY data/ /app/data/
+COPY dashboard/ /app/dashboard/
+COPY config/ /app/config/
+COPY data/raw/medical_knowledge_base.jsonl /app/data/raw/medical_knowledge_base.jsonl
 COPY outputs/rag_index/ /app/outputs/rag_index/
 
 EXPOSE 8001
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-  CMD curl -f http://localhost:8001/status || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+  CMD curl -fs http://localhost:8001/status || exit 1
 
 CMD ["python", "src/rag_server.py"]
