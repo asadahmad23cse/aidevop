@@ -120,11 +120,14 @@
     modelRouterService: {
       getExamples: () => deepSanitize(MOCK.MODEL_ROUTER_EXAMPLES || []),
 
-      // route(query) -> { source: 'backend'|'mock', data: <full pipeline result> }
+      // route(query, topK, history) -> { source: 'backend'|'mock', data: <full pipeline result> }
+      // `history` (optional): prior turns [{role:'user'|'assistant', content}] for multi-turn chat.
       // Long timeout: small local models can still take a while on modest CPU-only
       // hardware, especially on the first call while the model loads into memory.
-      route: async (query, topK = 3) => {
-        const data = await apiPost("/api/v1/router/answer", { query, top_k: topK }, 300000);
+      route: async (query, topK = 3, history = null) => {
+        const body = { query, top_k: topK };
+        if (Array.isArray(history) && history.length) body.history = history;
+        const data = await apiPost("/api/v1/router/answer", body, 300000);
         if (data && data.guardrails) {
           return { source: "backend", data: deepSanitize(data) };
         }

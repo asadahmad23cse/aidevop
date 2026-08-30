@@ -1549,6 +1549,68 @@ footer {
   border-radius: var(--radius-md) !important;
 }
 
+/* ── Ask HealthRAG — chat ── */
+.chat-window {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.22);
+  padding: 1rem;
+  min-height: 240px;
+  max-height: 460px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+.chat-empty { margin: auto; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+.chat-empty p { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; align-items: center; }
+.chat-example {
+  background: var(--cyan-dim); color: #7fe9f5; border: 1px solid rgba(0,240,255,0.25);
+  border-radius: var(--radius-full); padding: 0.3rem 0.7rem; font-family: inherit;
+  font-size: 0.8rem; cursor: pointer;
+}
+.chat-example:hover { background: rgba(0,240,255,0.2); }
+
+.chat-msg {
+  max-width: 85%;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.chat-user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, rgba(0,240,255,0.16), rgba(59,130,246,0.16));
+  border: 1px solid rgba(0,240,255,0.25);
+}
+.chat-assistant {
+  align-self: flex-start;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+}
+.chat-assistant.chat-blocked { border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.08); }
+.chat-badge {
+  display: inline-block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em;
+  color: #fbbf24; margin-bottom: 0.35rem; font-weight: 700;
+}
+.chat-text { }
+.chat-typing, .chat-error { color: var(--text-muted); font-style: italic; }
+.chat-error { color: #f87171; }
+.chat-note { margin-top: 0.4rem; font-size: 0.72rem; color: var(--text-muted); }
+.chat-meta { margin-top: 0.55rem; font-size: 0.78rem; }
+.chat-meta summary { cursor: pointer; color: var(--text-muted); }
+.chat-meta-grid { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-top: 0.45rem; color: var(--text-muted); }
+.chat-meta-grid b { color: #cbd5e1; font-weight: 600; }
+.chat-sources { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.chat-input-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+@media (max-width: 600px) {
+  .chat-input-row { flex-direction: column; }
+  .chat-msg { max-width: 95%; }
+}
+
 /* ── Question Suggestion Service — autocomplete dropdown ── */
 .qs-wrap {
   position: relative;

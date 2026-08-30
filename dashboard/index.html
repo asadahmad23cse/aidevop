@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css?v=20260830b" />
+  <link rel="stylesheet" href="./styles.css?v=20260830c" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -28,6 +28,7 @@
 
       <nav class="nav-links-main" id="navLinksMain">
         <a class="nav-link-main active" href="#sec-overview" data-section="sec-overview">Overview</a>
+        <a class="nav-link-main" href="#sec-chat" data-section="sec-chat">Ask</a>
         <a class="nav-link-main" href="#sec-knowledge" data-section="sec-knowledge">Knowledge Base</a>
         <a class="nav-link-main" href="#sec-suggestions" data-section="sec-suggestions">Suggestions</a>
         <a class="nav-link-main" href="#sec-week3-rag" data-section="sec-week3-rag">RAG</a>
@@ -74,6 +75,34 @@
           <div class="flow-arrow">↓</div>
           <div class="flow-step flow-step-highlight">Grounded Response</div>
         </div>
+      </div>
+    </section>
+
+    <!-- ASK HEALTHRAG — CONVERSATIONAL CHAT -->
+    <section id="sec-chat" class="dashboard-section">
+      <div class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">Assistant</span>
+            <h2 class="section-heading">Ask HealthRAG</h2>
+            <p class="section-desc">Ask health questions in your own words and get grounded answers from the knowledge base. Every message runs the full pipeline: guardrails &rarr; retrieval &rarr; difficulty &rarr; model &rarr; grounding &amp; safety checks. Follow-up questions keep the conversation context.</p>
+          </div>
+          <button id="btnChatReset" class="btn-secondary">New chat</button>
+        </div>
+
+        <div class="chat-window" id="chatWindow">
+          <div class="chat-empty" id="chatEmpty">
+            <p>Try: <button type="button" class="chat-example">What are the symptoms of diabetes?</button>
+            <button type="button" class="chat-example">How is high blood pressure treated?</button>
+            <button type="button" class="chat-example">What does the document say about asthma?</button></p>
+          </div>
+        </div>
+
+        <form class="chat-input-row" id="chatForm" autocomplete="off">
+          <input type="text" id="chatInput" class="search-input query-input-full" placeholder="Ask a health question..." />
+          <button type="submit" id="chatSend" class="btn-primary">Send</button>
+        </form>
+        <p class="placeholder-note">Educational use only — not personalised medical advice. Out-of-scope and unsafe requests are declined without calling the model.</p>
       </div>
     </section>
 
@@ -610,9 +639,9 @@
     </div>
   </footer>
 
-  <script src="./api/mockData.js?v=20260830b"></script>
-  <script src="./api/services.js?v=20260830b"></script>
+  <script src="./api/mockData.js?v=20260830c"></script>
+  <script src="./api/services.js?v=20260830c"></script>
   <script src="./week4_data.js"></script>
-  <script src="./app.js?v=20260830b"></script>
+  <script src="./app.js?v=20260830c"></script>
 </body>
 </html>

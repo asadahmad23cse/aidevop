@@ -220,23 +220,42 @@ def generate_with_rag(
     query: str,
     context_chunks: list,
     model: str = DEFAULT_MODEL,
-    host: str = OLLAMA_HOST
+    host: str = OLLAMA_HOST,
+    history: Optional[list] = None,
+    system_prompt: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Exercise 3: Construct RAG context prompt and query Ollama / Code Llama (or Cloud API).
+
+    `history` (optional): prior turns as [{"role": "user"|"assistant", "content": str}, ...]
+    for a multi-turn chat. It is added to the prompt as prior conversation, but the
+    answer must still come only from the retrieved context.
     """
     context_text = "\n\n".join([
         f"[Context {i+1}] (Score: {chunk.get('score', 0):.4f})\n{chunk.get('text', '')}"
         for i, chunk in enumerate(context_chunks)
     ])
 
-    system_prompt = (
-        "You are an expert medical AI assistant. Answer the user's question accurately "
-        "and concisely using ONLY the provided verified context. If the context does not contain "
-        "the answer, state clearly that the verified knowledge base does not have this information."
-    )
+    if system_prompt is None:
+        system_prompt = (
+            "You are an expert medical AI assistant. Answer the user's question accurately "
+            "and concisely using ONLY the provided verified context. If the context does not contain "
+            "the answer, state clearly that the verified knowledge base does not have this information."
+        )
+
+    history_text = ""
+    if history:
+        lines = []
+        for turn in history[-6:]:
+            role = "User" if turn.get("role") == "user" else "Assistant"
+            content = (turn.get("content") or "").strip()
+            if content:
+                lines.append(f"{role}: {content}")
+        if lines:
+            history_text = "### Prior Conversation:\n" + "\n".join(lines) + "\n\n"
 
     prompt = (
+        f"{history_text}"
         f"### Retrieved Context:\n{context_text}\n\n"
         f"### User Question:\n{query}\n\n"
         f"### Answer:"

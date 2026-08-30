@@ -29,9 +29,113 @@
     renderW4Summaries();
     initModal();
     initQuestionSuggestions();
+    initChat();
     refreshLiveStatus();
     setInterval(refreshLiveStatus, 15000);
   });
+
+  /* ── Ask HealthRAG — conversational chat ── */
+  function initChat() {
+    const win = document.getElementById("chatWindow");
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("chatInput");
+    const empty = document.getElementById("chatEmpty");
+    const resetBtn = document.getElementById("btnChatReset");
+    if (!win || !form || !input) return;
+
+    let history = []; // [{role:'user'|'assistant', content}]
+    let busy = false;
+
+    const scroll = () => { win.scrollTop = win.scrollHeight; };
+
+    function bubble(role, html, cls) {
+      const el = document.createElement("div");
+      el.className = `chat-msg chat-${role}` + (cls ? " " + cls : "");
+      el.innerHTML = html;
+      win.appendChild(el);
+      scroll();
+      return el;
+    }
+
+    function metaBlock(d) {
+      const g = d.guardrails || {};
+      const m = d.model || {};
+      const rows = [];
+      if (d.difficulty) rows.push(`<span><b>Difficulty:</b> ${escapeHtml(String(d.difficulty))}</span>`);
+      if (m.name || m.tag) rows.push(`<span><b>Model:</b> ${escapeHtml(m.name || m.tag)}${m.developer ? " · " + escapeHtml(m.developer) : ""}</span>`);
+      if (d.llm_source) rows.push(`<span><b>Source:</b> ${escapeHtml(d.llm_source)}</span>`);
+      if (d.latency_ms != null) rows.push(`<span><b>Latency:</b> ${d.latency_ms} ms</span>`);
+      const gr = [];
+      if (g.prompt_injection) gr.push(`Injection: ${g.prompt_injection.passed ? "ok" : "blocked"}`);
+      if (g.domain) gr.push(`Domain: ${escapeHtml(g.domain.status || (g.domain.passed ? "ok" : "blocked"))}`);
+      if (g.grounding) gr.push(`Grounding: ${escapeHtml(g.grounding.status || "-")}`);
+      if (g.medical_safety) gr.push(`Safety: ${escapeHtml(g.medical_safety.status || "-")}`);
+      if (gr.length) rows.push(`<span><b>Guardrails:</b> ${gr.join(" · ")}</span>`);
+      const sources = (d.retrieval && d.retrieval.sources) || [];
+      const srcHtml = sources.length
+        ? `<div class="chat-sources">${sources.map((s) => `<div class="chunk-snippet">[${escapeHtml(s.label)}]${s.score != null ? " (score " + s.score + ")" : ""} ${escapeHtml(s.preview || "")}</div>`).join("")}</div>`
+        : "";
+      if (!rows.length && !srcHtml) return "";
+      return `<details class="chat-meta"><summary>pipeline details</summary><div class="chat-meta-grid">${rows.join("")}</div>${srcHtml}</details>`;
+    }
+
+    async function send(text) {
+      const q = (text || "").trim();
+      if (!q || busy) return;
+      if (empty) empty.style.display = "none";
+      busy = true;
+      input.value = "";
+      bubble("user", escapeHtml(q));
+      history.push({ role: "user", content: q });
+
+      const thinking = bubble("assistant", `<span class="chat-typing">Running pipeline…</span>`);
+
+      let data, source;
+      try {
+        ({ data, source } = await SVC.modelRouterService.route(q, 3, history.slice(0, -1)));
+      } catch (e) {
+        data = null;
+      }
+
+      if (!data || (!data.answer && !data.guardrails)) {
+        thinking.innerHTML = `<span class="chat-error">The assistant is unavailable right now. Make sure the backend and Ollama are running.</span>`;
+        history.pop();
+        busy = false;
+        return;
+      }
+
+      const blocked =
+        (data.guardrails && data.guardrails.prompt_injection && !data.guardrails.prompt_injection.passed) ||
+        (data.guardrails && data.guardrails.domain && !data.guardrails.domain.passed);
+
+      const answer = data.answer || "(no answer)";
+      thinking.className = "chat-msg chat-assistant" + (blocked ? " chat-blocked" : "");
+      thinking.innerHTML =
+        (blocked ? `<span class="chat-badge">${escapeHtml(data.status || "Blocked")}</span>` : "") +
+        `<div class="chat-text">${escapeHtml(answer)}</div>` +
+        (source === "mock" ? `<div class="chat-note">offline — backend not reachable, heuristic only</div>` : metaBlock(data));
+
+      // Keep the assistant turn in history only when it actually answered.
+      if (!blocked) history.push({ role: "assistant", content: answer });
+      else history.pop(); // drop the user turn that was refused
+      scroll();
+      busy = false;
+    }
+
+    form.addEventListener("submit", (e) => { e.preventDefault(); send(input.value); });
+    win.addEventListener("click", (e) => {
+      const ex = e.target.closest(".chat-example");
+      if (ex) send(ex.textContent);
+    });
+    resetBtn?.addEventListener("click", () => {
+      history = [];
+      win.querySelectorAll(".chat-msg").forEach((n) => n.remove());
+      if (empty) empty.style.display = "";
+      input.focus();
+    });
+
+    if (SVC.questionSuggestionService) attachSuggestions(input, SVC.questionSuggestionService);
+  }
 
   /* ── Live backend status (PRD 4, 12, 13) ── */
   let LIVE_STATUS = null;

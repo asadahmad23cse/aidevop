@@ -398,6 +398,8 @@ class SuggestRequest(BaseModel):
 class RouterRequest(BaseModel):
     query: str
     top_k: Optional[int] = 3
+    # Optional prior turns for a multi-turn chat: [{"role": "user"|"assistant", "content": str}]
+    history: Optional[List[Dict[str, Any]]] = None
 
 
 # ══════════════════════════════════════════════════════════════
@@ -885,6 +887,17 @@ def router_answer(req: RouterRequest):
     if not query:
         raise HTTPException(400, "Query must not be empty.")
 
+    # Multi-turn: use the previous user turn to enrich retrieval for short
+    # follow-ups ("what about in children?"), but run guardrails on the new
+    # message only.
+    history = req.history or []
+    prev_user = ""
+    for turn in reversed(history):
+        if turn.get("role") == "user" and (turn.get("content") or "").strip():
+            prev_user = turn["content"].strip()
+            break
+    retrieval_query = f"{prev_user} {query}".strip() if (prev_user and len(query.split()) < 8) else query
+
     # ── Input guardrail 1: prompt injection ──
     injection = guardrails.check_prompt_injection(query)
     result["guardrails"]["prompt_injection"] = injection
@@ -900,7 +913,7 @@ def router_answer(req: RouterRequest):
 
     # ── RAG retrieval (also feeds the domain check below) ──
     try:
-        retrieved, scores, _, _, t_search = retrieve_chunks(query, req.top_k or 3)
+        retrieved, scores, _, _, t_search = retrieve_chunks(retrieval_query, req.top_k or 3)
     except HTTPException as exc:
         result["status"] = "no_index"
         result["retrieval"] = {"count": 0, "backend": RETRIEVAL_BACKEND, "error": exc.detail}
@@ -929,6 +942,12 @@ def router_answer(req: RouterRequest):
     # topic signal; lexical word-overlap scores are not passed.
     domain_scores = [c["score"] for c in chunks] if RETRIEVAL_BACKEND == "semantic" else None
     domain = guardrails.check_domain(query, retrieval_scores=domain_scores)
+    # A short in-conversation follow-up ("what about in children?") may not carry
+    # health vocabulary on its own - re-check with the conversational context.
+    if not domain["passed"] and prev_user and retrieval_query != query:
+        follow = guardrails.check_domain(retrieval_query, retrieval_scores=domain_scores)
+        if follow["passed"]:
+            domain = follow
     result["guardrails"]["domain"] = domain
     if not domain["passed"]:
         result["status"] = domain["status"]
@@ -961,7 +980,13 @@ def router_answer(req: RouterRequest):
     tag_status = model.get("tag_status", "ollama_offline")
 
     if tag_status == "available":
-        gen = generate_with_rag(query=query, context_chunks=chunks, model=model["tag"])
+        gen = generate_with_rag(
+            query=query,
+            context_chunks=chunks,
+            model=model["tag"],
+            history=history,
+            system_prompt=LLM_ROUTING.get("grounded_system_prompt"),
+        )
         if gen.get("success"):
             answer = gen["response"]
             llm_source = f"ollama:{model['tag']}"
