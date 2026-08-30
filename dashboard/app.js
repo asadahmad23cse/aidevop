@@ -540,14 +540,15 @@
     if (!el) return;
 
     el.innerHTML = checks
-      .map(
-        (c) => `
+      .map((c) => {
+        const cls = /active|pass|ok|connected/i.test(c.status) ? "status-connected" : "status-pending";
+        return `
       <article class="guardrail-card">
         <h4>${escapeHtml(c.name)}</h4>
         <p>${escapeHtml(c.description)}</p>
-        <span class="status-badge status-pending">${c.status}</span>
-      </article>`
-      )
+        <span class="status-badge ${cls}">${escapeHtml(c.status)}</span>
+      </article>`;
+      })
       .join("");
 
     initGuardrailTester();

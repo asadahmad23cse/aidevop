@@ -94,25 +94,85 @@ _OUT_OF_SCOPE_PATTERNS = [
 ]
 _OUT_OF_SCOPE_RE = [re.compile(p, re.I) for p in _OUT_OF_SCOPE_PATTERNS]
 
+# Broad health / medical / knowledge-base vocabulary. A query is treated as
+# in-domain only if it touches one of these (or the knowledge base strongly
+# matches it). Everything else is rejected as out-of-domain.
 _HEALTH_TERMS = (
-    "health", "medical", "medicine", "medication", "drug", "dose", "dosage", "mg",
-    "symptom", "symptoms", "diagnos", "treatment", "treat", "therapy", "disease",
-    "disorder", "syndrome", "infection", "chronic", "acute", "patient", "clinical",
-    "guideline", "document", "report", "knowledge base", "study", "trial",
-    "hypertension", "diabetes", "asthma", "cancer", "cardiac", "renal", "hepatic",
-    "blood pressure", "cholesterol", "vaccine", "vaccination", "antibiotic",
-    "amoxicillin", "paracetamol", "ibuprofen", "insulin", "pain", "fever", "rash",
-    "pregnan", "paediatric", "pediatric", "dose of", "side effect", "contraindicat",
-    "bruise", "fracture", "diarrhea", "diarrhoea", "nausea", "vomit", "swelling",
+    # general
+    "health", "healthy", "medical", "medicine", "medicin", "clinic", "clinical",
+    "hospital", "doctor", "physician", "nurse", "patient", "pharmac", "prescri",
+    "wellness", "wellbeing", "first aid", "emergency", "ambulance", "icu",
+    "knowledge base", "document", "guideline", "protocol", "report", "leaflet",
+    # actions / framings
+    "diagnos", "treat", "treatment", "therap", "cure", "heal", "recover", "manage",
+    "symptom", "sign of", "cause of", "risk factor", "prevent", "screening",
+    "side effect", "adverse", "contraindicat", "interaction", "overdose",
+    "dose", "dosage", "dosing", "mg", "ml", "tablet", "capsule", "injection",
+    "is it safe to", "should i take", "should i see", "how long does it take to heal",
+    "what should i do if", "home remedy", "when to worry",
+    # body / systems
+    "body", "blood", "bone", "muscle", "joint", "nerve", "skin", "heart", "cardiac",
+    "lung", "respirat", "kidney", "renal", "liver", "hepatic", "brain", "neuro",
+    "stomach", "gut", "intestin", "bowel", "bladder", "throat", "sinus", "ear",
+    "eye", "vision", "tooth", "teeth", "gum", "spine", "back", "shoulder", "knee",
+    "hip", "ankle", "wrist", "chest", "abdomen", "pelvi", "thyroid", "gland",
+    "hormone", "immune", "lymph", "artery", "vein", "vessel",
+    # symptoms
+    "pain", "ache", "hurt", "sore", "swelling", "swollen", "inflammation", "inflamed",
+    "fever", "temperature", "chills", "cough", "cold", "flu", "sneeze", "congestion",
+    "rash", "itch", "bruis", "bleed", "wound", "cut", "burn", "blister", "lump",
+    "nausea", "vomit", "diarrhea", "diarrhoea", "constipat", "cramp", "bloat",
+    "dizzy", "dizziness", "faint", "vertigo", "headache", "migraine", "fatigue",
+    "tired", "weak", "numb", "tingl", "short of breath", "breathless", "palpitat",
+    "seizure", "tremor", "spasm", "stiff", "discharge", "ulcer", "infection",
+    # conditions
+    "disease", "disorder", "syndrome", "condition", "chronic", "acute", "cancer",
+    "tumor", "tumour", "diabet", "hypertension", "hypotension", "blood pressure",
+    "cholesterol", "asthma", "copd", "pneumonia", "bronchitis", "tuberculosis",
+    "arthritis", "osteoporosis", "anemia", "anaemia", "allerg", "eczema", "psoriasis",
+    "stroke", "heart attack", "angina", "arrhythmia", "kidney disease", "hepatitis",
+    "cirrhosis", "gastritis", "reflux", "ibs", "crohn", "colitis", "thyroid",
+    "depression", "anxiety", "insomnia", "adhd", "epilepsy", "parkinson", "alzheimer",
+    "dementia", "obesity", "malnutrition", "sepsis", "covid", "hiv", "malaria",
+    "dengue", "typhoid", "measles", "chickenpox", "shingles",
+    # drugs
+    "antibiotic", "amoxicillin", "penicillin", "azithromycin", "paracetamol",
+    "acetaminophen", "ibuprofen", "aspirin", "naproxen", "metformin", "insulin",
+    "statin", "amlodipine", "lisinopril", "losartan", "omeprazole", "steroid",
+    "antihistamine", "anticoagulant", "warfarin", "apixaban", "vaccine", "vaccinat",
+    "antidepressant", "painkiller", "analgesic", "chemotherapy", "antiviral",
+    # life stages / reproductive
+    "pregnan", "prenatal", "postnatal", "breastfeed", "menstru", "period", "menopause",
+    "fertility", "contracepti", "paediatric", "pediatric", "infant", "toddler",
+    "newborn", "elderly", "geriatric", "child", "baby",
+    # nutrition / lifestyle (health context)
+    "nutrition", "diet", "vitamin", "mineral", "supplement", "hydration", "dehydrat",
+    "exercise", "physiotherapy", "rehabilitation", "sleep apnea", "smoking cessation",
+    "blood sugar", "glucose", "bmi", "calorie",
+    # care
+    "surgery", "operation", "biopsy", "scan", "x-ray", "mri", "ct scan", "ultrasound",
+    "blood test", "lab result", "vaccination schedule", "dressing", "bandage",
+    "stitches", "cast", "crutches",
 )
 
 
-def check_domain(query: str) -> Dict[str, object]:
+def check_domain(query: str, retrieval_scores=None, score_threshold: float = 0.5) -> Dict[str, object]:
+    """Decide whether a query belongs to the HealthRAG (health / medical /
+    knowledge-base) domain. Anything that is not clearly health-related is
+    rejected as out-of-domain and must NOT be sent to the LLM (PRD section 7).
+
+    `retrieval_scores` (optional): *semantic* similarity scores (cosine, 0-1) of
+    the top retrieved chunks. A strong match also counts as in-domain, catching
+    health questions phrased with uncommon wording. The caller should only pass
+    these when using the semantic retrieval backend - lexical word-overlap
+    scores are not a reliable topic signal.
+    """
     q = (query or "").lower().strip()
     if not q:
         return {"passed": False, "status": "Out of Scope",
                 "reason": "Empty query.", "matched": ""}
 
+    # 1. Explicit out-of-scope topics (weather, sport, coding, jokes, ...).
     for rx in _OUT_OF_SCOPE_RE:
         m = rx.search(q)
         if m:
@@ -123,14 +183,28 @@ def check_domain(query: str) -> Dict[str, object]:
                 "matched": m.group(0)[:120],
             }
 
-    if any(term in q for term in _HEALTH_TERMS):
+    # 2. Health / medical / knowledge-base vocabulary.
+    hit = next((t for t in _HEALTH_TERMS if t in q), None)
+    if hit:
         return {"passed": True, "status": "In Scope",
-                "reason": "Query references a health or knowledge-base topic."}
+                "reason": f"Query references a health or knowledge-base topic ('{hit}')."}
 
-    # Ambiguous: allow it through - retrieval + grounded prompt will abstain if
-    # the knowledge base has nothing relevant.
-    return {"passed": True, "status": "In Scope (unverified)",
-            "reason": "No out-of-scope pattern matched; letting retrieval decide relevance."}
+    # 3. Knowledge-base match signal (uncommon phrasing of a real health question).
+    try:
+        top = max((float(s) for s in (retrieval_scores or [])), default=0.0)
+    except (TypeError, ValueError):
+        top = 0.0
+    if top >= score_threshold:
+        return {"passed": True, "status": "In Scope",
+                "reason": f"Knowledge base strongly matches the query (score {round(top, 2)})."}
+
+    # 4. Default: reject as out-of-domain.
+    return {
+        "passed": False,
+        "status": "Out of Domain",
+        "reason": "This question does not appear to be about health, medicine, or the knowledge base. HealthRAG AI only answers health and knowledge-base questions.",
+        "matched": "",
+    }
 
 
 # ── Output guardrail 1: grounding ────────────────────────────────────────────

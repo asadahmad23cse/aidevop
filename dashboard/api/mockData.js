@@ -120,11 +120,10 @@
     ],
 
     GUARDRAILS: [
-      { name: "Prompt Injection Detection", description: "Detects malicious prompt constructs.", status: "Backend Pending" },
-      { name: "Input Safety Check", description: "Identifies unsafe or disallowed requests.", status: "Backend Pending" },
-      { name: "Unsupported Health Request", description: "Flags requests requiring clinician escalation.", status: "Backend Pending" },
-      { name: "Grounding Check", description: "Verifies model answers against retrieved context.", status: "Backend Pending" },
-      { name: "Medical Safety Check", description: "Performs final verification of medical safety.", status: "Backend Pending" },
+      { name: "Prompt Injection Detection", description: "Blocks attempts to override or reveal the system instructions before any LLM call.", status: "Active" },
+      { name: "Domain Relevance Guardrail", description: "Only health, medical and knowledge-base questions are allowed. Anything else is rejected as Out of Domain and never reaches the LLM.", status: "Active" },
+      { name: "Grounding Check", description: "Verifies the answer is supported by the retrieved context (lexical proxy).", status: "Active" },
+      { name: "Medical Safety Check", description: "Flags absolute clinical claims and appends a professional-advice note.", status: "Active" },
     ],
 
     REPO_ANALYSIS: {

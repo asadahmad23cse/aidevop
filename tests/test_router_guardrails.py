@@ -73,6 +73,36 @@ class DomainGuardrailTests(unittest.TestCase):
     def test_blocks_joke(self):
         self.assertFalse(check_domain("Tell me a joke")["passed"])
 
+    def test_blocks_generic_non_medical_question(self):
+        # Anything not health/medical/knowledge-base related is out of domain,
+        # even without a specific out-of-scope pattern.
+        for q in [
+            "What is the capital of France?",
+            "Explain quantum computing",
+            "How do I invest in stocks?",
+            "What is the meaning of life?",
+            "How to make pasta",
+        ]:
+            r = check_domain(q)
+            self.assertFalse(r["passed"], q)
+            self.assertIn("Domain", r["status"] + r.get("reason", ""))
+
+    def test_allows_symptom_described_without_jargon(self):
+        for q in [
+            "My throat hurts and I have a fever",
+            "Is it safe to take ibuprofen with high blood pressure?",
+            "How long does a sprained ankle take to heal?",
+        ]:
+            self.assertTrue(check_domain(q)["passed"], q)
+
+    def test_semantic_score_fallback_admits_strong_kb_match(self):
+        r = check_domain("obscure phrasing here", retrieval_scores=[0.72, 0.4])
+        self.assertTrue(r["passed"])
+
+    def test_lexical_style_low_scores_do_not_admit(self):
+        r = check_domain("what is the capital of france", retrieval_scores=[0.3, 0.2])
+        self.assertFalse(r["passed"])
+
 
 class OutputGuardrailTests(unittest.TestCase):
     def test_grounding_passes_on_abstention(self):

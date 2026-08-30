@@ -898,19 +898,7 @@ def router_answer(req: RouterRequest):
         result["latency_ms"] = round((time.time() - t_start) * 1000)
         return result
 
-    # ── Input guardrail 2: domain relevance ──
-    domain = guardrails.check_domain(query)
-    result["guardrails"]["domain"] = domain
-    if not domain["passed"]:
-        result["status"] = domain["status"]
-        result["answer"] = (
-            "This question is outside the scope of HealthRAG AI. Please ask a "
-            "health or knowledge-base related question."
-        )
-        result["latency_ms"] = round((time.time() - t_start) * 1000)
-        return result
-
-    # ── RAG retrieval ──
+    # ── RAG retrieval (also feeds the domain check below) ──
     try:
         retrieved, scores, _, _, t_search = retrieve_chunks(query, req.top_k or 3)
     except HTTPException as exc:
@@ -934,6 +922,19 @@ def router_answer(req: RouterRequest):
         "search_ms": round(t_search * 1000, 2),
         "sources": _sources_from_chunks(chunks),
     }
+
+    # ── Input guardrail 2: domain relevance ──
+    # Rejects anything that is not a health / medical / knowledge-base question.
+    # Only the semantic backend produces scores meaningful enough to use as a
+    # topic signal; lexical word-overlap scores are not passed.
+    domain_scores = [c["score"] for c in chunks] if RETRIEVAL_BACKEND == "semantic" else None
+    domain = guardrails.check_domain(query, retrieval_scores=domain_scores)
+    result["guardrails"]["domain"] = domain
+    if not domain["passed"]:
+        result["status"] = domain["status"]
+        result["answer"] = domain["reason"]
+        result["latency_ms"] = round((time.time() - t_start) * 1000)
+        return result
 
     # ── Difficulty classification + model routing ──
     diff = classify_difficulty(query)
