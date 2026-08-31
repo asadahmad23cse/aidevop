@@ -8,3 +8,4 @@ requests>=2.31,<3
 python-multipart>=0.0.9,<1
 pydantic>=2,<3
 psutil>=5.9,<6
+pypdf>=4,<6

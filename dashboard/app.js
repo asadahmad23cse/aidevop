@@ -426,20 +426,46 @@
   function handleFiles(files, listEl, type, label) {
     if (!listEl || !files.length) return;
     Array.from(files).forEach((file) => {
-      const size = formatSize(file.size);
-      const pages = type === "pdf" ? Math.floor(Math.random() * 40) + 5 : "—";
       const item = document.createElement("div");
       item.className = "upload-item";
+      item.dataset.name = file.name;
       item.innerHTML = `
         <div class="upload-item-info">
           <strong>${escapeHtml(file.name)}</strong>
-          <span>${size}${type === "pdf" ? " · " + pages + " pages" : ""}</span>
+          <span>${formatSize(file.size)}</span>
         </div>
-        <span class="status-badge status-mock">Mock Upload</span>
-        <span class="status-badge status-pending">Indexing Pending</span>`;
+        <span class="status-badge status-pending upload-status">Uploading…</span>`;
       listEl.appendChild(item);
+      ingestFile(file, item);
     });
     renderKnowledgeDocs();
+  }
+
+  // POST the file to /ingest with append=true so the seed knowledge base is kept.
+  async function ingestFile(file, item) {
+    const badge = item.querySelector(".upload-status");
+    const setBadge = (text, cls) => { if (badge) { badge.textContent = text; badge.className = "status-badge upload-status " + cls; } };
+    try {
+      const fd = new FormData();
+      fd.append("file", file, file.name);
+      fd.append("append", "true");
+      const base = window.HEALTHRAG_API_BASE || "";
+      const resp = await fetch(base + "/ingest", { method: "POST", body: fd });
+      if (!resp.ok) {
+        let msg = "HTTP " + resp.status;
+        try { msg = (await resp.json()).detail || msg; } catch (_) {}
+        throw new Error(msg);
+      }
+      const data = await resp.json();
+      item.dataset.chunks = data.new_chunks ?? "";
+      item.dataset.total = data.total_chunks ?? "";
+      item.dataset.docs = data.documents ?? "";
+      setBadge(`Indexed · +${data.new_chunks} chunks`, "status-connected");
+      renderKnowledgeDocs();
+      if (typeof refreshLiveStatus === "function") refreshLiveStatus();
+    } catch (e) {
+      setBadge("Failed: " + (e.message || "upload error"), "status-mock");
+    }
   }
 
   function renderKnowledgeDocs() {
@@ -457,15 +483,21 @@
       </tr>`
     );
 
-    jsonItems.forEach((item) => {
-      const name = item.querySelector("strong")?.textContent || "upload.json";
-      rows.push(`<tr><td>${escapeHtml(name)}</td><td>JSON</td><td>—</td><td>—</td><td>—</td><td><span class="status-badge status-pending">Pending</span></td></tr>`);
-    });
-    pdfItems.forEach((item) => {
-      const name = item.querySelector("strong")?.textContent || "upload.pdf";
-      const pages = item.querySelector("span")?.textContent.match(/(\d+) pages/)?.[1] || "—";
-      rows.push(`<tr><td>${escapeHtml(name)}</td><td>PDF</td><td>—</td><td>${pages}</td><td>—</td><td><span class="status-badge status-pending">Pending</span></td></tr>`);
-    });
+    const rowFor = (item, kind) => {
+      const name = item.dataset.name || item.querySelector("strong")?.textContent || ("upload." + kind.toLowerCase());
+      const st = item.querySelector(".upload-status");
+      const done = st && st.classList.contains("status-connected");
+      const failed = st && st.classList.contains("status-mock");
+      const chunks = item.dataset.chunks || "—";
+      const badge = done
+        ? `<span class="status-badge status-connected">Indexed</span>`
+        : failed
+        ? `<span class="status-badge status-mock">Failed</span>`
+        : `<span class="status-badge status-pending">Indexing…</span>`;
+      return `<tr><td>${escapeHtml(name)}</td><td>${kind}</td><td>—</td><td>—</td><td>${chunks}</td><td>${badge}</td></tr>`;
+    };
+    jsonItems.forEach((item) => rows.push(rowFor(item, "JSON")));
+    pdfItems.forEach((item) => rows.push(rowFor(item, "PDF")));
 
     tbody.innerHTML = rows.join("") || `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">No documents uploaded yet.</td></tr>`;
   }

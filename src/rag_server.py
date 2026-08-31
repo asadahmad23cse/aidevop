@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -267,10 +267,54 @@ def retrieve_chunks(query: str, top_k: int) -> tuple[List[dict], List[float], in
     return [CHUNK_META[i] for _, i in selected], [float(s) for s, _ in selected], 0, 0.0, t_search
 
 
+# ── Helper: extract text from a PDF (pure-python, no system deps) ──
+def extract_pdf_text(raw: bytes) -> str:
+    try:
+        from pypdf import PdfReader
+    except Exception:
+        try:
+            from PyPDF2 import PdfReader  # type: ignore
+        except Exception:
+            return ""
+    import io as _io
+    try:
+        reader = PdfReader(_io.BytesIO(raw))
+        parts = []
+        for page in reader.pages:
+            t = page.extract_text() or ""
+            if t.strip():
+                parts.append(t)
+        return "\n\n".join(parts)
+    except Exception:
+        return ""
+
+
 # ── Helper: Parse uploaded file ───────────────────────────────
-def parse_file_content(text: str, filename: str) -> List[dict]:
+def parse_file_content(text: str, filename: str, raw: bytes = b"") -> List[dict]:
     records = []
     ext = filename.rsplit(".", 1)[-1].lower()
+
+    if ext == "pdf":
+        pdf_text = extract_pdf_text(raw) if raw else ""
+        # Split into passages on blank lines / headings; keep reasonably sized blocks.
+        blocks, cur = [], []
+        for line in pdf_text.splitlines():
+            s = line.strip()
+            if not s:
+                if cur:
+                    blocks.append(" ".join(cur))
+                    cur = []
+                continue
+            cur.append(s)
+            if sum(len(x) for x in cur) > 900:
+                blocks.append(" ".join(cur))
+                cur = []
+        if cur:
+            blocks.append(" ".join(cur))
+        for b in blocks:
+            if len(b) > 40:
+                records.append({"instruction": "", "output": b})
+        return records
 
     if ext in ("jsonl", "json"):
         lines = text.split("\n")
@@ -479,96 +523,97 @@ def llm_direct_generate(req: LLMRequest):
 # ══════════════════════════════════════════════════════════════
 
 @app.post("/ingest")
-async def ingest_document(file: UploadFile = File(...)):
+async def ingest_document(file: UploadFile = File(...), append: bool = Form(False)):
     """
     Exercise 2: Document Ingestion -> Chunking -> Embeddings -> FAISS Index.
+
+    Accepts JSON / JSONL (question/answer or instruction/output records), PDF
+    (text is extracted per page), and plain text. With `append=true` the new
+    content is ADDED to the existing knowledge base instead of replacing it, so
+    the seed medical index is preserved.
     """
     global FAISS_INDEX, CHUNK_META, INDEX_STATS
 
     content = await file.read()
     text = content.decode("utf-8", errors="replace")
-    fname = file.filename
+    fname = file.filename or "upload"
 
     # Step 1: Parse
     t0 = time.time()
-    records = parse_file_content(text, fname)
+    records = parse_file_content(text, fname, raw=content)
     if not records:
-        raise HTTPException(400, "No records found. Ensure file is valid JSONL or TXT.")
+        raise HTTPException(400, "No usable content found. Provide JSON/JSONL question-answer records, a text PDF, or plain text.")
     t_parse = time.time() - t0
+
+    base_doc_id = (max((c.get("doc_id", 0) for c in CHUNK_META), default=0) + 1) if append and CHUNK_META else 0
 
     # Step 2: Chunk
     t0 = time.time()
-    all_chunks = []
-    chunk_meta = []
+    new_chunks_text = []
+    new_meta = []
     for i, rec in enumerate(records):
         combined = f"Q: {rec['instruction']}\nA: {rec['output']}" if rec["instruction"] else rec["output"]
-        chunks = chunk_text(combined)
-        for j, chunk in enumerate(chunks):
-            all_chunks.append(chunk)
-            chunk_meta.append({
-                "doc_id": i + 1,
+        for j, chunk in enumerate(chunk_text(combined)):
+            new_chunks_text.append(chunk)
+            new_meta.append({
+                "doc_id": base_doc_id + i + 1,
                 "chunk_idx": j,
                 "text": chunk,
                 "instruction": rec["instruction"],
+                "source_file": fname,
             })
     t_chunk = time.time() - t0
 
     if RETRIEVAL_BACKEND != "semantic":
+        combined_meta = (CHUNK_META + new_meta) if append else new_meta
         os.makedirs(INDEX_DIR, exist_ok=True)
-        meta_path = os.path.join(INDEX_DIR, "chunk_metadata.json")
-        with open(meta_path, "w", encoding="utf-8") as f:
-            json.dump(chunk_meta, f, ensure_ascii=False)
-        CHUNK_META = chunk_meta
+        with open(os.path.join(INDEX_DIR, "chunk_metadata.json"), "w", encoding="utf-8") as f:
+            json.dump(combined_meta, f, ensure_ascii=False)
+        CHUNK_META = combined_meta
         FAISS_INDEX = None
         INDEX_STATS = {
-            "filename": fname, "documents": len(records), "chunks": len(all_chunks),
-            "vectors": len(all_chunks), "dimensions": 0, "retrieval_backend": "lexical",
+            "filename": fname, "mode": "append" if append else "replace",
+            "documents": len(records), "new_chunks": len(new_chunks_text),
+            "total_chunks": len(combined_meta), "dimensions": 0, "retrieval_backend": "lexical",
             "t_parse_ms": round(t_parse * 1000), "t_chunk_ms": round(t_chunk * 1000),
         }
         return INDEX_STATS
 
-    # Step 3: Embed
+    # Semantic backend: embed the new chunks and add to (or rebuild) FAISS.
     t0 = time.time()
     embeddings = EMBEDDER.encode(
-        all_chunks,
-        batch_size=32,
-        show_progress_bar=False,
-        convert_to_numpy=True,
-        normalize_embeddings=True,
-    )
+        new_chunks_text, batch_size=32, show_progress_bar=False,
+        convert_to_numpy=True, normalize_embeddings=True,
+    ).astype(np.float32)
     t_embed = time.time() - t0
     dim = embeddings.shape[1]
 
-    # Step 4: Index in FAISS
     t0 = time.time()
-    index = faiss.IndexFlatIP(dim)
-    index.add(embeddings.astype(np.float32))
+    if append and FAISS_INDEX is not None and FAISS_INDEX.d == dim:
+        FAISS_INDEX.add(embeddings)
+        CHUNK_META = CHUNK_META + new_meta
+    else:
+        index = faiss.IndexFlatIP(dim)
+        index.add(embeddings)
+        FAISS_INDEX = index
+        CHUNK_META = (CHUNK_META + new_meta) if append else new_meta
     t_idx = time.time() - t0
 
     os.makedirs(INDEX_DIR, exist_ok=True)
     idx_path = os.path.join(INDEX_DIR, "faiss.index")
-    meta_path = os.path.join(INDEX_DIR, "chunk_metadata.json")
-    faiss.write_index(index, idx_path)
-    with open(meta_path, "w", encoding="utf-8") as f:
-        json.dump(chunk_meta, f, ensure_ascii=False)
+    faiss.write_index(FAISS_INDEX, idx_path)
+    with open(os.path.join(INDEX_DIR, "chunk_metadata.json"), "w", encoding="utf-8") as f:
+        json.dump(CHUNK_META, f, ensure_ascii=False)
 
-    FAISS_INDEX = index
-    CHUNK_META = chunk_meta
     INDEX_STATS = {
-        "filename": fname,
-        "documents": len(records),
-        "chunks": len(all_chunks),
-        "vectors": index.ntotal,
-        "dimensions": dim,
+        "filename": fname, "mode": "append" if append else "replace",
+        "documents": len(records), "new_chunks": len(new_chunks_text),
+        "total_chunks": len(CHUNK_META), "vectors": FAISS_INDEX.ntotal, "dimensions": dim,
         "index_size_kb": round(os.path.getsize(idx_path) / 1024, 1),
-        "t_parse_ms": round(t_parse * 1000),
-        "t_chunk_ms": round(t_chunk * 1000),
-        "t_embed_ms": round(t_embed * 1000),
-        "t_index_ms": round(t_idx * 1000),
-        "sample_chunks": [c["text"][:120] for c in chunk_meta[:4]],
-        "sample_vector": embeddings[0][:16].round(4).tolist(),
+        "t_parse_ms": round(t_parse * 1000), "t_chunk_ms": round(t_chunk * 1000),
+        "t_embed_ms": round(t_embed * 1000), "t_index_ms": round(t_idx * 1000),
+        "sample_chunks": [c["text"][:120] for c in new_meta[:4]],
     }
-
     return INDEX_STATS
 
 

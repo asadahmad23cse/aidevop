@@ -1,0 +1,102 @@
+[
+  {
+    "question": "What is hypertension and what blood pressure reading defines it?",
+    "answer": "Hypertension, or high blood pressure, is a condition in which the force of blood against the artery walls is persistently too high. In most guidelines it is defined as a clinic blood pressure of 140/90 mmHg or higher on repeated measurements, or 130/80 mmHg or higher under stricter definitions. It usually has no symptoms and is detected by measurement, which is why regular screening is recommended."
+  },
+  {
+    "question": "How is hypertension treated?",
+    "answer": "Treatment of hypertension combines lifestyle changes and, when needed, medication. Lifestyle measures include reducing salt intake to under 5 g per day, losing excess weight, regular aerobic exercise, limiting alcohol, stopping smoking, and eating more fruit and vegetables. Common first-line medications are ACE inhibitors, angiotensin receptor blockers, calcium channel blockers, and thiazide-type diuretics. The goal is usually to bring blood pressure below 140/90 mmHg, or lower in people with diabetes or kidney disease."
+  },
+  {
+    "question": "What are the main complications of untreated high blood pressure?",
+    "answer": "Untreated high blood pressure damages arteries over time and raises the risk of heart attack, heart failure, stroke, chronic kidney disease, vision loss from retinal damage, and peripheral artery disease. Because the damage builds silently over years, blood pressure control is important even when a person feels well."
+  },
+  {
+    "question": "What is type 2 diabetes?",
+    "answer": "Type 2 diabetes is a long-term condition in which the body does not use insulin effectively (insulin resistance) and gradually cannot make enough insulin, leading to high blood glucose. It is strongly linked to excess body weight, physical inactivity, and family history. Over time high glucose can damage the eyes, kidneys, nerves, and blood vessels."
+  },
+  {
+    "question": "What are the common symptoms of type 2 diabetes?",
+    "answer": "Common symptoms include increased thirst, frequent urination, increased hunger, unexplained weight loss, tiredness, blurred vision, slow-healing wounds, and frequent infections such as thrush. Many people have no symptoms for years and are diagnosed on a routine blood test."
+  },
+  {
+    "question": "How is type 2 diabetes managed?",
+    "answer": "Management focuses on diet, physical activity, weight loss, and blood glucose monitoring. Metformin is usually the first medication. Other options include SGLT2 inhibitors, GLP-1 receptor agonists, sulfonylureas, and insulin when needed. Blood pressure and cholesterol are also treated to lower cardiovascular risk, and regular eye, foot, and kidney checks are recommended."
+  },
+  {
+    "question": "What is a normal fasting blood glucose level?",
+    "answer": "A normal fasting blood glucose is below 100 mg/dL (5.6 mmol/L). A fasting value of 100 to 125 mg/dL (5.6 to 6.9 mmol/L) indicates prediabetes, and 126 mg/dL (7.0 mmol/L) or higher on two occasions indicates diabetes. An HbA1c of 6.5 percent or higher also indicates diabetes."
+  },
+  {
+    "question": "What is asthma?",
+    "answer": "Asthma is a chronic inflammatory disease of the airways that causes them to narrow and swell and produce extra mucus. This leads to recurrent episodes of wheezing, breathlessness, chest tightness, and coughing, often worse at night or early morning or triggered by exercise, allergens, cold air, or respiratory infections."
+  },
+  {
+    "question": "How is asthma treated?",
+    "answer": "Asthma treatment uses inhalers. A reliever inhaler, usually a short-acting beta-2 agonist such as salbutamol, relieves acute symptoms. A preventer inhaler containing an inhaled corticosteroid such as beclometasone is taken daily to control airway inflammation. Moderate to severe asthma may add a long-acting beta-2 agonist or a leukotriene receptor antagonist. An asthma action plan and inhaler technique review are important."
+  },
+  {
+    "question": "What should someone do during a severe asthma attack?",
+    "answer": "During a severe asthma attack, sit upright, stay calm, and take one puff of the reliever inhaler every 30 to 60 seconds up to 10 puffs, ideally through a spacer. If breathing does not improve, if the person cannot speak in full sentences, or if lips or face turn blue, call emergency services immediately. Continue reliever puffs while waiting for help."
+  },
+  {
+    "question": "What is high cholesterol and why does it matter?",
+    "answer": "Cholesterol is a fatty substance carried in the blood. High levels of LDL (low-density lipoprotein) cholesterol build up in artery walls and form plaques that narrow arteries, raising the risk of heart attack and stroke. HDL (high-density lipoprotein) cholesterol is protective. A total cholesterol above 5 mmol/L or an LDL above 3 mmol/L is generally considered raised, and targets are lower for people at high cardiovascular risk."
+  },
+  {
+    "question": "How can high cholesterol be lowered?",
+    "answer": "Cholesterol can be lowered by eating less saturated fat, replacing it with unsaturated fats, eating more fibre, oily fish, fruit and vegetables, losing excess weight, exercising regularly, and stopping smoking. Statins are the main medication and reduce cardiovascular events; ezetimibe or other agents may be added if targets are not met."
+  },
+  {
+    "question": "What is the recommended paracetamol dose for adults?",
+    "answer": "For adults and children over 12 who weigh more than 50 kg, the usual paracetamol dose is 500 mg to 1 g every 4 to 6 hours as needed, with a maximum of 4 g (4000 mg) in 24 hours. Do not take other products that also contain paracetamol at the same time. Lower doses are used for people with low body weight, liver problems, or chronic heavy alcohol use."
+  },
+  {
+    "question": "What are the common side effects of ibuprofen?",
+    "answer": "Common side effects of ibuprofen include indigestion, stomach pain, nausea, and headache. It can irritate the stomach lining and cause ulcers or bleeding, especially with long-term use, in older people, or when taken with other anti-inflammatory drugs or steroids. It can also raise blood pressure, reduce kidney function, and increase cardiovascular risk. It is best taken with food at the lowest effective dose for the shortest time."
+  },
+  {
+    "question": "What is the recommended dose of amoxicillin for a child?",
+    "answer": "For most childhood bacterial infections such as acute otitis media, oral amoxicillin is commonly dosed at about 40 to 45 mg/kg/day divided into two or three doses, and higher doses up to 80 to 90 mg/kg/day are used for suspected resistant pneumococcal infection. Exact dosing depends on the child's weight, age, the infection, and local guidance, so a clinician or pharmacist should confirm the dose."
+  },
+  {
+    "question": "What are the symptoms of a common cold versus influenza?",
+    "answer": "A common cold develops gradually with a runny or blocked nose, sneezing, sore throat, and mild cough, and fever is uncommon in adults. Influenza usually comes on suddenly with high fever, marked muscle aches, headache, extreme tiredness, dry cough, and sore throat. Flu symptoms are more severe and last longer, and complications such as pneumonia are more likely, particularly in older adults and people with chronic illness."
+  },
+  {
+    "question": "How should mild dehydration from diarrhoea be managed at home?",
+    "answer": "For mild dehydration, drink small amounts of fluid often. Oral rehydration solution is best because it replaces water, salts, and glucose in the right balance. Continue normal feeding once able, avoid very sugary drinks, and watch for warning signs such as reduced urination, dizziness, lethargy, sunken eyes, or an inability to keep fluids down, which need medical review. Infants and older adults dehydrate quickly and should be seen sooner."
+  },
+  {
+    "question": "What first aid should be given for a minor burn?",
+    "answer": "Cool a minor burn under cool (not ice-cold) running water for 20 minutes as soon as possible. Remove jewellery and loose clothing from the area unless stuck to the skin. Cover the burn loosely with cling film or a clean non-fluffy dressing. Do not apply butter, toothpaste, or ice. Take paracetamol or ibuprofen for pain. Seek medical help for burns larger than the person's hand, burns on the face, hands, feet, or genitals, deep or blistering burns, or any chemical or electrical burn."
+  },
+  {
+    "question": "What are the warning signs of a stroke?",
+    "answer": "Use the FAST test. Face: has the face fallen on one side, can the person smile? Arms: can they raise both arms and keep them there? Speech: is speech slurred or hard to understand? Time: if any of these signs are present, call emergency services immediately. Other signs include sudden numbness or weakness on one side, sudden confusion, sudden trouble seeing, sudden severe headache, or sudden difficulty walking or loss of balance."
+  },
+  {
+    "question": "What are the warning signs of a heart attack?",
+    "answer": "Typical signs are central chest pain or pressure that may spread to the arm, jaw, neck, or back, lasting more than a few minutes, often with sweating, shortness of breath, nausea, or a feeling of dread. Women, older people, and people with diabetes may have less typical symptoms such as unusual tiredness, indigestion-like discomfort, or breathlessness alone. Call emergency services immediately and, if advised and not allergic, chew a 300 mg aspirin."
+  },
+  {
+    "question": "How much physical activity is recommended for adults?",
+    "answer": "Most guidelines recommend at least 150 minutes of moderate-intensity aerobic activity, or 75 minutes of vigorous activity, spread across the week, plus muscle-strengthening activity on two or more days. Reducing time spent sitting and breaking up long periods of inactivity also has health benefits. Any increase in activity from a low baseline is beneficial."
+  },
+  {
+    "question": "What is a healthy body mass index range?",
+    "answer": "For most adults a body mass index (BMI) of 18.5 to 24.9 kg/m2 is considered healthy. A BMI of 25 to 29.9 is overweight and 30 or above is obese. BMI does not account for muscle mass or fat distribution, so waist circumference is also used; a raised waist measurement indicates higher health risk even at a normal BMI. Different thresholds apply to some ethnic groups."
+  },
+  {
+    "question": "Who should have a seasonal influenza vaccine?",
+    "answer": "Seasonal flu vaccination is recommended each year for people at higher risk of complications: adults aged 65 and over, pregnant women, young children, people with chronic heart, lung, kidney, liver, or neurological disease, people with diabetes, weakened immunity, or a high BMI, residents of care homes, carers, and healthcare workers. The vaccine is given before or early in the flu season."
+  },
+  {
+    "question": "What lifestyle changes reduce the risk of cardiovascular disease?",
+    "answer": "Key measures are stopping smoking, eating a diet rich in vegetables, fruit, whole grains, legumes, nuts, and fish while limiting salt, sugar, and saturated fat, being physically active, keeping a healthy weight, limiting alcohol, and managing stress and sleep. Controlling blood pressure, cholesterol, and blood glucose, and taking prescribed preventive medication such as statins where indicated, further lowers risk."
+  },
+  {
+    "question": "When should a fever in an adult prompt medical attention?",
+    "answer": "Most fevers from viral infections settle in a few days. Seek medical advice if a fever is above 39.5 C, lasts more than three days or keeps returning, or comes with a stiff neck, severe headache, rash that does not fade under pressure, breathlessness, chest pain, confusion, persistent vomiting, difficulty passing urine, or if the person has a weakened immune system or a serious underlying illness."
+  }
+]
