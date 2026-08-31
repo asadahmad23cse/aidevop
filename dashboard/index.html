@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css?v=20260831" />
+  <link rel="stylesheet" href="./styles.css?v=20260831e" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -338,11 +338,11 @@
           <span class="status-badge status-pending">Pending Backend</span>
         </div>
         <div class="service-detail-card">
-          <div class="detail-row"><span>Purpose</span><strong>Retrieves top-K relevant chunks via FAISS cosine similarity</strong></div>
-          <div class="detail-row"><span>API Endpoint</span><code>/api/rag/query</code></div>
-          <div class="detail-row"><span>Embedder</span><strong>all-MiniLM-L6-v2 (384d)</strong></div>
+          <div class="detail-row"><span>Purpose</span><strong>Retrieves top-K relevant chunks (FAISS cosine or lexical overlap)</strong></div>
+          <div class="detail-row"><span>API Endpoint</span><code>/query</code></div>
+          <div class="detail-row"><span>Backend</span><strong id="retrievalBackendDetail">—</strong></div>
           <div class="detail-row"><span>Top-K</span><strong>3 (configurable)</strong></div>
-          <div class="detail-row"><span>Status</span><span class="status-badge status-pending">Pending Backend</span></div>
+          <div class="detail-row"><span>Status</span><span class="status-badge status-pending" id="retrievalStatusDetail">Checking…</span></div>
         </div>
       </div>
     </section>
@@ -354,7 +354,7 @@
           <div>
             <span class="section-tag">Routing</span>
             <h2 class="section-heading">Model Router — Query Difficulty</h2>
-            <p class="section-desc">Selects the appropriate LLM based on query complexity. Frontend representation only.</p>
+            <p class="section-desc">Selects the Ollama model by query complexity, then runs the full pipeline. Live.</p>
           </div>
           <span class="status-badge status-pending">Backend Pending</span>
         </div>
@@ -430,7 +430,7 @@
           <div>
             <span class="section-tag">Task 1</span>
             <h2 class="section-heading">Multi-Model Evaluation</h2>
-            <p class="section-desc">Three model slots — frontend placeholders awaiting API integration.</p>
+            <p class="section-desc">Three configured Ollama models; availability is checked live against your local Ollama.</p>
           </div>
           <span class="pill-badge pill-amber">Waiting for API</span>
         </div>
@@ -445,7 +445,7 @@
           <div>
             <span class="section-tag">Task 2</span>
             <h2 class="section-heading">Evaluation Dataset</h2>
-            <p class="section-desc">Frontend Mock Dataset — Backend integration pending</p>
+            <p class="section-desc">Evaluation dataset used against all three models.</p>
           </div>
           <span class="pill-badge pill-purple" id="evalQuestionCount">25 Questions</span>
         </div>
@@ -580,7 +580,7 @@
           <div>
             <span class="section-tag">Task 6</span>
             <h2 class="section-heading">Repository / Codebase Understanding</h2>
-            <p class="section-desc">Repository Analysis API — Pending Backend Integration</p>
+            <p class="section-desc">Week 4 repository-understanding benchmark (executed offline; results in outputs/week4/).</p>
           </div>
           <span class="pill-badge pill-amber">Backend Pending</span>
         </div>
@@ -639,9 +639,9 @@
     </div>
   </footer>
 
-  <script src="./api/mockData.js?v=20260831"></script>
-  <script src="./api/services.js?v=20260831"></script>
+  <script src="./api/mockData.js?v=20260831e"></script>
+  <script src="./api/services.js?v=20260831e"></script>
   <script src="./week4_data.js"></script>
-  <script src="./app.js?v=20260831"></script>
+  <script src="./app.js?v=20260831e"></script>
 </body>
 </html>

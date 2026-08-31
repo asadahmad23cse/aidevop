@@ -145,8 +145,50 @@
     const status = await SVC.apiService.getStatus();
     LIVE_STATUS = status;
     updateConnectionPills(status);
+    updateSectionStatusPills(status);
     renderOverview();
+    renderServices();
     renderModelCards();
+  }
+
+  // Refresh the small status pill in each section header once we know the
+  // backend is up, so nothing says "Backend Pending" when it is actually live.
+  function updateSectionStatusPills(status) {
+    const online = !!(status && status.services);
+    const ollama = online && status.services.llm_service_ollama?.status === "connected";
+    const rag = online && status.services.retrieval_rag_service?.status === "healthy";
+    const badge = (sel, kind, text) => {
+      const el = document.querySelector(sel);
+      if (!el) return;
+      const isPill = el.classList.contains("pill-badge");
+      el.textContent = text;
+      el.className = isPill
+        ? "pill-badge " + (kind === "ok" ? "pill-emerald" : kind === "warn" ? "pill-amber" : "pill-amber")
+        : "status-badge " + (kind === "ok" ? "status-connected" : kind === "warn" ? "status-pending" : "status-mock");
+    };
+    if (!online) {
+      badge("#sec-retrieval .section-header .status-badge", "err", "Backend Offline");
+      badge("#sec-model-router .section-header .status-badge", "err", "Backend Offline");
+      badge("#sec-guardrails .section-header .status-badge", "warn", "Active (client)");
+      return;
+    }
+    badge("#sec-retrieval .section-header .status-badge", rag ? "ok" : "warn", rag ? "Live" : "No Index");
+    const rsvc = online ? status.services.retrieval_rag_service : null;
+    const rbd = document.getElementById("retrievalBackendDetail");
+    if (rbd && rsvc) rbd.textContent = (rsvc.backend || "?") + (rsvc.embedding_model ? " · " + rsvc.embedding_model : "");
+    badge("#retrievalStatusDetail", rag ? "ok" : "warn", rag ? "Healthy · " + ((rsvc && rsvc.chunks) || 0) + " chunks" : "No Index");
+    badge("#sec-model-router .section-header .status-badge", ollama ? "ok" : "warn", ollama ? "Connected" : "Ollama Offline");
+    badge("#sec-guardrails .section-header .status-badge", "ok", "Active");
+    badge("#sec-w4-task1 .section-header .pill-badge", ollama ? "ok" : "warn", ollama ? "Models Available" : "Models Offline");
+    badge("#sec-w4-task6 .section-header .pill-badge", "ok", "Executed (offline)");
+    badge("#sec-w4-task7 .section-header .status-badge", "ok", "Live via Router");
+    badge("#sec-w4-task8 .section-header .status-badge", "ok", "Active");
+    // Week 3 RAG sandbox pill (until the user runs a compare).
+    const ragPill = document.getElementById("ragBackendBadge");
+    if (ragPill && /pending/i.test(ragPill.textContent)) {
+      ragPill.textContent = rag ? "Backend Connected" : "Backend Offline";
+      ragPill.className = "pill-badge " + (rag ? "pill-emerald" : "pill-amber");
+    }
   }
 
   function updateConnectionPills(status) {
@@ -370,26 +412,56 @@
   }
 
   /* ── Services ── */
+  function serviceLiveStatus(key) {
+    const s = LIVE_STATUS;
+    // No backend reachable at all.
+    if (!s || !s.services) {
+      if (key === "eval" || key === "repo") return { text: "Executed (offline)", cls: "status-mock" };
+      if (key === "guardrails") return { text: "Active (client)", cls: "status-pending" };
+      return { text: "Backend Offline", cls: "status-mock" };
+    }
+    const rag = s.services.retrieval_rag_service || {};
+    const ollama = s.services.llm_service_ollama || {};
+    switch (key) {
+      case "gateway": return { text: "Connected", cls: "status-connected" };
+      case "rag": return rag.status === "healthy"
+        ? { text: "Live · " + (rag.backend || "?") + " · " + (rag.chunks || 0) + " chunks", cls: "status-connected" }
+        : { text: "No Index", cls: "status-pending" };
+      case "knowledge": return { text: "Live", cls: "status-connected" };
+      case "llm": return ollama.status === "connected"
+        ? { text: "Connected", cls: "status-connected" }
+        : { text: "Ollama Offline", cls: "status-pending" };
+      case "guardrails": return { text: "Active", cls: "status-connected" };
+      case "suggest": return { text: "Live", cls: "status-connected" };
+      case "eval":
+      case "repo": return { text: "Executed (offline)", cls: "status-connected" };
+      default: return { text: "Checking", cls: "status-pending" };
+    }
+  }
+
   function renderServices() {
     const grid = document.getElementById("servicesGrid");
     const services = SVC.overviewService?.getServices() || [];
     if (!grid) return;
 
     grid.innerHTML = services
-      .map(
-        (s) => `
+      .map((s) => {
+        const live = serviceLiveStatus(s.key);
+        const deps = (s.dependencies && s.dependencies.length)
+          ? s.dependencies.map(escapeHtml).join(", ") : "—";
+        return `
       <article class="service-card">
         <div class="service-card-head">
           <h3>${escapeHtml(s.name)}</h3>
-          <span class="status-badge ${SVC.statusBadge(s.status)}">${s.status}</span>
+          <span class="status-badge ${live.cls}">${escapeHtml(live.text)}</span>
         </div>
         <p class="service-purpose">${escapeHtml(s.purpose)}</p>
         <div class="service-meta">
           <div><span>API</span><code>${escapeHtml(s.endpoint)}</code></div>
-          <div><span>Dependencies</span><strong>${s.dependencies.map(escapeHtml).join(", ")}</strong></div>
+          <div><span>Dependencies</span><strong>${deps}</strong></div>
         </div>
-      </article>`
-      )
+      </article>`;
+      })
       .join("");
   }
 

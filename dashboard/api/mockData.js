@@ -11,15 +11,16 @@
       services: 8,
     },
 
+    // `key` maps a card to live health from /api/v1/services/status (see renderServices).
     SERVICES: [
-      { name: "API Gateway", purpose: "Orchestrates requests between frontend and services.", endpoint: "/api/gateway/status", status: "Backend Pending", dependencies: ["Auth Service"] },
-      { name: "RAG Service", purpose: "Retrieves relevant health information from the knowledge base.", endpoint: "/api/rag/query", status: "Backend Pending", dependencies: ["Vector Store"] },
-      { name: "Knowledge Service", purpose: "Document ingestion & indexing.", endpoint: "/api/knowledge", status: "Backend Pending", dependencies: ["Storage"] },
-      { name: "LLM Service", purpose: "Model inference (router + inference).", endpoint: "/api/llm/infer", status: "Backend Pending", dependencies: ["Model Pool"] },
-      { name: "Evaluation Service", purpose: "Runs benchmarks and metrics aggregation.", endpoint: "/api/eval", status: "Backend Pending", dependencies: ["RAG Service", "LLM Service"] },
-      { name: "Repository Service", purpose: "Repository / codebase analysis API.", endpoint: "/api/repo/analyze", status: "Backend Pending", dependencies: ["Git Reader"] },
-      { name: "Guardrails", purpose: "Safety checks and prompt-injection defenses.", endpoint: "/api/guardrails/check", status: "Backend Pending", dependencies: ["LLM Service"] },
-      { name: "Question Suggestion Service", purpose: "Suggests relevant autocomplete questions from the partial query and knowledge-base context.", endpoint: "/api/suggest/questions", status: "Frontend Mock", dependencies: ["Knowledge Service", "LLM Service"] },
+      { key: "gateway", name: "API Gateway / Orchestrator", purpose: "FastAPI app that runs the full pipeline and serves the dashboard.", endpoint: "/api/v1/services/status", status: "Checking", dependencies: ["RAG", "LLM Service"] },
+      { key: "rag", name: "RAG Service", purpose: "Retrieves relevant passages from the knowledge base (FAISS or lexical).", endpoint: "/query · /api/v1/rag/compare", status: "Checking", dependencies: ["Vector Index"] },
+      { key: "knowledge", name: "Knowledge Service", purpose: "JSON / PDF ingestion, chunking and indexing (append mode).", endpoint: "/ingest", status: "Checking", dependencies: ["Storage"] },
+      { key: "llm", name: "LLM Service (Router)", purpose: "Difficulty classification, model routing and grounded generation via Ollama.", endpoint: "/api/v1/router/answer · /api/v1/models/status", status: "Checking", dependencies: ["Ollama"] },
+      { key: "guardrails", name: "Guardrails", purpose: "Prompt-injection + domain scope (input) and grounding + medical-safety (output).", endpoint: "runs inside /api/v1/router/answer", status: "Active", dependencies: [] },
+      { key: "suggest", name: "Question Suggestion Service", purpose: "Autocomplete questions from the partial query and knowledge-base topics.", endpoint: "/api/suggest/questions", status: "Checking", dependencies: ["Knowledge Base"] },
+      { key: "eval", name: "Evaluation Service", purpose: "Week 4 multi-model benchmark — executed offline; results shipped in the repo.", endpoint: "outputs/week4/ · scripts/week4_evaluate.py", status: "Executed (offline)", dependencies: ["RAG", "LLM Service"] },
+      { key: "repo", name: "Repository Service", purpose: "Week 4 repository-understanding benchmark — executed offline.", endpoint: "outputs/week4/repository_* · build_repository_index.py", status: "Executed (offline)", dependencies: ["Repo Index"] },
     ],
 
     // ── Question Suggestion Service (frontend mock config) ──────────────
