@@ -1549,6 +1549,33 @@ footer {
   border-radius: var(--radius-md) !important;
 }
 
+/* ── Task 3 — benchmark of the 3 routed models ── */
+.bm-model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
+.bm-model-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.1rem; }
+.bm-model-head { display: flex; align-items: center; gap: 0.7rem; }
+.bm-model-icon { font-size: 1.6rem; }
+.bm-model-head h4 { font-size: 1.02rem; font-weight: 700; }
+.bm-model-tag { font-size: 0.76rem; color: var(--text-muted); text-transform: capitalize; }
+.bm-model-persona { font-size: 0.85rem; color: var(--text-muted); margin: 0.6rem 0; }
+.bm-awards { display: flex; gap: 0.4rem; margin-bottom: 0.7rem; flex-wrap: wrap; }
+.bm-award { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: var(--radius-full); background: var(--amber-dim); color: #fbbf24; border: 1px solid rgba(245,158,11,0.35); }
+.bm-award-q { background: var(--emerald-dim); color: #34d399; border-color: rgba(16,185,129,0.35); }
+.bm-metrics { display: flex; flex-direction: column; gap: 0.55rem; }
+.bm-metric { display: grid; grid-template-columns: 1fr auto; align-items: baseline; column-gap: 0.6rem; }
+.bm-metric-label { font-size: 0.82rem; color: #cbd5e1; }
+.bm-metric-val { font-size: 0.95rem; font-weight: 700; color: #fff; font-family: var(--font-mono); }
+.bm-metric-hint { grid-column: 1 / -1; font-size: 0.7rem; color: var(--text-muted); }
+.bm-glossary { list-style: none; padding: 0; margin: 0.4rem 0 1.25rem; display: flex; flex-direction: column; gap: 0.45rem; }
+.bm-glossary li { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; padding-left: 1rem; position: relative; }
+.bm-glossary li::before { content: "•"; position: absolute; left: 0; color: var(--cyan); }
+.bm-glossary strong { color: #e2e8f0; }
+.bm-takeaway { background: rgba(0,240,255,0.05); border: 1px solid rgba(0,240,255,0.18); border-radius: var(--radius-md); padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+.bm-takeaway p { font-size: 0.9rem; line-height: 1.6; color: #cbd5e1; margin-bottom: 0.5rem; }
+.bm-takeaway strong { color: #fff; }
+.bm-footnote { font-size: 0.76rem !important; color: var(--text-muted) !important; }
+.bm-detail { margin-bottom: 1.25rem; }
+.bm-detail summary { cursor: pointer; font-weight: 600; font-size: 0.88rem; color: var(--cyan); padding: 0.5rem 0; }
+
 /* ── Document Q&A Playground ── */
 .pg-samples { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin: 0.75rem 0 0.25rem; font-size: 0.85rem; color: var(--text-muted); }
 #pgIngest { margin-top: 1rem; }

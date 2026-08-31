@@ -1094,9 +1094,127 @@
 
   /* ── Metrics (W4 Task 3) ── */
   function renderMetrics() {
+    if (window.BENCHMARK_DATA && window.BENCHMARK_DATA.models) return renderBenchmark(window.BENCHMARK_DATA);
     const W4S = SVC.week4Service;
     if (W4S && W4S.hasRealData()) return renderMetricsReal(W4S);
     renderMetricsDemo();
+  }
+
+  /* ── Task 3: user-friendly benchmark of the 3 routed models ── */
+  function bmModel(b, tier) { return b.models[tier]; }
+  function bmSec(ms) { return ms == null ? null : Math.round(ms / 100) / 10; }
+  function bmPct(v) { return v == null ? null : Math.round(v * 100); }
+
+  const BM_TIERS = ["easy", "medium", "complex"];
+  const BM_PERSONA = {
+    easy:    { icon: "⚡", tagline: "Fastest — everyday questions" },
+    medium:  { icon: "⚖️", tagline: "Balanced — needs some explaining" },
+    complex: { icon: "🎯", tagline: "Most thorough — hard, multi-step questions" },
+  };
+
+  function renderBenchmark(b) {
+    const grid = document.getElementById("bmModelCards");
+    const gloss = document.getElementById("bmGlossary");
+    const takeaway = document.getElementById("bmTakeaway");
+    const pill = document.getElementById("bmPill");
+    const intro = document.getElementById("bmIntro");
+    if (!grid) return;
+
+    const models = BM_TIERS.map((t) => b.models[t]).filter(Boolean);
+    if (pill) {
+      pill.textContent = `Executed · ${b.questions} questions · ${(b.generated_at || "").slice(0, 10)}`;
+      pill.className = "pill-badge pill-emerald";
+    }
+    if (intro) intro.textContent =
+      `The same ${b.questions} health questions were run through all three routed models with the same retrieved context (${b.chunks_indexed} indexed chunks, ${b.retrieval_backend} retrieval). Every number below is measured from a real answer — nothing is estimated.`;
+
+    // best-of helpers
+    const val = (m, f) => {
+      const s = m.summary;
+      if (f === "speed") return s.latency_ms_mean;
+      if (f === "grounded") return 1 - (s.unsupported_rate_mean || 0);
+      if (f === "facts") return s.fact_coverage_mean;
+      if (f === "relevance") return s.relevance_mean;
+      if (f === "length") return s.answer_chars_mean;
+      return null;
+    };
+    const bestSpeed = models.reduce((a, m) => val(m, "speed") < val(a, "speed") ? m : a);
+    const bestFacts = models.reduce((a, m) => (val(m, "facts") || 0) > (val(a, "facts") || 0) ? m : a);
+
+    grid.className = "bm-model-grid";
+    grid.innerHTML = models.map((m) => {
+      const s = m.summary;
+      const p = BM_PERSONA[m.tier] || {};
+      const badges = [];
+      if (m === bestSpeed) badges.push(`<span class="bm-award">fastest</span>`);
+      if (m === bestFacts) badges.push(`<span class="bm-award bm-award-q">most thorough</span>`);
+      const row = (label, value, hint) =>
+        `<div class="bm-metric"><span class="bm-metric-label">${label}</span><span class="bm-metric-val">${value}</span>${hint ? `<span class="bm-metric-hint">${hint}</span>` : ""}</div>`;
+      return `
+        <article class="bm-model-card">
+          <div class="bm-model-head">
+            <span class="bm-model-icon">${p.icon || "🤖"}</span>
+            <div>
+              <h4>${escapeHtml(m.name)}</h4>
+              <p class="bm-model-tag">${escapeHtml(m.tier)} tier · ${escapeHtml(m.developer)}</p>
+            </div>
+          </div>
+          <p class="bm-model-persona">${escapeHtml(p.tagline || "")}</p>
+          ${badges.length ? `<div class="bm-awards">${badges.join("")}</div>` : ""}
+          <div class="bm-metrics">
+            ${row("Speed", bmSec(s.latency_ms_mean) + " s", "avg per answer")}
+            ${row("Stays on the docs", bmPct(1 - (s.unsupported_rate_mean || 0)) + "%", "grounded in retrieved context")}
+            ${row("Key facts covered", bmPct(s.fact_coverage_mean) + "%", "of the expected points")}
+            ${row("On-topic", bmPct(s.relevance_mean) + "%", "relevance to the question")}
+            ${row("Answer length", Math.round(s.answer_chars_mean) + " chars", "typical")}
+          </div>
+        </article>`;
+    }).join("");
+
+    if (gloss) gloss.innerHTML = [
+      ["Speed", "How long from question to answer. Smaller is better. The bigger the model, the slower — but usually the more complete."],
+      ["Stays on the docs", "How much of the answer is backed by the retrieved context (lexical check). Higher means less making things up."],
+      ["Key facts covered", "How many of the expected key points from the reference answer showed up in the model's answer."],
+      ["On-topic", "Share of the answer that is actually about the question asked."],
+      ["Retrieval", "Which document chunks were fetched — this is the SAME for every model, because retrieval happens before the model is chosen. So it is not a model difference."],
+    ].map(([k, v]) => `<li><strong>${k}:</strong> ${escapeHtml(v)}</li>`).join("");
+
+    if (takeaway) {
+      const fast = bmSec(bestSpeed.summary.latency_ms_mean);
+      const slow = bmSec(bestFacts.summary.latency_ms_mean);
+      takeaway.innerHTML = `
+        <h4 class="subsection-title">The takeaway</h4>
+        <p><strong>${escapeHtml(bestSpeed.name)}</strong> answers in about <strong>${fast}s</strong> and is great for simple, factual questions.
+        <strong>${escapeHtml(bestFacts.name)}</strong> covers the most facts and stays best grounded, but takes about <strong>${slow}s</strong>.
+        The <strong>Model Router picks one per question</strong> — so easy questions get a fast answer and hard ones get a thorough answer, automatically.</p>
+        <p class="bm-footnote">Run on this machine (CPU only). ${b.elapsed_s ? "Full benchmark took " + Math.round(b.elapsed_s / 60) + " min. " : ""}Re-run any time with <code>python src/benchmark_router_models.py</code>.</p>`;
+    }
+
+    // detail table
+    const head = document.getElementById("bmTableHead");
+    const tbody = document.getElementById("metricsCompareBody");
+    if (head) head.innerHTML = `<th>Metric</th>` + models.map((m) => `<th>${escapeHtml(m.name)}</th>`).join("");
+    if (tbody) {
+      const r = (label, fn, unit, dir) => {
+        const vals = models.map(fn);
+        const clean = vals.filter((v) => v != null);
+        const best = dir === "min" ? Math.min(...clean) : Math.max(...clean);
+        return `<tr><td>${label}</td>` + vals.map((v) =>
+          `<td>${v == null ? "—" : v}${unit || ""}${v === best && clean.length > 1 ? " ★" : ""}</td>`).join("") + `</tr>`;
+      };
+      tbody.innerHTML = [
+        r("Questions answered OK", (m) => m.summary.ok_count + "/" + m.summary.questions, "", null),
+        r("Avg response time", (m) => bmSec(m.summary.latency_ms_mean), " s", "min"),
+        r("Slowest 5% (p95)", (m) => bmSec(m.summary.latency_ms_p95), " s", "min"),
+        r("Key facts covered", (m) => bmPct(m.summary.fact_coverage_mean), "%", "max"),
+        r("On-topic (relevance)", (m) => bmPct(m.summary.relevance_mean), "%", "max"),
+        r("Unsupported sentences", (m) => bmPct(m.summary.unsupported_rate_mean), "%", "min"),
+        r("Out-of-scope abstention", (m) => m.summary.abstention_accuracy == null ? null : bmPct(m.summary.abstention_accuracy), "%", "max"),
+        r("Retrieval hit rate", (m) => bmPct(m.summary.retrieval_hit_rate), "%", null),
+        r("Avg answer length", (m) => Math.round(m.summary.answer_chars_mean), " ch", null),
+        r("Completion tokens (total)", (m) => m.summary.total_completion_tokens, "", "min"),
+      ].join("");
+    }
   }
 
   function renderMetricsReal(W4S) {
@@ -1203,12 +1321,8 @@
     Chart.defaults.color = "#94a3b8";
     Chart.defaults.font.family = '"Outfit", "Inter", sans-serif';
 
-    if (SVC.week4Service && SVC.week4Service.hasRealData()) {
-      document.querySelectorAll("#sec-w4-task3 .chart-title .tag-badge").forEach((b) => {
-        b.textContent = "Executed";
-        b.className = "tag-badge tag-medical";
-      });
-    }
+    // Avoid "Canvas is already in use" if charts are re-initialised.
+    Object.values(charts).forEach((c) => { try { c.destroy(); } catch (_) {} });
 
     initQualityChart();
     initLatencyChart();
@@ -1217,8 +1331,33 @@
     initTradeoffChart();
   }
 
-  // Real Week 4 chart data (or null → charts use the demo values below).
+  // Chart data — prefers the benchmark of the 3 routed models, then the Week 4
+  // executed data, else null (charts fall back to demo values).
   function w4Charts() {
+    const b = window.BENCHMARK_DATA;
+    if (b && b.models) {
+      const tiers = ["easy", "medium", "complex"].filter((t) => b.models[t]);
+      const solid = ["#00f0ff", "#10b981", "#a855f7"];
+      const map = (fn) => tiers.map((t) => fn(b.models[t].summary));
+      return {
+        keys: tiers,
+        labels: tiers.map((t) => b.models[t].name),
+        colors: solid.map((c) => c + "bf").slice(0, tiers.length),
+        solid: solid.slice(0, tiers.length),
+        benchmark: true,
+        v: (f) => ({
+          correctness: map((s) => Math.round((s.fact_coverage_mean || 0) * 100)),
+          relevance: map((s) => Math.round((s.relevance_mean || 0) * 100)),
+          retrievalPk: map((s) => Math.round((s.retrieval_hit_rate || 0) * 100)),
+          hallucination: map((s) => Math.round((s.unsupported_rate_mean || 0) * 100)),
+          grounded: map((s) => Math.round((1 - (s.unsupported_rate_mean || 0)) * 100)),
+          latencyS: map((s) => Math.round((s.latency_ms_mean || 0) / 100) / 10),
+          chars: map((s) => Math.round(s.answer_chars_mean || 0)),
+          tokens: map((s) => Math.round(s.completion_tokens_mean || 0)),
+          ramMB: map((s) => Math.round(s.answer_chars_mean || 0)),
+        }[f]),
+      };
+    }
     const W4S = SVC.week4Service;
     if (!W4S || !W4S.hasRealData()) return null;
     const m = W4S.getMedicalModels();
@@ -1270,18 +1409,18 @@
     const ctx = document.getElementById("chartRadarProfile");
     if (!ctx) return;
     const w = w4Charts();
-    let datasets;
+    let datasets, labels = ["Facts covered", "Speed", "Conciseness", "On-topic", "Grounded"];
     if (w) {
-      const maxLat = Math.max(...w.v("latencyS"));
-      const maxRam = Math.max(...w.v("ramMB"));
+      const maxLat = Math.max(...w.v("latencyS"), 0.1);
+      const chars = w.v("chars"); const maxCh = Math.max(...chars, 1);
       datasets = w.keys.map((k, i) => ({
         label: w.labels[i],
         data: [
           w.v("correctness")[i],
           Math.round(100 * (1 - w.v("latencyS")[i] / maxLat)) + 5,
-          Math.round(100 * (1 - w.v("ramMB")[i] / maxRam)) + 5,
+          Math.round(100 * (1 - chars[i] / maxCh)) + 5,
           w.v("relevance")[i],
-          Math.round(100 - w.v("hallucination")[i]),
+          w.benchmark ? w.v("grounded")[i] : Math.round(100 - w.v("hallucination")[i]),
         ],
         borderColor: w.solid[i], backgroundColor: w.solid[i] + "26", borderWidth: 2,
       }));
@@ -1294,7 +1433,7 @@
     }
     charts.radar = new Chart(ctx, {
       type: "radar",
-      data: { labels: ["Correctness", "Speed", "Low Memory", "Relevance", "Low Hallucination"], datasets },
+      data: { labels, datasets },
       options: {
         responsive: true, maintainAspectRatio: false,
         scales: { r: { angleLines: { color: "rgba(255,255,255,0.1)" }, grid: { color: "rgba(255,255,255,0.08)" }, pointLabels: { font: { size: 11 } }, ticks: { display: false, max: 100 } } },
@@ -1307,11 +1446,14 @@
     const ctx = document.getElementById("chartResourceBars");
     if (!ctx) return;
     const w = w4Charts();
-    const data = w
+    const data = w && w.benchmark
+      ? { labels: w.labels, datasets: [
+          { label: "Answer length (chars)", data: w.v("chars"), backgroundColor: "rgba(0,240,255,0.75)", borderRadius: 6 },
+          { label: "Completion tokens", data: w.v("tokens"), backgroundColor: "rgba(168,85,247,0.75)", borderRadius: 6 },
+        ] }
+      : w
       ? { labels: w.labels, datasets: [
           { label: "Peak RAM (MB)", data: w.v("ramMB"), backgroundColor: "rgba(0,240,255,0.75)", borderRadius: 6 },
-          { label: "Model VRAM (MB)", data: w.v("vramMB"), backgroundColor: "rgba(16,185,129,0.75)", borderRadius: 6 },
-          { label: "CPU (%)", data: w.v("cpu"), backgroundColor: "rgba(168,85,247,0.75)", borderRadius: 6 },
         ] }
       : { labels: ["Qwen2.5 0.5B", "Gemma 3 1B", "SmolLM2 1.7B"], datasets: [
           { label: "Memory (MB)", data: [890, 1450, 2100], backgroundColor: "rgba(0,240,255,0.75)", borderRadius: 6 },

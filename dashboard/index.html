@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css?v=20260901b" />
+  <link rel="stylesheet" href="./styles.css?v=20260901c" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -536,48 +536,48 @@
         <div class="section-header">
           <div>
             <span class="section-tag">Task 3</span>
-            <h2 class="section-heading">Quantitative Evaluation</h2>
-            <p class="section-desc">Demo Data — not real measurements. For frontend visualization only.</p>
+            <h2 class="section-heading">Quantitative Evaluation — the 3 routed models</h2>
+            <p class="section-desc" id="bmIntro">The same health questions were run through each of the three routed models, with the same retrieved context, and quality &amp; speed were measured on every answer.</p>
           </div>
-          <span class="pill-badge pill-amber">Demo Data</span>
+          <span class="pill-badge pill-amber" id="bmPill">Loading…</span>
         </div>
 
-        <h4 class="subsection-title">Quality Metrics</h4>
-        <div class="metric-cards-row" id="qualityMetricCards"></div>
+        <!-- Per-model summary cards -->
+        <div class="bm-model-grid" id="bmModelCards"></div>
 
-        <h4 class="subsection-title">Performance Metrics</h4>
-        <div class="metric-cards-row" id="perfMetricCards"></div>
+        <!-- Plain-language glossary -->
+        <h4 class="subsection-title">What each number means</h4>
+        <ul class="bm-glossary" id="bmGlossary"></ul>
 
-        <h4 class="subsection-title">Model Comparison Table</h4>
-        <div class="table-responsive">
-          <table class="data-table" id="metricsCompareTable">
-            <thead>
-              <tr>
-                <th>Metric</th>
-                <th>Qwen2.5 0.5B</th>
-                <th>Gemma 3 1B</th>
-                <th>SmolLM2 1.7B</th>
-              </tr>
-            </thead>
-            <tbody id="metricsCompareBody"></tbody>
-          </table>
-        </div>
+        <!-- Takeaway -->
+        <div class="bm-takeaway" id="bmTakeaway"></div>
+
+        <!-- Full table (collapsible) -->
+        <details class="bm-detail">
+          <summary>Full comparison table</summary>
+          <div class="table-responsive">
+            <table class="data-table" id="metricsCompareTable">
+              <thead><tr id="bmTableHead"><th>Metric</th></tr></thead>
+              <tbody id="metricsCompareBody"></tbody>
+            </table>
+          </div>
+        </details>
 
         <div class="charts-grid-2">
           <div class="chart-box">
-            <div class="chart-title"><span>Quality Comparison</span><span class="tag-badge tag-medical">Demo</span></div>
+            <div class="chart-title"><span>Answer quality — fact coverage (%)</span><span class="tag-badge tag-medical" id="bmChartTag1">Executed</span></div>
             <div class="chart-canvas-wrap"><canvas id="chartQualityBars"></canvas></div>
           </div>
           <div class="chart-box">
-            <div class="chart-title"><span>Latency Comparison</span><span class="tag-badge tag-abstain">Demo</span></div>
+            <div class="chart-title"><span>Response speed — seconds (lower is better)</span><span class="tag-badge tag-abstain" id="bmChartTag2">Executed</span></div>
             <div class="chart-canvas-wrap"><canvas id="chartLatencyBars"></canvas></div>
           </div>
           <div class="chart-box">
-            <div class="chart-title"><span>Model Capability Radar</span><span class="tag-badge tag-repo">Demo</span></div>
+            <div class="chart-title"><span>Overall profile</span><span class="tag-badge tag-repo" id="bmChartTag3">Executed</span></div>
             <div class="chart-canvas-wrap"><canvas id="chartRadarProfile"></canvas></div>
           </div>
           <div class="chart-box">
-            <div class="chart-title"><span>Resource Usage</span><span class="tag-badge tag-medical">Demo</span></div>
+            <div class="chart-title"><span>Typical answer length (characters)</span><span class="tag-badge tag-medical" id="bmChartTag4">Executed</span></div>
             <div class="chart-canvas-wrap"><canvas id="chartResourceBars"></canvas></div>
           </div>
         </div>
@@ -698,6 +698,7 @@
   <script src="./api/mockData.js?v=20260901b"></script>
   <script src="./api/services.js?v=20260901b"></script>
   <script src="./week4_data.js"></script>
-  <script src="./app.js?v=20260901b"></script>
+  <script src="./benchmark_data.js?v=20260901c"></script>
+  <script src="./app.js?v=20260901c"></script>
 </body>
 </html>
