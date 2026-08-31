@@ -233,21 +233,34 @@ def total_vectors() -> int:
     return int(FAISS_INDEX.ntotal) if FAISS_INDEX is not None else len(CHUNK_META)
 
 
-def retrieve_chunks(query: str, top_k: int) -> tuple[List[dict], List[float], int, float, float]:
-    """Search via FAISS locally or a low-memory lexical scorer in constrained cloud runtimes."""
+def retrieve_chunks(query: str, top_k: int, focus_doc_ids=None) -> tuple[List[dict], List[float], int, float, float]:
+    """Search via FAISS locally or a low-memory lexical scorer in constrained cloud runtimes.
+
+    `focus_doc_ids` (optional): when the caller wants answers preferentially from
+    a specific document (e.g. one the user just uploaded in the playground),
+    chunks from those doc_ids get a score boost so they surface in the top-k.
+    """
     if not index_ready():
         raise HTTPException(400, "No index found. Please ingest a document first.")
 
+    focus = set(focus_doc_ids or [])
+    BOOST = 0.6
     top_k = max(1, min(top_k, len(CHUNK_META)))
+
     if RETRIEVAL_BACKEND == "semantic":
         t0 = time.time()
         q_vec = EMBEDDER.encode([query], normalize_embeddings=True, convert_to_numpy=True).astype(np.float32)
         t_embed = time.time() - t0
         t0 = time.time()
-        scores, indices = FAISS_INDEX.search(q_vec, k=top_k)
+        k = min(len(CHUNK_META), max(top_k, top_k + 20)) if focus else top_k
+        scores, indices = FAISS_INDEX.search(q_vec, k=k)
+        pairs = [(float(sc), int(ix)) for sc, ix in zip(scores[0], indices[0]) if 0 <= ix < len(CHUNK_META)]
+        if focus:
+            pairs = [((sc + BOOST) if CHUNK_META[ix].get("doc_id") in focus else sc, ix) for sc, ix in pairs]
+            pairs.sort(key=lambda p: -p[0])
+        pairs = pairs[:top_k]
         t_search = time.time() - t0
-        valid = [(float(score), int(idx)) for score, idx in zip(scores[0], indices[0]) if 0 <= idx < len(CHUNK_META)]
-        return [CHUNK_META[idx] for _, idx in valid], [score for score, _ in valid], int(q_vec.shape[1]), t_embed, t_search
+        return [CHUNK_META[ix] for _, ix in pairs], [sc for sc, _ in pairs], int(q_vec.shape[1]), t_embed, t_search
 
     t0 = time.time()
     query_terms = set(re.findall(r"\b[a-z0-9_]+\b", query.lower()))
@@ -260,7 +273,8 @@ def retrieve_chunks(query: str, top_k: int) -> tuple[List[dict], List[float], in
         overlap = len(query_terms & terms)
         coverage = overlap / max(len(query_terms), 1)
         phrase_bonus = 0.15 if query.lower() in text.lower() else 0.0
-        scored.append((coverage + phrase_bonus, idx))
+        focus_bonus = BOOST if (focus and chunk.get("doc_id") in focus and overlap > 0) else 0.0
+        scored.append((coverage + phrase_bonus + focus_bonus, idx))
     scored.sort(key=lambda item: (-item[0], item[1]))
     selected = scored[:top_k]
     t_search = time.time() - t0
@@ -444,6 +458,8 @@ class RouterRequest(BaseModel):
     top_k: Optional[int] = 3
     # Optional prior turns for a multi-turn chat: [{"role": "user"|"assistant", "content": str}]
     history: Optional[List[Dict[str, Any]]] = None
+    # Optional: prefer chunks from these doc_ids (e.g. a doc just uploaded in the playground).
+    focus_doc_ids: Optional[List[int]] = None
 
 
 # ══════════════════════════════════════════════════════════════
@@ -564,6 +580,14 @@ async def ingest_document(file: UploadFile = File(...), append: bool = Form(Fals
             })
     t_chunk = time.time() - t0
 
+    # A preview of the chunks just created, for the "see the chunking" UI.
+    chunk_previews = [
+        {"label": f"C{k + 1}", "doc_id": m["doc_id"], "words": len(m["text"].split()),
+         "text": m["text"][:260] + ("…" if len(m["text"]) > 260 else "")}
+        for k, m in enumerate(new_meta[:24])
+    ]
+    new_doc_ids = sorted({m["doc_id"] for m in new_meta})
+
     if RETRIEVAL_BACKEND != "semantic":
         combined_meta = (CHUNK_META + new_meta) if append else new_meta
         os.makedirs(INDEX_DIR, exist_ok=True)
@@ -575,6 +599,7 @@ async def ingest_document(file: UploadFile = File(...), append: bool = Form(Fals
             "filename": fname, "mode": "append" if append else "replace",
             "documents": len(records), "new_chunks": len(new_chunks_text),
             "total_chunks": len(combined_meta), "dimensions": 0, "retrieval_backend": "lexical",
+            "new_doc_ids": new_doc_ids, "chunk_previews": chunk_previews,
             "t_parse_ms": round(t_parse * 1000), "t_chunk_ms": round(t_chunk * 1000),
         }
         return INDEX_STATS
@@ -610,9 +635,9 @@ async def ingest_document(file: UploadFile = File(...), append: bool = Form(Fals
         "documents": len(records), "new_chunks": len(new_chunks_text),
         "total_chunks": len(CHUNK_META), "vectors": FAISS_INDEX.ntotal, "dimensions": dim,
         "index_size_kb": round(os.path.getsize(idx_path) / 1024, 1),
+        "new_doc_ids": new_doc_ids, "chunk_previews": chunk_previews,
         "t_parse_ms": round(t_parse * 1000), "t_chunk_ms": round(t_chunk * 1000),
         "t_embed_ms": round(t_embed * 1000), "t_index_ms": round(t_idx * 1000),
-        "sample_chunks": [c["text"][:120] for c in new_meta[:4]],
     }
     return INDEX_STATS
 
@@ -872,6 +897,7 @@ def _sources_from_chunks(chunks: List[dict]) -> List[dict]:
             "label": f"C{i}",
             "doc_id": c.get("doc_id"),
             "score": c.get("score"),
+            "source_file": c.get("source_file"),
             "preview": (c.get("text", "")[:180] + "...") if c.get("text") else "",
         })
     return out
@@ -958,7 +984,7 @@ def router_answer(req: RouterRequest):
 
     # ── RAG retrieval (also feeds the domain check below) ──
     try:
-        retrieved, scores, _, _, t_search = retrieve_chunks(retrieval_query, req.top_k or 3)
+        retrieved, scores, _, _, t_search = retrieve_chunks(retrieval_query, req.top_k or 3, focus_doc_ids=req.focus_doc_ids)
     except HTTPException as exc:
         result["status"] = "no_index"
         result["retrieval"] = {"count": 0, "backend": RETRIEVAL_BACKEND, "error": exc.detail}
@@ -973,6 +999,7 @@ def router_answer(req: RouterRequest):
             "doc_id": chunk.get("doc_id"),
             "text": chunk["text"],
             "score": round(float(score), 4),
+            "source_file": chunk.get("source_file"),
         })
     result["retrieval"] = {
         "count": len(chunks),
@@ -1066,7 +1093,12 @@ def router_answer(req: RouterRequest):
 # Serve the dashboard from the same origin as the API in cloud deployments.
 # Register this catch-all mount after all API routes so /status, /query, etc.
 # continue to resolve before static files.
-DASHBOARD_DIR = Path(__file__).resolve().parent.parent / "dashboard"
+_ROOT = Path(__file__).resolve().parent.parent
+SAMPLES_DIR = _ROOT / "data" / "knowledge"
+if SAMPLES_DIR.is_dir():
+    app.mount("/samples", StaticFiles(directory=str(SAMPLES_DIR)), name="samples")
+
+DASHBOARD_DIR = _ROOT / "dashboard"
 if DASHBOARD_DIR.is_dir():
     app.mount("/", StaticFiles(directory=str(DASHBOARD_DIR), html=True), name="dashboard")
 

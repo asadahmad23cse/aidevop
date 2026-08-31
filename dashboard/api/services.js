@@ -124,9 +124,10 @@
       // `history` (optional): prior turns [{role:'user'|'assistant', content}] for multi-turn chat.
       // Long timeout: small local models can still take a while on modest CPU-only
       // hardware, especially on the first call while the model loads into memory.
-      route: async (query, topK = 3, history = null) => {
+      route: async (query, topK = 3, history = null, focusDocIds = null) => {
         const body = { query, top_k: topK };
         if (Array.isArray(history) && history.length) body.history = history;
+        if (Array.isArray(focusDocIds) && focusDocIds.length) body.focus_doc_ids = focusDocIds;
         const data = await apiPost("/api/v1/router/answer", body, 300000);
         if (data && data.guardrails) {
           return { source: "backend", data: deepSanitize(data) };

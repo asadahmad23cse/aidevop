@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css?v=20260831e" />
+  <link rel="stylesheet" href="./styles.css?v=20260901b" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -29,6 +29,7 @@
       <nav class="nav-links-main" id="navLinksMain">
         <a class="nav-link-main active" href="#sec-overview" data-section="sec-overview">Overview</a>
         <a class="nav-link-main" href="#sec-chat" data-section="sec-chat">Ask</a>
+        <a class="nav-link-main" href="#sec-playground" data-section="sec-playground">Playground</a>
         <a class="nav-link-main" href="#sec-knowledge" data-section="sec-knowledge">Knowledge Base</a>
         <a class="nav-link-main" href="#sec-suggestions" data-section="sec-suggestions">Suggestions</a>
         <a class="nav-link-main" href="#sec-week3-rag" data-section="sec-week3-rag">RAG</a>
@@ -103,6 +104,61 @@
           <button type="submit" id="chatSend" class="btn-primary">Send</button>
         </form>
         <p class="placeholder-note">Educational use only — not personalised medical advice. Out-of-scope and unsafe requests are declined without calling the model.</p>
+      </div>
+    </section>
+
+    <!-- DOCUMENT Q&A PLAYGROUND -->
+    <section id="sec-playground" class="dashboard-section">
+      <div class="glass-panel">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">End to end</span>
+            <h2 class="section-heading">Document Q&amp;A Playground</h2>
+            <p class="section-desc">Add a document, watch it get chunked and indexed, then ask a question and see every pipeline stage &mdash; suggestions, guardrails, retrieval, routing and the grounded answer &mdash; in one place.</p>
+          </div>
+        </div>
+
+        <!-- STEP 1 -->
+        <h4 class="subsection-title">1 &middot; Add a document</h4>
+        <div class="drop-zone" id="pgDropZone">
+          <span class="drop-icon">📄</span>
+          <p>Drag &amp; drop a JSON / JSONL or text PDF here</p>
+          <button type="button" class="btn-secondary" id="pgBrowse">Browse Files</button>
+          <input type="file" id="pgFileInput" accept=".json,.jsonl,.pdf,.txt" hidden />
+        </div>
+        <div class="pg-samples">
+          <span>or use a sample:</span>
+          <button type="button" class="chat-example" data-sample="health_faq.json">health_faq.json</button>
+          <button type="button" class="chat-example" data-sample="health_reference_guide.pdf">health_reference_guide.pdf</button>
+        </div>
+
+        <!-- Ingest pipeline (revealed after upload) -->
+        <div id="pgIngest" hidden>
+          <div class="pg-flow" id="pgFlow">
+            <span class="pg-stage" data-s="parse">Parse</span>
+            <span class="pg-arrow">→</span>
+            <span class="pg-stage" data-s="chunk">Chunk</span>
+            <span class="pg-arrow">→</span>
+            <span class="pg-stage" data-s="embed">Embed / Index</span>
+            <span class="pg-arrow">→</span>
+            <span class="pg-stage" data-s="ready">Retrieval-ready</span>
+          </div>
+          <p id="pgIngestSummary" class="pg-summary"></p>
+          <details class="pg-chunks" open>
+            <summary>Chunks created — <span id="pgChunkCount">0</span></summary>
+            <div id="pgChunkList" class="pg-chunk-list"></div>
+          </details>
+        </div>
+
+        <!-- STEP 2 -->
+        <h4 class="subsection-title">2 &middot; Ask a question about it</h4>
+        <form class="query-input-row" id="pgForm" autocomplete="off">
+          <input type="text" id="pgQueryInput" class="search-input query-input-full" placeholder="e.g. What does the guide say about migraine treatment?" />
+          <button type="submit" id="pgAsk" class="btn-primary">Ask</button>
+        </form>
+
+        <!-- STEP 3 -->
+        <div id="pgResult" class="pg-result"></div>
       </div>
     </section>
 
@@ -639,9 +695,9 @@
     </div>
   </footer>
 
-  <script src="./api/mockData.js?v=20260831e"></script>
-  <script src="./api/services.js?v=20260831e"></script>
+  <script src="./api/mockData.js?v=20260901b"></script>
+  <script src="./api/services.js?v=20260901b"></script>
   <script src="./week4_data.js"></script>
-  <script src="./app.js?v=20260831e"></script>
+  <script src="./app.js?v=20260901b"></script>
 </body>
 </html>

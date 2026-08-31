@@ -30,9 +30,175 @@
     initModal();
     initQuestionSuggestions();
     initChat();
+    initPlayground();
     refreshLiveStatus();
     setInterval(refreshLiveStatus, 15000);
   });
+
+  /* ── Document Q&A Playground ── */
+  function initPlayground() {
+    const zone = document.getElementById("pgDropZone");
+    const input = document.getElementById("pgFileInput");
+    const browse = document.getElementById("pgBrowse");
+    const form = document.getElementById("pgForm");
+    const qInput = document.getElementById("pgQueryInput");
+    const resultEl = document.getElementById("pgResult");
+    if (!zone || !form || !qInput) return;
+
+    let newDocIds = [];   // doc_ids added in this session
+    let newFiles = [];     // file names added in this session
+    let lastFile = null;
+
+    const base = window.HEALTHRAG_API_BASE || "";
+
+    async function ingest(file) {
+      lastFile = file.name;
+      const ing = document.getElementById("pgIngest");
+      const flow = document.getElementById("pgFlow");
+      const summary = document.getElementById("pgIngestSummary");
+      ing.hidden = false;
+      flow.querySelectorAll(".pg-stage").forEach((s) => s.classList.remove("done", "active"));
+      flow.querySelector('[data-s="parse"]').classList.add("active");
+      summary.textContent = `Uploading ${file.name}…`;
+
+      try {
+        const fd = new FormData();
+        fd.append("file", file, file.name);
+        fd.append("append", "true");
+        const resp = await fetch(base + "/ingest", { method: "POST", body: fd });
+        if (!resp.ok) {
+          let m = "HTTP " + resp.status;
+          try { m = (await resp.json()).detail || m; } catch (_) {}
+          throw new Error(m);
+        }
+        const data = await resp.json();
+
+        // animate the stages
+        const stages = ["parse", "chunk", "embed", "ready"];
+        stages.forEach((s, i) => setTimeout(() => {
+          const el = flow.querySelector(`[data-s="${s}"]`);
+          flow.querySelectorAll(".pg-stage").forEach((x) => x.classList.remove("active"));
+          if (i > 0) flow.querySelector(`[data-s="${stages[i - 1]}"]`).classList.add("done");
+          el.classList.add(i === stages.length - 1 ? "done" : "active");
+        }, i * 400));
+
+        newDocIds = newDocIds.concat(data.new_doc_ids || []);
+        if (!newFiles.includes(file.name)) newFiles.push(file.name);
+
+        summary.innerHTML =
+          `<strong>${escapeHtml(file.name)}</strong> — ` +
+          `${data.documents} record(s) → <strong>${data.new_chunks}</strong> chunks · ` +
+          `${escapeHtml(data.retrieval_backend || "lexical")} index · ` +
+          `now ${data.total_chunks} chunks total · ` +
+          `parse ${data.t_parse_ms}ms · chunk ${data.t_chunk_ms}ms` +
+          (data.t_embed_ms != null ? ` · embed ${data.t_embed_ms}ms` : "");
+
+        const list = document.getElementById("pgChunkList");
+        document.getElementById("pgChunkCount").textContent = (data.chunk_previews || []).length +
+          (data.new_chunks > (data.chunk_previews || []).length ? " of " + data.new_chunks : "");
+        list.innerHTML = (data.chunk_previews || [])
+          .map((c) => `<div class="pg-chunk"><span class="pg-chunk-tag">${escapeHtml(c.label)} · doc ${c.doc_id} · ${c.words}w</span>${escapeHtml(c.text)}</div>`)
+          .join("");
+
+        if (typeof refreshLiveStatus === "function") refreshLiveStatus();
+        renderKnowledgeDocs();
+        qInput.focus();
+      } catch (e) {
+        summary.innerHTML = `<span class="chat-error">Ingest failed: ${escapeHtml(e.message || "error")}</span>`;
+      }
+    }
+
+    browse?.addEventListener("click", () => input.click());
+    input?.addEventListener("change", () => input.files[0] && ingest(input.files[0]));
+    zone.addEventListener("dragover", (e) => { e.preventDefault(); zone.classList.add("drag-over"); });
+    zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
+    zone.addEventListener("drop", (e) => {
+      e.preventDefault(); zone.classList.remove("drag-over");
+      if (e.dataTransfer.files[0]) ingest(e.dataTransfer.files[0]);
+    });
+
+    // sample buttons
+    document.querySelectorAll(".pg-samples [data-sample]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const name = btn.getAttribute("data-sample");
+        btn.disabled = true;
+        try {
+          const r = await fetch(base + "/samples/" + name);
+          if (!r.ok) throw new Error("sample not found (" + r.status + ")");
+          const blob = await r.blob();
+          await ingest(new File([blob], name, { type: blob.type }));
+        } catch (e) {
+          document.getElementById("pgIngest").hidden = false;
+          document.getElementById("pgIngestSummary").innerHTML =
+            `<span class="chat-error">Could not load sample: ${escapeHtml(e.message)}</span>`;
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    });
+
+    // query with suggestions
+    if (SVC.questionSuggestionService) attachSuggestions(qInput, SVC.questionSuggestionService);
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const q = qInput.value.trim();
+      if (!q) return;
+      resultEl.innerHTML = `<p class="placeholder-note">Running: suggestions ✓ → prompt-injection → domain → retrieval → difficulty → model → generation → grounding → safety…</p>`;
+      const { source, data } = await SVC.modelRouterService.route(q, 4, null, newDocIds);
+      renderPlaygroundResult(data, source, newDocIds, newFiles);
+      resultEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
+  }
+
+  function pgStep(n, label, ok, detail) {
+    const cls = ok === true ? "pg-ok" : ok === false ? "pg-block" : "pg-skip";
+    return `<div class="pg-step ${cls}"><span class="pg-step-n">${n}</span>
+      <span class="pg-step-label">${escapeHtml(label)}</span>
+      <span class="pg-step-detail">${detail || ""}</span></div>`;
+  }
+
+  function renderPlaygroundResult(d, source, newDocIds, newFiles) {
+    const el = document.getElementById("pgResult");
+    if (!el) return;
+    const g = d.guardrails || {};
+    const gb = (gr) => gr ? `<span class="status-badge ${gr.passed ? "status-connected" : "status-mock"}">${escapeHtml(gr.status || (gr.passed ? "Passed" : "Blocked"))}</span>` : `<span class="status-badge status-pending">not reached</span>`;
+    const blocked = (g.prompt_injection && !g.prompt_injection.passed) || (g.domain && !g.domain.passed);
+    const retr = d.retrieval;
+    const m = d.model || {};
+    const fromDoc = (s) => (s.source_file && newFiles.includes(s.source_file)) || (newDocIds || []).includes(s.doc_id);
+
+    let steps = "";
+    steps += pgStep(1, "Prompt-injection guardrail", g.prompt_injection ? g.prompt_injection.passed : null, gb(g.prompt_injection));
+    steps += pgStep(2, "Domain relevance guardrail", g.domain ? g.domain.passed : null, gb(g.domain));
+    if (!blocked) {
+      const docHits = (retr && retr.sources || []).filter(fromDoc).length;
+      steps += pgStep(3, "RAG retrieval", true, retr
+        ? `<strong>${retr.count}</strong> chunks · ${escapeHtml(retr.backend)}${docHits ? ` · <span class="pg-badge-doc">${docHits} from your document</span>` : ""}`
+        : "—");
+      steps += pgStep(4, "Query difficulty", true, `<strong>${escapeHtml(String(d.difficulty || "—"))}</strong> — ${escapeHtml(d.reason || "")}`);
+      steps += pgStep(5, "Model router", true, `<strong>${escapeHtml(m.name || m.tag || "—")}</strong>${m.developer ? " · " + escapeHtml(m.developer) : ""}${m.fell_back ? " (fallback)" : ""}`);
+      steps += pgStep(6, "Generation", d.llm_called, escapeHtml(d.llm_source || "—") + (d.latency_ms != null ? ` · ${d.latency_ms} ms` : ""));
+      steps += pgStep(7, "Grounding check", g.grounding ? g.grounding.passed : null, gb(g.grounding));
+      steps += pgStep(8, "Medical-safety check", g.medical_safety ? g.medical_safety.passed : null, gb(g.medical_safety));
+    } else {
+      steps += `<div class="pg-step pg-block"><span class="pg-step-n">✕</span><span class="pg-step-label">Stopped — not sent to the LLM</span><span class="pg-step-detail">${escapeHtml(d.status || "Blocked")}</span></div>`;
+    }
+
+    let sources = "";
+    if (!blocked && retr && retr.sources && retr.sources.length) {
+      sources = `<div class="pg-sources"><h5 class="subsection-title">Retrieved context</h5>${retr.sources.map((s) =>
+        `<div class="chunk-snippet">[${escapeHtml(s.label)}]${fromDoc(s) ? ` <span class="pg-badge-doc">your document</span>` : ""} ${s.score != null ? "(score " + s.score + ") " : ""}${escapeHtml(s.preview || "")}</div>`).join("")}</div>`;
+    }
+
+    el.innerHTML = `
+      <div class="pg-steps">${steps}</div>
+      <div class="pg-answer">
+        <div class="trace-col-title">${blocked ? "Guardrail response" : "Grounded answer"}${source === "mock" ? ` <span class="status-badge status-mock">offline</span>` : ""}</div>
+        <div class="trace-text">${escapeHtml(d.answer || "(no answer)")}</div>
+      </div>
+      ${sources}`;
+  }
 
   /* ── Ask HealthRAG — conversational chat ── */
   function initChat() {
